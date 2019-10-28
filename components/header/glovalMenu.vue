@@ -57,4 +57,8 @@ li {
   display: inline;
   padding: 0 2rem;
 }
+a {
+  color: $body-text;
+  text-decoration: none;
+}
 </style>

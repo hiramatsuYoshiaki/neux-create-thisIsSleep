@@ -31,13 +31,14 @@ $family-sans-serif: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto',
 $family-monospace: monospace !default;
 $render-mode: optimizeLegibility !default;
 
-$size-1: 3rem !default;
-$size-2: 2.5rem !default;
-$size-3: 2rem !default;
-$size-4: 1.5rem !default;
-$size-5: 1.25rem !default;
+$size-1: 5rem !default;
+$size-2: 4rem !default;
+$size-3: 3rem !default;
+$size-4: 2rem !default;
+$size-5: 1.5rem !default;
 $size-6: 1rem !default;
 $size-7: 0.75rem !default;
+$size-8: 0.5rem !default;
 
 $weight-light: 300 !default;
 $weight-normal: 400 !default;
@@ -79,87 +80,99 @@ $variable-columns: true !default;
 
 //h-works
 //header
-$header-height: 5rem;
+$header-height: 4rem !default;
 
-// $header-color: #212121;
-$header-color: green;
-$header-text: #fff;
-$header-mobile-color: red;
+// $header-color: #212121!default;
+$header-color: green !default;
+$header-text: #fff !default;
+$header-mobile-color: red !default;
 //footer
-$footer-height: 5rem;
-$footer-color: green;
-$footer-text: #fff;
+$footer-height: 5rem !default;
+$footer-color: green !default;
+$footer-text: #fff !default;
 //footer-color
-$footer-color-color: rgb(31, 84, 209);
-$footer-color-text: #fff;
+$footer-color-color: rgb(31, 84, 209) !default;
+$footer-color-text: #fff !default;
 
 //body
-$body-color: #212121;
-$body-text: #fff;
+$body-color: #212121 !default;
+$body-text: #fff !default;
+$body-min-width: 375px;
+
+//section
+$section-color: #fff !default;
+$section-text: #000 !default;
+$section-padding-top: 3rem !default;
+$section-padding-bottom: 3rem !default;
+$section-padding-right: 0 !default;
+$section-padding-left: 0 !default;
 
 //page setting
 //works
-$works-body-color: #fff;
-$works-body-text: #212121;
+$works-body-color: #fff !default;
+$works-body-text: #212121 !default;
 //projects
-$projects-body-color: #fff;
-$projects-body-text: #212121;
+$projects-body-color: #fff !default;
+$projects-body-text: #212121 !default;
 //service
-$service-body-color: #fff;
-$service-body-text: #212121;
+$service-body-color: #fff !default;
+$service-body-text: #212121 !default;
 
-// $font-family: "Lato", "Open Sans", sans-serif;
+// $font-family: "Lato", "Open Sans", sans-serif!default;
 $font-family: '游ゴシック Medium', 'Yu Gothic Medium', '游ゴシック体', YuGothic,
-  sans-serif;
-// $font-family: "ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
-// $font-family: 'Space Mono',"rz-regular", "maison-neue-mono",'Space Mono', monospace, Helvetica, Arial, sans-serif;
-// $font-family: arial,sans-serif;
-// $body-font-size: 1rem;
+  sans-serif !default;
+// $font-family: "ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif!default;
+// $font-family: 'Space Mono',"rz-regular", "maison-neue-mono",'Space Mono', monospace, Helvetica, Arial, sans-serif!default;
+// $font-family: arial,sans-serif!default;
+// $body-font-size: 1rem!default;
 
-// $font-size: 1.25em;
-// $line-height: 1.66em;
-// $font-size: 62.5%;
-$font-size: 16px;
-$line-height: 16px;
+// $font-size: 1.25em!default;
+// $line-height: 1.66em!default;
+$font-size: 62.5% !default;
+// $font-size: 16px !default;
+$line-height: 16px !default;
 
 //link
-$link-color: #fff;
-$hover-color: #212121;
+$link-color: #fff !default;
+$hover-color: #212121 !default;
 
-$nav-link-color: rgb(256, 256, 256);
-$nav-hover-color: rgb(0, 0, 0);
-$nav_bg: #d6372e;
-// $nav_bg:  #1d244b;
+$nav-link-color: rgb(256, 256, 256) !default;
+$nav-hover-color: rgb(0, 0, 0) !default;
+$nav_bg: #d6372e !default;
+// $nav_bg:  #1d244b!default;
 
 //main-contents
-$main-contents-color: #fff;
-$main-contents-text: #000;
+$main-contents-color: #fff !default;
+$main-contents-text: #000 !default;
 
-// $base-text-color: #fff;
-// $bg-color: #212121;
-$base-text-color: #212121;
-$bg-color: #fff;
+// $base-text-color: #fff!default;
+// $bg-color: #212121!default;
+$base-text-color: #212121 !default;
+$bg-color: #fff !default;
 
-$black-base-text-color: #fff;
-$black-bg-color: #212121;
-$white-base-text-color: #212121;
-$white-bg-color: #fff;
+$black-base-text-color: #fff !default;
+$black-bg-color: #212121 !default;
+$white-base-text-color: #212121 !default;
+$white-bg-color: #fff !default;
 
 //navbar
-$nav_svg_logo_bg: red;
-$nav_svg_logo_text: #fff;
-$nav_bg_color: rgb(116, 116, 116);
-$nav_font_size: 1.2rem;
-$nav_font_weight: 400;
+$nav_svg_logo_bg: red !default;
+$nav_svg_logo_text: #fff !default;
+$nav_bg_color: rgb(116, 116, 116) !default;
+$nav_font_size: 1.2rem !default;
+$nav_font_weight: 400 !default;
 
 // menu
-$nav_icon: #fff;
-$nav_icon_exp: #fff;
-$svg_mask_fill: #d6372e;
+$nav_icon: #fff !default;
+$nav_icon_exp: #fff !default;
+$svg_mask_fill: #d6372e !default;
 
 //main contents
-$port_page_before: #253069;
+$port_page_before: #253069 !default;
 
 //img size
-$img-width-size: 1280px;
-$img-height-size: 800px;
+$img-width-size: 1280px !default;
+$img-height-size: 800px !default;
+
+//h-works-----------------------------------
+$header_height: 4rem !default;

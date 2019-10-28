@@ -11,6 +11,11 @@
     </div>
   </div>
 </template>
+<script>
+// export default {
+//   props: ['title']
+// }
+</script>
 <style scoped lang="scss">
 .wrape {
   width: 100%;

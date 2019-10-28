@@ -53,7 +53,11 @@ export default {
     //firebaseを使う
     '~/plugins/firebase',
     //localStorageでstoreを永続化する
-    { src: '~/plugins/localStorage.js', ssr: false }
+    { src: '~/plugins/localStorage.js', ssr: false },
+    //vue-carousel
+    { src: '~/plugins/vue-carousel', ssr: false },
+    //transition on scroll
+    { src: '~plugins/scroll.js', ssr: false }
   ],
   /*
    ** Nuxt.js modules
@@ -65,7 +69,13 @@ export default {
     // '@nuxtjs/sitemap',
     '@nuxtjs/markdownit',
     '@nuxtjs/dotenv'
+    // 'nuxt-buefy'
   ],
+  // buefy: {
+  //   // css: false,
+  //   materialDesignIcons: false
+  // },
+
   env: {
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
     FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,

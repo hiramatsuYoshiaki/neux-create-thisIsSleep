@@ -1,10 +1,10 @@
 <template>
   <div class="wrape">
     <div v-if="isLogin" class="hw--btn" @click="clickLogin()">
-      Log out
+      <p>Log out</p>
     </div>
     <div v-else class="hw--btn" @click="clickLogin()">
-      Log in
+      <p>Log in</p>
     </div>
   </div>
 </template>
@@ -12,6 +12,20 @@
 .wrape {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.hw--btn {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  p {
+    text-align: center;
+  }
 }
 </style>
 <script>
@@ -28,3 +42,8 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+p {
+  width: 5rem;
+}
+</style>

@@ -1,24 +1,12 @@
 <template>
   <div class="wrape">
-    <ul>
-      <!-- <nuxt-link to="/">
-          Home
-        </nuxt-link>
-        <nuxt-link to="/">
-          work
-        </nuxt-link>
-        <nuxt-link to="/">
-          about
-        </nuxt-link>
-        <nuxt-link to="/">
-          contact
-      </nuxt-link>-->
-      <li v-for="(item, key) of items" :key="key">
+    <div v-for="(item, key) of items" :key="key">
+      <div class="mobileElemntWrape">
         <nuxt-link :to="item.to.name">
           {{ item.title }}
         </nuxt-link>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -52,9 +40,16 @@ export default {
 .wrape {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-li {
-  display: block;
+.mobileElemntWrape {
   margin: 1rem 0;
+}
+a {
+  color: $body-text;
+  text-decoration: none;
 }
 </style>
