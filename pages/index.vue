@@ -122,7 +122,10 @@ export default {
           subTitle: `There is a safe support system that other travel agencies do not have, such as 24-hour Japanese language support at travel destinations.`,
           link: 'explore Now',
           to: '/account/registration',
-          icon: 'fas fa-headset'
+          icon: 'fas fa-headset',
+          id: 0,
+          isShowIcon: false,
+          isShowTitle: false
         },
         {
           title: 'Travel insurance ',
@@ -130,7 +133,10 @@ export default {
             'You can compare and join from multiple insurance companies. Please feel free to consult us about how to choose insurance. ',
           link: 'explore Now',
           to: '/contact/countactUs',
-          icon: 'fas fa-plane'
+          icon: 'fas fa-plane',
+          id: 1,
+          isShowIcon: false,
+          isShowTitle: false
         },
         {
           title: 'Security',
@@ -138,7 +144,10 @@ export default {
 Perform safe and appropriate management and operation.`,
           link: 'return to home ',
           to: '/account/registration',
-          icon: 'fas fa-shield-alt'
+          icon: 'fas fa-shield-alt',
+          id: 2,
+          isShowIcon: false,
+          isShowTitle: false
         },
         {
           title: 'First trip',
@@ -146,7 +155,10 @@ Perform safe and appropriate management and operation.`,
             'It is natural that questions and anxieties accompany the first trip. First of all, we have compiled the information you want to check, such as the reservation flow, travel insurance, and local information.',
           link: 'return to home ',
           to: '/account/registration',
-          icon: 'far fa-grin-beam-sweat'
+          icon: 'far fa-grin-beam-sweat',
+          id: 3,
+          isShowIcon: false,
+          isShowTitle: false
         }
       ],
       solutionItems: [
@@ -166,21 +178,31 @@ Perform safe and appropriate management and operation.`,
           title: 'Tokyo Marunouchi building',
           subTitle: 'Discover the most amazing spot around the japan',
           link: 'explore Now',
-          to: '/account/registration'
+          to: '/account/registration',
+          // imgW: 914,
+          // imgH: 1280
+          imgW: 800,
+          imgH: 1280
         },
         {
           img: require('~/assets/img/img1117.jpg'),
           title: 'Tokyo universal foramu',
           subTitle: 'Get inspired by the buzz of the Amusement ',
           link: 'explore Now',
-          to: '/contact/countactUs'
+          to: '/contact/countactUs',
+          // imgW: 800,
+          // imgH: 1280
+          imgW: 900,
+          imgH: 1440
         },
         {
           img: require('~/assets/img/img1559_800x800.jpg'),
           title: 'iluminations',
           subTitle: 'River cruise on a futuristic design ship',
           link: 'return to home ',
-          to: '/account/registration'
+          to: '/account/registration',
+          imgW: 800,
+          imgH: 800
         }
       ]
     }
@@ -262,8 +284,8 @@ $section-padding-left: 0;
   width: 100%;
   padding-top: $section-padding-top;
   padding-bottom: $section-padding-bottom;
-  padding-right: $section-padding-right;
-  padding-left: $section-padding-left;
+  // padding-right: $section-padding-right;
+  // padding-left: $section-padding-left;
   background-color: rgba(0, 0, 0, 0.1);
   // border: 1px dotted rgba(0, 0, 0, 0.2);
   overflow-x: hidden;

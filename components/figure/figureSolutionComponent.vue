@@ -3,7 +3,7 @@
         div.solutionFigure
             div.figureItem-base
                 div.base-title
-                    h3.title 3Steps
+                    h4.title 3Steps
                     h6.sub-title Questions
             div.solutionFigure-deg.deg0
                 div.figureItem.item0(:style="{ background: `center / cover no-repeat  url(${images[0].bgimg})` }")
@@ -37,9 +37,17 @@ $deg240: 240deg;
   position: relative;
   width: 22rem;
   height: 22rem;
-  @media (min-width: 976px) {
+  @media (min-width: 425px) {
     width: 32rem;
     height: 32rem;
+  }
+  @media (min-width: 768px) {
+    width: 50rem;
+    height: 50rem;
+  }
+  @media (min-width: 976px) {
+    width: 34rem;
+    height: 34rem;
   }
   @media (min-width: 1200px) {
     width: 42rem;

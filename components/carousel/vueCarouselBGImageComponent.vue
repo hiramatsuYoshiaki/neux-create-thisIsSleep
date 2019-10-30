@@ -16,7 +16,6 @@
                       div.title-link
                         nuxt-link(:to="{path: item.to}")
                           h6 {{ item.link}}
-
 </template>
 <script>
 import Carousel from 'vue-carousel/src/Carousel.vue'
@@ -60,6 +59,7 @@ $carousel-padding-top: calc(#{$section-padding-top} * -1);
 $carousel-padding-bottom: calc(#{$section-padding-bottom} * -1);
 $carousel-height: $header-height;
 $carousel-mobile-height: 50vh;
+$carousel-tablet-height: 70vh;
 $carousel-text-color: #fff;
 
 .carousel-wrape {
@@ -96,6 +96,9 @@ $carousel-text-color: #fff;
   height: $carousel-mobile-height;
   margin: 0;
   padding: 0;
+  @media (min-width: 768px) {
+    height: $carousel-tablet-height;
+  }
   @media (min-width: 976px) {
     height: calc(100vh - #{$carousel-height});
   }
@@ -174,6 +177,9 @@ section {
   background-color: rgba(0, 0, 0, 0.3);
   width: 100vw;
   height: $carousel-mobile-height;
+  @media (min-width: 768px) {
+    height: $carousel-tablet-height;
+  }
   @media (min-width: 976px) {
     width: 100vw;
     height: calc(100vh - #{$carousel-height});

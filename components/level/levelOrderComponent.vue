@@ -4,14 +4,18 @@
         //- div.section-header
         //-     h5 Order
         div.levelCard
-          cardOrderComponent(v-for="(item, key) of items" :key="key")
+          cardOrderComponent(v-for="(item, key, index) of items" :key="key")
             //- template(v-slot:image)
             //-   <img :src="item.img" :alt="item.title" class="img" />
             template(v-slot:icon)
-               <i :class="item.icon" />
-            template(v-slot:title) {{ item.title }}
+              div(v-scroll:[item]="scrollHandle" )
+                transition(name="fadeInFromUnderLeft")
+                    i(:class="item.icon" v-if="item.isShowIcon")
+            template(v-slot:title)
+                div(v-scroll:[item]="handleScrollTitle")
+                  transition(name="fadeInFromUnderRight")
+                    div(v-if="item.isShowTitle") {{ item.title }}
             template(v-slot:price) {{ item.subTitle }}
-
 </template>
 <script>
 import cardOrderComponent from '~/components/cards/cardOrderComponent.vue'
@@ -21,6 +25,24 @@ export default {
   },
   props: {
     items: Array
+  },
+  methods: {
+    scrollHandle(evt, el, arg) {
+      const top = el.getBoundingClientRect().top
+      if (window.scrollY > top + window.scrollY - window.innerHeight + 200) {
+        this.items[arg.id].isShowIcon = true
+      } else {
+        this.items[arg.id].isShowIcon = false
+      }
+    },
+    handleScrollTitle(evt, el, arg) {
+      const top = el.getBoundingClientRect().top
+      if (window.scrollY > top + window.scrollY - window.innerHeight + 200) {
+        this.items[arg.id].isShowTitle = true
+      } else {
+        this.items[arg.id].isShowTitle = false
+      }
+    }
   }
 }
 </script>
@@ -61,7 +83,7 @@ export default {
   overflow: hidden;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   flex-direction: column;
   @media (min-width: 976px) {
     padding: 0 5rem;
@@ -71,5 +93,11 @@ export default {
 .img {
   width: 100%;
   height: auto;
+}
+i {
+  font-size: 12rem;
+  @media (min-width: 976px) {
+    font-size: 7rem;
+  }
 }
 </style>

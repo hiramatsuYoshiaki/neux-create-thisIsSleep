@@ -9,25 +9,30 @@
                 figureSolutionComponent(:images="items" v-if="isShow")
             div.solutionCreate
                 div.solutionCreate-wrape
-                    div(v-scroll="handleScrollTitle")
+                    div.title(v-scroll="handleScrollTitle")
                       transition(name="fadeInFromUnder")
                         h4(v-if="isShowTitle") 3 Steps for your gole
-                    div(v-scroll="handleScrollSubTitle")
+                    div.subTitle(v-scroll="handleScrollSubTitle")
                       transition(name="fadeInFromUnder")
                         h6(v-if="isShowSubTitle") We help you build yuer travel plans solution, suited to your specific needs.
                     div.button-wrape(v-scroll="handleScrollLink")
                       transition(name="fadeInFromUnder")
-                        buttonLinkComponent(link="/solution" v-if="isShowSubTitle")
+                        buttonLinkStrechComponent(
+                          link="/solution"
+                          name="create your solution"
+                          btnWidth="15rem"
+                          btnRadius="5rem"
+                          v-if="isShowLink")
 </template>
 <script>
 // import cardComponent from '~/components/cards/cardComponent.vue'
 import figureSolutionComponent from '~/components/figure/figureSolutionComponent.vue'
-import buttonLinkComponent from '~/components/button/buttonLinkComponent.vue'
+import buttonLinkStrechComponent from '~/components/button/buttonLinkStrechComponent.vue'
 export default {
   components: {
     //   cardComponent
     figureSolutionComponent,
-    buttonLinkComponent
+    buttonLinkStrechComponent
   },
   props: {
     items: Array
@@ -93,23 +98,24 @@ export default {
 //   flex-direction: row;
 //   flex-wrap: wrap;
 // }
-.section-header {
-  width: 100%;
-  height: 5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  h5 {
-    font-weight: 600;
-  }
-  @media (min-width: 976px) {
-    padding: 0 5rem;
-    height: 10rem;
-  }
-}
+// .section-header {
+//   width: 100%;
+//   height: 5rem;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   h5 {
+//     font-weight: 600;
+//   }
+//   @media (min-width: 976px) {
+//     padding: 0 5rem;
+//     height: 10rem;
+//   }
+// }
 .levelSection {
   width: 100%;
   height: 100%;
+  min-height: 30rem;
   padding: 0 1.5rem;
   overflow: hidden;
   display: flex;
@@ -118,6 +124,8 @@ export default {
   flex-direction: column;
   @media (min-width: 976px) {
     flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
   }
 }
 .solutionCircle {
@@ -135,21 +143,17 @@ export default {
 }
 .solutionCreate {
   width: 100%;
+  height: 100%;
+  min-height: 100%;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  @media (min-width: 976px) {
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
   .solutionCreate-wrape {
     width: 100%;
+    // padding: 5rem 0;
     @media (min-width: 976px) {
-      width: 40%;
+      padding: 10rem 0;
+      width: 90%;
       h4 {
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
         font-weight: 600;
         letter-spacing: 0rem;
       }
@@ -170,8 +174,39 @@ export default {
       margin-bottom: 3rem;
       font-weight: 300;
     }
+    .title {
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      @media (min-width: 976px) {
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+    }
+    .subTitle {
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      @media (min-width: 976px) {
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+    }
     .button-wrape {
       margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-left: -1rem;
+      @media (min-width: 976px) {
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
     }
   }
 }

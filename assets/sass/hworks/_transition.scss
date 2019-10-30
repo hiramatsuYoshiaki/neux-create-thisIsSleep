@@ -116,19 +116,40 @@
 .fade02-leave-to {
   opacity: 0;
 }
-
+//fade in from ---------------
 .fadeInFromUnder-enter-active,
 .fadeInFromUnder-leave-active {
-  transition: all 1s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 .fadeInFromUnder-enter,
 .fadeInFromUnder-leave-to {
   transform: translateY(10rem);
   opacity: 0;
 }
+// Under left
+.fadeInFromUnderLeft-enter-active,
+.fadeInFromUnderLeft-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+.fadeInFromUnderLeft-enter,
+.fadeInFromUnderLeft-leave-to {
+  transform: translate(-12rem, 12rem);
+  opacity: 0;
+}
+// under right
+.fadeInFromUnderRight-enter-active,
+.fadeInFromUnderRight-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+.fadeInFromUnderRight-enter,
+.fadeInFromUnderRight-leave-to {
+  transform: translate(12rem, 12rem);
+  opacity: 0;
+}
+
 .fadeInFromLeftBg-enter-active,
 .fadeInFromLeftBg-leave-active {
-  transition: all 1s ease-in-out;
+  transition: all 0.51s ease-in-out;
 }
 .fadeInFromLeftBg-enter,
 .fadeInFromLeftBg-leave-to {
@@ -137,7 +158,7 @@
 }
 .fadeInFromLeft-enter-active,
 .fadeInFromLeft-leave-active {
-  transition: all 1s 1.2s ease-in-out;
+  transition: all 0.5s 0.4s ease-in-out;
 }
 .fadeInFromLeft-enter,
 .fadeInFromLeft-leave-to {

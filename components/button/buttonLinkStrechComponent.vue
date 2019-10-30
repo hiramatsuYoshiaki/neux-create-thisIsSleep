@@ -1,7 +1,7 @@
 <template lang="pug">
-    div.btn-wrape(:style="{background:bgColor, width:btnWidth,borderRadius:btnRadius}")
+  div.btn-component
+    div.btn-wrape(:style="{background:bgColor, borderRadius:btnRadius}")
         nuxt-link(:to="link", :style="{color:textColor}") {{name}}
-
 </template>
 <script>
 export default {
@@ -22,10 +22,6 @@ export default {
       type: String,
       default: '#fff'
     },
-    btnWidth: {
-      type: String,
-      default: 'auto'
-    },
     btnRadius: {
       type: String,
       default: '0px'
@@ -34,14 +30,26 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.btn-component {
+  width: 18rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .btn-wrape {
+  width: 15rem;
   padding: 0.6rem;
   margin: 0.5rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
 }
-// a {
-//   color: #fff;
-// }
+div {
+  &:hover {
+    width: 18rem;
+    transition: all 0.2s ease-in;
+  }
+}
 </style>

@@ -7,9 +7,9 @@
         div.levelCard
           cardComponent(v-for="(item, key) of items" :key="key")
             template(v-slot:image)
-             div.img-wrape(v-scroll="handleScrollImg")
+             div.img-wrape(v-scroll="handleScrollImg" :style="{width:item.imgw, height:item.imgh}")
               transition(name="fadeInFromLeftBg")
-                img.img-bg(:src="item.img" :alt="item.title" class="img" v-if="isShowImg")
+                div.img-bg(v-if="isShowImg" )
               transition(name="fadeInFromLeft")
                 img.img-phto(:src="item.img" :alt="item.title" class="img" v-if="isShowImg")
             template(v-slot:title) {{ item.title }}
@@ -100,22 +100,26 @@ export default {
   flex-direction: column;
   @media (min-width: 976px) {
     padding: 0 5rem;
+    justify-content: center;
+    align-items: flex-start;
     flex-direction: row;
   }
   @media (min-width: 1440px) {
     padding: 0 16rem;
+    justify-content: center;
+    align-items: flex-start;
     flex-direction: row;
   }
 }
 .img-wrape {
   position: relative;
-  width: 100%;
-  height: 100%;
+  overflow: hidden;
 }
 .img-bg {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: -1;
   width: 100%;
   height: 100%;
   background-color: cadetblue;

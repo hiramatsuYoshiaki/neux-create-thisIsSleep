@@ -1,12 +1,10 @@
 <template lang="pug">
     div.container-fluid
       div.row
-        div.section-header(v-scroll="handleScroll")
-          transition(name="fadeInFromUnder")
-            div(v-if="isShow")
-              div.h7 {{title[0].title}}
-              h5 {{title[1].title}}
-              h5  {{title[2].title}}
+        div.section-header
+          div.h7 {{title[0].title}}
+          h5 {{title[1].title}}
+          h5  {{title[2].title}}
         div.levelCard
             div
                 figureLine
@@ -30,32 +28,6 @@ export default {
   props: {
     title: Array,
     items: Array
-  },
-  data() {
-    return {
-      isShow: false
-    }
-  },
-  methods: {
-    handleScroll(evt, el) {
-      const top = el.getBoundingClientRect().top
-      // console.log('product top: ' + top)
-      // console.log('product top: ' + window.scrollY)
-      if (window.scrollY > top + window.scrollY - window.innerHeight + 200) {
-        // el.setAttribute(
-        //   'style',
-        //   'opacity: 1; transform: translate3d(0, -10px, 0) '
-        // )
-        // console.log('product fad-in >>>>>: ' + this.isShow)
-        this.isShow = true
-      } else {
-        // el.removeAttribute(
-        //   'style',
-        //   'opacity: 0; transform: translate3d(0, 0, 0)'
-        // )
-        this.isShow = false
-      }
-    }
   }
 }
 </script>

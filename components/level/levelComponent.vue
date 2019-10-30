@@ -1,11 +1,16 @@
 <template lang="pug">
+  div.aaa
     div.container-fluid
       div.row
         div.section-header(v-scroll="handleScroll")
           transition(name="fadeInFromUnder")
             h5(v-if="isShow") {{title}}
-        div.levelCard
-          cardComponent(v-for="(item, key) of items" :key="key")
+    div.container-fluid
+      div.row
+        div.col-12.col-sm-6.col-lg-3(
+          v-for="(item, key) of items" :key="key"
+        )
+          cardComponent
             template(v-slot:image)
               <img :src="item.img" :alt="item.title" class="img" />
             template(v-slot:title) {{ item.title }}
@@ -85,19 +90,6 @@ export default {
   @media (min-width: 976px) {
     padding: 0 5rem;
     height: 10rem;
-  }
-}
-.levelCard {
-  width: 100%;
-  padding: 0 1.5rem;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  @media (min-width: 976px) {
-    padding: 0 5rem;
-    flex-direction: row;
   }
 }
 .img {

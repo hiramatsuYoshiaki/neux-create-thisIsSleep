@@ -38,9 +38,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  i {
-    font-size: 7rem;
-  }
   margin-bottom: 4rem;
 }
 .card-content {
