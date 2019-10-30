@@ -1,4 +1,4 @@
-# nuxt-univ-gae-todo2-firebase
+# nuxt-create-thisIsSleep
 
 clone
 github repository: nuxt-univ-gae-todo2
@@ -1264,8 +1264,8 @@ export default ({store, isHMR}) => {
 // Also nuxtReady event fires for HMR as well, which results multiple registration of
 // vuex-persistedstate plugin
 if (isHMR) return;
-  
- if (process.client) {
+
+if (process.client) {
 window.onNuxtReady((nuxt) => {
 createPersistedState()(store); // vuex plugins can be connected to store, even after creation
 });
@@ -1306,3 +1306,131 @@ https://github.com/nuxt-community/date-fns-module
 
 インスタグラムの埋め込みコードを使った、ウェブサイトへの表示
 https://qiita.com/h5y1m141@github/items/403dee38e88570185949
+
+# vue カスタムディレクティブを使ってページスクロールしてフェードしながら要素を出したいときなどに使う
+
+参考サイト
+https://note.mu/yunp_q/n/n908596ec0806
+https://qiita.com/po3rin/items/325ac3718c73cde765d2
+Nuxt でカスタムディレクティブに動的引数を渡す。  
+https://mogashiro.com/2019/04/23/nuxt%E3%81%A7%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%86%E3%82%A3%E3%83%96%E3%81%AE%E5%BC%95%E6%95%B0%E3%81%AB%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF/
+
+### カスタムディレクティブを実装する
+
+1. plugins ディレクトリの中で scroll.js を作成する。
+   `plugins/scroll.js`
+
+```
+import Vue from 'vue'
+Vue.directive('scroll', {
+  inserted: (el, binding) => {
+    const f = (evt) => {
+      const arg = binding.arg ? binding.arg : 0
+      if (binding.value(evt, el, arg)) {
+        window.removeEventListener('scroll', f)
+      }
+    }
+    window.addEventListener('scroll', f)
+  }
+})
+```
+
+2. nuxt.config.js 内の plugins に作成した ファイルへのパスを追加します。
+   `nuxt.config.js`
+
+```
+plugins: [
+     src: '~plugins/scroll.js', ssr: false
+  ],
+```
+
+3. v-scroll=""を使えるようにする。
+   `components/level/levelOrderComponent,vue`
+
+```
+<template lang="pug">
+    div.container-fluid
+      div.row
+        div.levelCard
+          cardOrderComponent(v-for="(item, key, index) of items" :key="key")
+            template(v-slot:icon)
+              div(v-scroll:[item]="scrollHandle" )
+                transition(name="fadeInFromUnderLeft")
+                    i(:class="item.icon" v-if="item.isShowIcon")
+            template(v-slot:title)
+                div(v-scroll:[item]="handleScrollTitle")
+                  transition(name="fadeInFromUnderRight")
+                    div(v-if="item.isShowTitle") {{ item.title }}
+            template(v-slot:price) {{ item.subTitle }}
+</template>
+<script>
+import cardOrderComponent from '~/components/cards/cardOrderComponent.vue'
+export default {
+  components: {
+    cardOrderComponent
+  },
+  props: {
+    items: Array
+  },
+  methods: {
+    scrollHandle(evt, el, arg) {
+      const top = el.getBoundingClientRect().top
+      if (window.scrollY > top + window.scrollY - window.innerHeight + 200) {
+        this.items[arg.id].isShowIcon = true
+      } else {
+        this.items[arg.id].isShowIcon = false
+      }
+    },
+    handleScrollTitle(evt, el, arg) {
+      const top = el.getBoundingClientRect().top
+      if (window.scrollY > top + window.scrollY - window.innerHeight + 200) {
+        this.items[arg.id].isShowTitle = true
+      } else {
+        this.items[arg.id].isShowTitle = false
+      }
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.section-header {
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  h5 {
+    font-weight: 600;
+  }
+  @media (min-width: 976px) {
+    padding: 0 5rem;
+    height: 10rem;
+  }
+}
+.levelCard {
+  width: 100%;
+  padding: 0 1.5rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  @media (min-width: 976px) {
+    padding: 0 5rem;
+    flex-direction: row;
+  }
+}
+i {
+  font-size: 12rem;
+  @media (min-width: 976px) {
+    font-size: 7rem;
+  }
+}
+</style>
+```
+
+ディレクティブの引数
+https://jp.vuejs.org/v2/guide/custom-directive.html
+ディレクティブの引数は動的にできます。例えば、v-mydirective:[argument]="value" において、argument はコンポーネントインスタンスの data プロパティに基づいて更新されます！これにより、アプリケーション内でのカスタムディレクティブの利用が柔軟になります。
+
+ 

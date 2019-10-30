@@ -1,12 +1,8 @@
 <template lang="pug">
     div.container-fluid
       div.row
-        //- div.section-header
-        //-     h5 Order
         div.levelCard
           cardOrderComponent(v-for="(item, key, index) of items" :key="key")
-            //- template(v-slot:image)
-            //-   <img :src="item.img" :alt="item.title" class="img" />
             template(v-slot:icon)
               div(v-scroll:[item]="scrollHandle" )
                 transition(name="fadeInFromUnderLeft")
@@ -89,10 +85,6 @@ export default {
     padding: 0 5rem;
     flex-direction: row;
   }
-}
-.img {
-  width: 100%;
-  height: auto;
 }
 i {
   font-size: 12rem;
