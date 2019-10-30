@@ -1,10 +1,18 @@
 <template>
   <div class="wrape">
     <div v-if="isLogin" class="hw--btn" @click="clickLogin()">
-      <p>Log out</p>
+      <div class="link-wrape">
+        <nuxt-link to="/account/login">
+          Log out
+        </nuxt-link>
+      </div>
     </div>
     <div v-else class="hw--btn" @click="clickLogin()">
-      <p>Log in</p>
+      <div class="link-wrape">
+        <nuxt-link to="/account/login">
+          Log in
+        </nuxt-link>
+      </div>
     </div>
   </div>
 </template>
@@ -43,7 +51,8 @@ export default {
 }
 </script>
 <style lang="scss">
-p {
+.link-wrape {
   width: 5rem;
+  // cursor: pointer;
 }
 </style>

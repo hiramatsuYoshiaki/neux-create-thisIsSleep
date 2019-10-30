@@ -1,18 +1,6 @@
 <template>
   <div class="wrape">
     <ul>
-      <!-- <nuxt-link to="/">
-          Home
-        </nuxt-link>
-        <nuxt-link to="/">
-          work
-        </nuxt-link>
-        <nuxt-link to="/">
-          about
-        </nuxt-link>
-        <nuxt-link to="/">
-          contact
-      </nuxt-link>-->
       <li v-for="(item, key) of items" :key="key">
         <nuxt-link :to="item.to.name">
           {{ item.title }}
