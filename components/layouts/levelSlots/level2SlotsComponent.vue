@@ -1,5 +1,5 @@
 <template lang="pug">
-    div.container-fluid
+    div.container
         div.row
             section.slot-section.col-12.col-sm-6
                 div.slot-leve1
@@ -11,14 +11,14 @@
 <style scoped lang="scss">
 .slot-section {
   position: relative;
-  width: 100%;
-  height: 100%;
-  border: 1px solid green;
+  overflow: hidden;
 }
 .slot-leve1 {
   position: relative;
-  width: 100%;
-  height: 100%;
-  border: 1px solid violet;
+  overflow: hidden;
+}
+.slot-leve2 {
+  position: relative;
+  overflow: hidden;
 }
 </style>

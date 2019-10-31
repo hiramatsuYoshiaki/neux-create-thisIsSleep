@@ -19,8 +19,8 @@ export default {
           to: { name: '/' }
         },
         {
-          title: 'Works',
-          to: { name: '/works' }
+          title: 'Buy',
+          to: { name: '/buy' }
         },
         {
           title: 'About',

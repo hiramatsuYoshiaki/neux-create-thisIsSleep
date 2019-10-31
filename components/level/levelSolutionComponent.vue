@@ -18,7 +18,7 @@
                     div.button-wrape(v-scroll="handleScrollLink")
                       transition(name="fadeInFromUnder")
                         buttonLinkStrechComponent(
-                          link="/solution"
+                          link="/thisIsSleep/solution"
                           name="create your solution"
                           btnWidth="15rem"
                           btnRadius="5rem"

@@ -6,7 +6,7 @@
                 template(v-slot:leve1)
                     div.slot-wrape.level1-wrape
                         div.title
-                            h5 Create Account
+                            h5 Login
                             nuxt-link(to="/")
                                 div.h7 return to Home
 
@@ -14,30 +14,29 @@
                     div.slot-wrape.level2-wrape
                         div.error-msg(v-if="isError")
                             div error message
+                        div.reset-meg(v-if="isResetPass")
+                            h6 Reset your password
+                            div.h7 We will send you an email to reset your password.
                         form
-                            div.first-name
-                                label.label
-                                    div.h7 First Name
-                                input.input(type="text" placeholder="First Name")
-                            div.last-name
-                                label.label
-                                    div.h7 Last Name
-                                input.input(type="text" placeholder="Last Name")
                             div.email-enter
                                 label.label
                                     div.h7 Email
                                 input.input(type="email" placeholder="Email")
-                            div.password-enter
+                            div.password-enter(v-if="!isResetPass")
                                 label.label
                                     div.h7 Password
                                 input.input(type="text" placeholder="Password")
-                            div.subscription
-                                input#checkbox(type="checkbox" v-model="checked")
-                                label.label-checkbox(for="checkbox")
-                                    div.h7 Subscribe for bedtime reading, interesting thoughts and new product launches.
                             buttun.submit-button(type="submit")
-                                div
-                                    div.h7 CREATE
+                                div(v-if="!isResetPass")
+                                    div.h7 SING IN
+                                div(v-else)
+                                    div.h7 SUBMIT
+                        div.auth(v-if="!isResetPass")
+                            nuxt-link( to="/thisIsSleep/account/registration")
+                                div.h7 Create account
+                            div.h7( @click="{isResetPass = true}") Forgot your password?
+                        div.auth(v-if="isResetPass")
+                            div.h7( @click="{isResetPass = false}") Cancel
 </template>
 <script>
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
@@ -48,7 +47,7 @@ export default {
   },
   data() {
     return {
-      checked: false,
+      isResetPass: false,
       isError: false
     }
   }
@@ -95,14 +94,19 @@ export default {
     }
   }
 }
-
-form {
-  width: 100%;
-}
 .error-msg {
   background-color: $grey-light;
   padding: 0.5rem;
   color: $black;
+}
+.reset-meg {
+  margin-bottom: 2rem;
+  h6 {
+    margin-bottom: 1rem;
+  }
+}
+form {
+  width: 100%;
 }
 .label {
   margin: 0.5rem 0;
@@ -167,14 +171,17 @@ form {
   }
   margin: 2rem 0;
 }
-.subscription {
-  margin-top: 1rem;
+.auth {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  .label-checkbox {
-    margin-left: 1rem;
-    margin-top: -0.3rem;
+  .h7 {
+    margin-right: 1rem;
+    color: $grey;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.5;
+    }
   }
 }
 </style>

@@ -2,14 +2,14 @@
   <div class="wrape">
     <div v-if="isLogin" class="hw--btn" @click="clickLogin()">
       <div class="link-wrape">
-        <nuxt-link to="/account/login">
+        <nuxt-link to="/thisIsSleep/account/logout">
           Log out
         </nuxt-link>
       </div>
     </div>
     <div v-else class="hw--btn" @click="clickLogin()">
       <div class="link-wrape">
-        <nuxt-link to="/account/login">
+        <nuxt-link to="/thisIsSleep/account/login">
           Log in
         </nuxt-link>
       </div>
