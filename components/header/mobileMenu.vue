@@ -1,7 +1,7 @@
 <template>
   <div class="wrape">
     <div v-for="(item, key) of items" :key="key">
-      <div class="mobileElemntWrape">
+      <div class="mobileElemntWrape" @click="closeMobileMenu()">
         <nuxt-link :to="item.to.name">
           {{ item.title }}
         </nuxt-link>
@@ -10,6 +10,7 @@
   </div>
 </template>
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -20,17 +21,33 @@ export default {
         },
         {
           title: 'Buy',
-          to: { name: '/buy' }
+          to: { name: '/thisIsSleep/buy/buy' }
         },
+        // {
+        //   title: 'About',
+        //   to: { name: '/about' }
+        // },
         {
-          title: 'About',
-          to: { name: '/about' }
+          title: 'FAQ',
+          to: { name: '/thisIsSleep/faq/faq' }
         },
         {
           title: 'Contact',
-          to: { name: '/contact' }
+          to: { name: '/thisIsSleep/contact/contact' }
         }
       ]
+    }
+  },
+  computed: {
+    ...mapState('headerBar', ['isOpenMobileMenu'])
+    // ...mapState(store/directory,state)
+  },
+  methods: {
+    ...mapMutations({ close: 'headerBar/closeMobileMenu' }),
+    // ...mapMutation({ name: store(directory)/mutations})
+    closeMobileMenu() {
+      // this.$store.commit('headerBar/setOpenMobileMenu')
+      this.close()
     }
   }
 }

@@ -12,9 +12,27 @@
   </div>
 </template>
 <script>
-// export default {
-//   props: ['title']
-// }
+import { mapState, mapMutations } from 'vuex'
+export default {
+  // data() {
+  //   return {
+  //     isOpenMobileMenu: false
+  //   }
+  // },
+  computed: {
+    ...mapState('headerBar', ['isOpenMobileMenu'])
+    // ...mapState(store/directory,state)
+  },
+  methods: {
+    ...mapMutations({ open: 'headerBar/setOpenMobileMenu' }),
+    // ...mapMutation({ name: store(directory)/mutations})
+    openMobileMenu() {
+      // this.isOpenMobileMenu = !this.isOpenMobileMenu
+      // this.$store.commit('headerBar/setOpenMobileMenu')
+      this.open()
+    }
+  }
+}
 </script>
 <style scoped lang="scss">
 .wrape {
@@ -49,24 +67,3 @@
   transform: rotate(-45deg) translate(7px, -8px);
 }
 </style>
-<script>
-import { mapState, mapMutations } from 'vuex'
-export default {
-  // data() {
-  //   return {
-  //     isOpenMobileMenu: false
-  //   }
-  // },
-  computed: {
-    ...mapState('headerBar', ['isOpenMobileMenu'])
-  },
-  methods: {
-    ...mapMutations({ open: 'headerBar/setOpenMobileMenu' }),
-    openMobileMenu() {
-      this.isOpenMobileMenu = !this.isOpenMobileMenu
-      // this.$store.commit('headerBar/setOpenMobileMenu')
-      this.open()
-    }
-  }
-}
-</script>

@@ -6,37 +6,39 @@
                 template(v-slot:leve1)
                     div.slot-wrape.level1-wrape
                         div.title
-                            h5 Login
-                            nuxt-link(to="/")
-                                div.h7 return to Home
+                            h5 Contact
+                            div.contact-text
+                                div.text-block Whether it’s to chat about our products, service, or anything in between – we’d love to hear from you! Simply fill in the form below, click submit and we will get back to you as soon as we can.
+                                div.text-block We do get lots of enquiries, so it may take us up to a day or slightly more to get back to you. Have you checked our
+                                    span.faq-link
+                                        nuxt-link(to="/thisIsSleep/faq/faq") Frequently Asked Questions
+                                        | to see if we have the answer there?
 
                 template(v-slot:leve2)
                     div.slot-wrape.level2-wrape
                         div.error-msg(v-if="isError")
                             div error message
-                        div.reset-meg(v-if="isResetPass")
-                            h6 Reset your password
-                            div.h7 We will send you an email to reset your password.
                         form
+                            div.first-name
+                                label.label
+                                    div.h7 name
+                                input.input(type="text" placeholder="name")
                             div.email-enter
                                 label.label
                                     div.h7 Email
                                 input.input(type="email" placeholder="Email")
-                            div.password-enter(v-if="!isResetPass")
+                            div.phone-number
                                 label.label
-                                    div.h7 Password
-                                input.input(type="text" placeholder="Password")
-                            button.submit-button(type="submit")
-                                div(v-if="!isResetPass")
-                                    div.h7 SING IN
-                                div(v-else)
-                                    div.h7 SUBMIT
-                        div.auth(v-if="!isResetPass")
-                            nuxt-link( to="/thisIsSleep/account/registration")
-                                div.h7 Create account
-                            div.h7( @click="{isResetPass = true}") Forgot your password?
-                        div.auth(v-if="isResetPass")
-                            div.h7( @click="{isResetPass = false}") Cancel
+                                    div.h7 phone number
+                                input.input(type="text" placeholder="phone number")
+                            div.message
+                                label.label
+                                    div.h7 message
+                                textarea(name="textarea" rows="10" cols="50" placeholder="message")
+
+                            buttun.submit-button(type="submit")
+                                div
+                                    div.h7 SEND
 </template>
 <script>
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
@@ -47,7 +49,7 @@ export default {
   },
   data() {
     return {
-      isResetPass: false,
+      checked: false,
       isError: false
     }
   }
@@ -94,19 +96,14 @@ export default {
     }
   }
 }
+
+form {
+  width: 100%;
+}
 .error-msg {
   background-color: $grey-light;
   padding: 0.5rem;
   color: $black;
-}
-.reset-meg {
-  margin-bottom: 2rem;
-  h6 {
-    margin-bottom: 1rem;
-  }
-}
-form {
-  width: 100%;
 }
 .label {
   margin: 0.5rem 0;
@@ -114,6 +111,33 @@ form {
   display: block;
   .h7 {
     font-weight: 300;
+  }
+}
+textarea {
+  display: block;
+  color: $black;
+  font-size: $size-6;
+  font-weight: $weight-normal;
+  background-color: $white-ter;
+  border-radius: 3.2rem;
+  max-width: 100%;
+  width: 100%;
+  height: 20rem;
+  padding-left: 0.5rem;
+  padding-top: 2rem;
+  border-style: solid;
+  border-color: gray;
+  border-width: 1px;
+  box-shadow: 1px $black;
+  outline: 0;
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: $grey-light;
+    border-style: solid;
+    border-color: $grey-darker;
+    border-width: 1px;
+    box-shadow: 1px $black;
   }
 }
 .input {
@@ -171,17 +195,30 @@ form {
   }
   margin: 2rem 0;
 }
-.auth {
+.subscription {
+  margin-top: 1rem;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  .h7 {
-    margin-right: 1rem;
-    color: $grey;
-    cursor: pointer;
-    &:hover {
-      opacity: 0.5;
-    }
+  .label-checkbox {
+    margin-left: 1rem;
+    margin-top: -0.3rem;
+  }
+}
+.contact-text {
+  line-height: 1.8rem;
+  color: $grey-darker;
+  font-weight: 300;
+  padding-right: 4rem;
+  word-break: break-word;
+}
+.text-block {
+  margin-bottom: 1rem;
+}
+.faq-link {
+  a {
+    text-decoration: underline;
+    margin-left: 0.4rem;
   }
 }
 </style>

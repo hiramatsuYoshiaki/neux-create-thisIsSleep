@@ -10,14 +10,15 @@ div.headerbarWrap
         div.loginMenu
             loginMenu
     nav.modalMenu(v-if="isOpenMobileMenu")
-        div.burger
-            burger
+
         div.brand
             brand2Parts
         div.mobileMenu
             mobileMenu
         div.loginMenu
             loginMenu
+        div.burger
+            burger
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -64,12 +65,15 @@ export default {
   z-index: 1;
   width: 100%;
   height: 4rem;
+  padding: 0 1.5rem;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   background-color: rgba(0, 0, 0, 1);
   color: $body-text;
-  // border: 3px solid green;
+  @media (min-width: 992px) {
+    justify-content: space-around;
+  }
 }
 .modalMenu {
   position: fixed;
@@ -84,6 +88,7 @@ export default {
   align-items: center;
   background-color: rgba(0, 0, 0, 1);
   color: $body-text;
+  padding-bottom: 4rem;
 }
 .burger {
   display: block;

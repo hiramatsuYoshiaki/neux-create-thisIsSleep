@@ -57,7 +57,9 @@ export default {
     //vue-carousel
     { src: '~/plugins/vue-carousel', ssr: false },
     //transition on scroll
-    { src: '~plugins/scroll.js', ssr: false }
+    { src: '~plugins/scroll.js', ssr: false },
+    //filter orijinal
+    { src: '~/plugins/filter.js', ssr: false }
   ],
   /*
    ** Nuxt.js modules

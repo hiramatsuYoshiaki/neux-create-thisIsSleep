@@ -14,7 +14,7 @@
             template(v-slot:image)
               <img :src="item.img" :alt="item.title" class="img" />
             template(v-slot:title) {{ item.title }}
-            template(v-slot:price) {{ item.price }}
+            template(v-slot:price) {{yen}}{{ item.price }}
 </template>
 <script>
 import cardComponent from '~/components/cards/cardComponent.vue'
@@ -34,6 +34,7 @@ export default {
   },
   data() {
     return {
+      yen: '¥',
       isShow: false
     }
   },

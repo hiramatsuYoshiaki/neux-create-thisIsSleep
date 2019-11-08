@@ -84,36 +84,52 @@ export default {
       ],
       items: [
         {
+          id: 1,
           img: require('~/assets/img/img3614.jpg'),
           title: 'Bay Cruse  ',
           subTitle: 'Discover the most amazing spot around the japan',
-          price: '¥1000',
+          price: 800,
           link: 'explore Now',
-          to: '/account/registration'
+          to: '/account/registration',
+          date: '2019-01-01',
+          featured: 100,
+          selling: 100
         },
         {
+          id: 2,
           img: require('~/assets/img/img2731.jpg'),
           title: 'safety simulator',
           subTitle: 'Get inspired by the buzz of the Amusement ',
-          price: '¥200',
+          price: 0,
           link: 'explore Now',
-          to: '/contact/countactUs'
+          to: '/contact/countactUs',
+          date: '2019-01-02',
+          featured: 20,
+          selling: 70
         },
         {
+          id: 3,
           img: require('~/assets/img/img3668.jpg'),
           title: 'hotalna',
           subTitle: 'River cruise on a futuristic design ship',
-          price: '¥2000',
+          price: 2000,
           link: 'return to home ',
-          to: '/account/registration'
+          to: '/account/registration',
+          date: '2019-01-03',
+          featured: 90,
+          selling: 20
         },
         {
+          id: 4,
           img: require('~/assets/img/img3809.jpg'),
           title: 'fuji tv',
           subTitle: 'Amazing view from the observation deck',
-          price: '¥800',
+          price: 1200,
           link: 'return to home ',
-          to: '/account/registration'
+          to: '/account/registration',
+          date: '2019-01-04',
+          featured: 50,
+          selling: 50
         }
       ],
       orderItems: [

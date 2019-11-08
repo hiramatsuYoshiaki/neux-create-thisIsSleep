@@ -20,22 +20,25 @@ export default {
         },
         {
           title: 'Buy',
-          to: { name: '/buy' }
+          to: { name: '/thisIsSleep/buy/buy' }
         },
+        // {
+        //   title: 'About',
+        //   to: { name: '/about' }
+        // },
         {
-          title: 'About',
-          to: { name: '/about' }
+          title: 'FAQ',
+          to: { name: '/thisIsSleep/faq/faq' }
         },
         {
           title: 'Contact',
-          to: { name: '/contact' }
+          to: { name: '/thisIsSleep/contact/contact' }
         }
       ]
     }
   }
 }
 </script>
-
 <style scoped lang="scss">
 .wrape {
   width: 100%;
