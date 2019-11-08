@@ -1433,4 +1433,115 @@ i {
 https://jp.vuejs.org/v2/guide/custom-directive.html
 ディレクティブの引数は動的にできます。例えば、v-mydirective:[argument]="value" において、argument はコンポーネントインスタンスの data プロパティに基づいて更新されます！これにより、アプリケーション内でのカスタムディレクティブの利用が柔軟になります。
 
- 
+# ソート／フィルターを実装する
+
+参考サイト
+Vue で絞り込みとソート機能を実装してみる 01
+https://tmykndr.hatenablog.com/entry/2018/09/03/020911
+Vue.js 2.x のフィルタについて調べてみた
+https://qiita.com/yutaro23/items/095cf66038bb9fabc094
+
+###前置き
+フィルタの 3 つの表現方法
+
+1. computed プロパティを使う
+2. filters プロパティを使う
+3. グローバルに filter を定義する
+   ここでは、computed プロパティを使い実装する。
+
+4. computed()を作成する。
+   `page/thisIsSleep/buy/buy.vue computed()`
+   ポイント 1:computed()のなかでソートしたものを、computed()の中でフィルターする。
+   ポイント 2:computed()では直接データを変更できないので、slice(0)を使ってシャドーコピーをして新たに配列を書き出す。
+
+```
+computed():{
+  sortedData() {
+    return this.items.slice(0).sort((a, b) => {
+      return a.date < b.featured ? 1 : a.date > b.featured ? -1 : 0
+    }
+  }
+  filterData() {
+    return this.sortedData.slice(0).filter((data) => {
+      return data.price < 2000
+    })
+  }
+}
+```
+
+2. v-for でリスト作成する。
+
+```
+
+div(v-for="(item, index) in filterData.slice(this.filterStart,this.filterEnd) " :key="item.id")
+
+```
+
+# NUXT でカスタムフィルターをグローバルに設定する
+
+参考サイト
+文字列のフォーマットに便利な filter 機能を Nuxt.js 環境で使ってみる
+https://papadays.com/post/ae8rxzghpvv8nugrepsz3/
+
+1. plugins ディレクトリの中に filter.js を作成する。
+   `plugins/filter.js`
+
+```
+
+import Vue from 'vue'
+Vue.filter('capitalize', (value) => {
+if (!value) return ''
+value = value.toString()
+return value.charAt(0).toUpperCase() + value.slice(1)
+})
+
+```
+
+2. nuxt.config.js で、読み込みます。
+   `nuxt.config.js`
+
+```
+
+plugins: [
+//filter
+{ src: '~/plugins/filter.js', ssr: false }
+],
+
+```
+
+3. filter を適用させる
+   `page/thisIsSleep/buy/buy.vue`
+
+```
+
+h4 {{title2 | capitalize}}
+
+```
+
+# ソートパターン
+
+1. 昇順
+
+```
+  return this.items.slice(0).sort((a, b) => {
+    return a.date < b.date ? -1 : a.date > b.date ? 1 : 0
+  })
+```
+
+2. 降順
+
+```
+  return this.items.slice(0).sort((a, b) => {
+    return a.date < b.date ? 1 : a.date > b.date ? -1 : 0
+  })
+```
+
+3. アルファベット順
+
+```
+  return this.items.slice(0).sort((a, b) => {
+    const textA = a.title.toUpperCase()
+    const textB = b.title.toUpperCase()
+    return textA < textB ? -1 : textA > textB ? 1 : 0
+  })
+```
