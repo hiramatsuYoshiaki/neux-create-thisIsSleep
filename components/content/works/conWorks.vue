@@ -273,6 +273,7 @@ export default {
           })
       } else {
         console.log('login email pass')
+
         firebase
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
@@ -345,57 +346,56 @@ $duration: 1.4s;
 .auth {
   padding: 2rem;
 }
-.auth-title{
-margin-bottom: 2rem;
+.auth-title {
+  margin-bottom: 2rem;
 }
-.auth-guid{
+.auth-guid {
   margin-top: 2rem;
 }
-.add-btn button{
-    border: none;
-    background-color: $footer-color-color;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    color: #fff;
-     margin-top: 1em;
-     outline: 0;
+.add-btn button {
+  border: none;
+  background-color: $footer-color-color;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  color: #fff;
+  margin-top: 1em;
+  outline: 0;
 }
-.login-form{
+.login-form {
   width: 100%;
   height: 100%;
   // overflow: scroll;
   padding: 1rem;
   @media (min-width: 992px) {
-  border: 1px solid gray;
-  padding: 2rem;
-}
-}
-
-.error-title{
-    font-weight: 600;
-    font-size: 1rem;
-    line-height: 1rem;
-    margin-bottom: 1rem;
-    color: rgb(2, 2, 2);
-  @media (min-width: 992px) {
-    font-weight: 600;
-    font-size: 1rem;
-    line-height: 1rem;
+    border: 1px solid gray;
+    padding: 2rem;
   }
 }
-.error-msg{
+
+.error-title {
   font-weight: 600;
-    font-size: 1rem;
-    line-height: 1rem;
-    margin-bottom: 1rem;
-    color: rgb(190, 29, 29);
-    margin-left: 1rem;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-bottom: 1rem;
+  color: rgb(2, 2, 2);
   @media (min-width: 992px) {
     font-weight: 600;
     font-size: 1rem;
     line-height: 1rem;
   }
 }
-
+.error-msg {
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin-bottom: 1rem;
+  color: rgb(190, 29, 29);
+  margin-left: 1rem;
+  @media (min-width: 992px) {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1rem;
+  }
+}
 
 .spinner {
   animation: rotator $duration linear infinite;

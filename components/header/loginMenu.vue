@@ -1,13 +1,15 @@
 <template>
   <div class="wrape">
-    <div v-if="isLogin" class="hw--btn" @click="setLogout()">
+    <!-- <div v-if="isLogin" class="hw--btn" @click="setLogout()"> -->
+    <div v-if="isLogin" class="hw--btn">
       <div class="link-wrape" @click="closeMobileMenu()">
         <nuxt-link to="/thisIsSleep/account/logout">
-          Log out
+          Account
         </nuxt-link>
       </div>
     </div>
-    <div v-else class="hw--btn" @click="setLogin()">
+    <!-- <div v-else class="hw--btn" @click="setLogin()"> -->
+    <div v-else class="hw--btn">
       <div class="link-wrape" @click="closeMobileMenu()">
         <nuxt-link to="/thisIsSleep/account/login">
           Log in
@@ -50,17 +52,17 @@ export default {
   },
   methods: {
     ...mapMutations({ close: 'headerBar/closeMobileMenu' }),
-    ...mapMutations({ login: 'account/setLogin' }),
-    ...mapMutations({ logout: 'account/setLogout' }),
+    // ...mapMutations({ login: 'account/setLogin' }),
+    // ...mapMutations({ logout: 'account/setLogout' }),
     closeMobileMenu() {
       this.close()
-    },
-    setLogin() {
-      this.login()
-    },
-    setLogout() {
-      this.logout()
     }
+    // setLogin() {
+    //   this.login()
+    // },
+    // setLogout() {
+    //   this.logout()
+    // }
   }
 }
 </script>

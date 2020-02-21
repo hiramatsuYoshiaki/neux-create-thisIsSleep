@@ -26,8 +26,11 @@ export default {
     figureDotted
   },
   props: {
-    title: Array,
-    items: Array
+    title: {
+      type: Array,
+      required: true,
+      default: null
+    }
   }
 }
 </script>

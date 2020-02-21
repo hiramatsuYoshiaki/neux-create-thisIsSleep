@@ -260,9 +260,44 @@ export const actions = {
 export const getters = {
   isAuthenticated(state) {
     return !!state.user
+  },
+  getDisplayName(state) {
+    for (const key in state.regstar) {
+      return state.regstar[key].displayName
+    }
+  },
+  getRegistration(state) {
+    for (const key in state.regstar) {
+      return state.regstar[key].registration
+    }
   }
-  // getUser(state) {
-  //   console.log('getUser uid: ' + state.regstar.displayName)
-  //   return !!state.regstar
+
+  // getEmail(state) {
+  //   for (const key in state.regstar) {
+  //     return state.regstar[key].email
+  //   }
+  // }
+  // getRegistration(state) {
+  //   for (const key in state.regstar) {
+  //     // console.log(key + ' : ' + state.regstar[key].uid)
+  //     // console.log(state.regstar[key].uid)
+  //     // console.log(state.regstar[key].email)
+  //     // console.log(state.regstar[key].displayName)
+  //     // console.log(state.regstar[key].registration)
+  //     return state.regstar[key].registration
+  //   }
+  // for (const key in rest) {
+  //   console.log(key + ' : ' + rest[key].uid)
+  //   console.log(rest[key].uid)
+  //   console.log(rest[key].email)
+  //   console.log(rest[key].displayName)
+  //   console.log(rest[key].registration)
+  //   return rest[key].registration
+  // }
+  // console.log(state.regstar)
+  // Object.keys(state.regstar).forEach((key) => {
+  //   console.log(key + 'は' + state.regstar[key] + 'と鳴いた！')
+  //   return key
+  // })
   // }
 }

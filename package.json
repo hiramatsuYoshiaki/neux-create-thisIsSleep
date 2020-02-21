@@ -5,7 +5,7 @@
   "author": "hiramatsu",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint": "eslint --ext --fix .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "dev": "nuxt -p 3004",
     "build": "nuxt build",

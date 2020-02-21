@@ -75,13 +75,13 @@ export default {
   },
   data() {
     return {
+      productTitle: [
+        { title: 'Fields Range' },
+        { title: 'Photo Activity For Your Best,' },
+        { title: 'We want to be better' }
+      ],
       title: 'OUR COLLECTION',
       jurnalTitle: 'DISCOVER BLOG',
-      productTitle: [
-        { title: 'THE PRODUCT RANGE' },
-        { title: 'Products engineered for a better,' },
-        { title: 'healthier sleep' }
-      ],
       items: [
         {
           id: 1,

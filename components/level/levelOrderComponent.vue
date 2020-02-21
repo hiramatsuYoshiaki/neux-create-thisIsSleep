@@ -20,7 +20,11 @@ export default {
     cardOrderComponent
   },
   props: {
-    items: Array
+    items: {
+      type: Array,
+      required: true,
+      default: null
+    }
   },
   methods: {
     scrollHandle(evt, el, arg) {

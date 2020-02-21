@@ -32,22 +32,22 @@ export default {
           img: require('~/assets/img/img3614.jpg'),
           title: 'EXPLORE YOUR DESTINATIONS  ',
           subTitle: 'Discover the most amazing spot around the japan',
-          link: 'explore Now',
-          to: '/works'
+          link: 'Explore Now',
+          to: '/thisIsSleep/buy/buy'
         },
         {
           img: require('~/assets/img/dockerRevers1.svg'),
-          title: 'three steps to your gole',
-          subTitle: 'suited to your special needs',
-          link: 'create your solution ',
-          to: '/contact'
+          title: 'Three steps to your Destination',
+          subTitle: 'Suited to your special needs',
+          link: 'Create your solution ',
+          to: '/thisIsSleep/solution'
         },
         {
           img: require('~/assets/img/img2731.jpg'),
-          title: 'experiences are waiting for you',
-          subTitle: 'Get inspired by the buzz of the Amusement ',
-          link: 'explore Now',
-          to: '/auth'
+          title: 'Experiences are waiting for you',
+          subTitle: 'Get inspired by the buzz of SNS ',
+          link: 'Find SNS Posts',
+          to: '/thisIsSleep/faq/faq'
         }
       ]
     }

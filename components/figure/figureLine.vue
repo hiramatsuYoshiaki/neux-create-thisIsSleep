@@ -20,8 +20,8 @@
                 path(class="line6" d="M0 400 H500 " )
         div.absolute-title
             div
-                div.title World Heritage
-                div.sub-title A discovery trip to a world heritage destination
+                div.title In the city
+                div.sub-title Explore popular shooting spots in the city
 </template>
 <style scoped lang="scss">
 $text-color: $white;
@@ -79,13 +79,14 @@ svg {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 75%;
+  width: 70%;
   height: 35%;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  align-items: right;
+  // align-items: right;
+  padding-right: 1rem;
 
   .title,
   .sub-title {

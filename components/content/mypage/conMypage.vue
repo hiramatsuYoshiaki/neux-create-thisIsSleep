@@ -162,8 +162,8 @@
                         </p>
                         <ul>
                           <li
-                            v-for="(addTodoError, index) in addTodoErrors"
-                            :key="index"
+                            v-for="(addTodoError, idxCreate) in addTodoErrors"
+                            :key="idxCreate"
                           >
                             <p class="error-msg">
                               {{ addTodoError }}
@@ -237,8 +237,8 @@
                         </p>
                         <ul>
                           <li
-                            v-for="(addTodoError, index) in addTodoErrors"
-                            :key="index"
+                            v-for="(addTodoError, udxEdit) in addTodoErrors"
+                            :key="udxEdit"
                           >
                             <p class="error-msg">
                               {{ addTodoError }}
@@ -352,8 +352,8 @@
                           </p>
                           <ul>
                             <li
-                              v-for="(addTodoError, index) in addTodoErrors"
-                              :key="index"
+                              v-for="(addTodoError, idxEdit2) in addTodoErrors"
+                              :key="idxEdit2"
                             >
                               <p class="error-msg">
                                 {{ addTodoError }}

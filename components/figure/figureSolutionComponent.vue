@@ -15,7 +15,11 @@
 <script>
 export default {
   props: {
-    images: Array
+    images: {
+      type: Array,
+      require: false,
+      default: null
+    }
   }
 }
 </script>

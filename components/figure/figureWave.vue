@@ -49,9 +49,8 @@
                 fill="transparent"
               )
         div.absolute-title
-            div
-                div.title World Heritage
-                div.sub-title A discovery trip to a world heritage destination
+                div.title Nature
+                div.sub-title Let's cut out your own landscape
 </template>
 <style scoped lang="scss">
 $text-color: $white;
@@ -85,13 +84,14 @@ svg {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 75%;
+  width: 70%;
   height: 35%;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  align-items: right;
+  padding-right: 1rem;
+  // align-items: right;
 
   .title,
   .sub-title {
@@ -106,6 +106,7 @@ svg {
     font-size: $text-size-7;
     margin-bottom: 1.6rem;
     font-weight: 300;
+    margin-right: 1rem;
   }
   @media (min-width: 976px) {
     .title {

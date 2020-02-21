@@ -606,8 +606,8 @@
               <!-- // -->
         div.absolute-title
             div
-                div.title World Heritage
-                div.sub-title A discovery trip to a world heritage destination
+                div.title Experience
+                div.sub-title Waking up a new sense through experience
 </template>
 <style scoped lang="scss">
 $text-color: $white;
@@ -645,13 +645,14 @@ svg {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 75%;
+  width: 70%;
   height: 35%;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  align-items: right;
+  padding-right: 1rem;
+  // align-items: right;
 
   .title,
   .sub-title {

@@ -6,21 +6,27 @@
                 template(v-slot:leve1)
                     div.slot-wrape.level1-wrape
                         div.title
-                            h5 logout
-                            nuxt-link(to="/")
-                                div.h7 return to Home
-
+                            h5 My Account
+                            div.h7 name
+                              span( v-for="regstarItem of regstar" :key="regstarItem.key" )
+                                span.account-name {{regstarItem.displayName}}
                 template(v-slot:leve2)
-                    div.slot-wrape.level2-wrape
-                        div.error-msg(v-if="isError")
-                            div error message
-                        form
-                            buttun.submit-button(type="submit")
-                                div
-                                    div.h7 SING OUT
+                    div( v-for="regstarItem of regstar" :key="regstarItem.key" )
+                      div.slot-wrape(v-if="regstarItem.registration")
+                        button.submit-button(@click="accountLogout()")
+                            div.h7 SING OUT
+                      div.slot-wrape(v-else)
+
+                        button.submit-button(@click="registration()")
+                            div.h7 Registration
+                        div.h7 登録完了していません。
+                        div.h7 Registrationボタンを押してください。
 
 </template>
 <script>
+import { mapState, mapMutations } from 'vuex'
+import { GET_REGISTORY } from '~/store/actionTypes'
+import firebase from '@/plugins/firebase'
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
 export default {
   layout: 'layout3Parts',
@@ -30,6 +36,49 @@ export default {
   data() {
     return {
       isError: false
+      // userEmail: null,
+      // userName: null
+    }
+  },
+  computed: {
+    ...mapState(['user']),
+    ...mapState(['regstar'])
+    // ...mapGetters(['isAuthenticated'])
+    // ...mapGetters(['getRegistration'])
+  },
+  mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const loginUser = {
+          uid: user.uid,
+          email: user.email,
+          displayName: null
+        }
+        this.$store.commit('setUser', loginUser)
+        this.$store.dispatch(GET_REGISTORY, loginUser)
+        // setTimeout(() => {
+        // なにかしらの処理
+        // console.log('setTimeout email: ' + this.user.email) // ここだと取得できる
+        // console.log('setTimeout displayName: ' + this.user.displayName) // ここだと取得できる
+        // console.log(this.regstar) // ここだと取得できる
+        // })
+      } else {
+        this.email = null
+        this.displayName = null
+        this.$store.commit('setUser', null)
+        this.accountLogout()
+      }
+    })
+  },
+  methods: {
+    ...mapMutations({ setLogout: 'account/setLogout' }),
+    accountLogout() {
+      this.setLogout()
+      this.$router.push({ path: '/' })
+    },
+    registration() {
+      alert('registration')
+      this.$router.push({ path: '/thisIsSleep/account/createAccount' })
     }
   }
 }
@@ -68,6 +117,14 @@ export default {
     font-weight: 600;
   }
   .h7 {
+    color: $grey-light;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+  .account-name {
+    margin: 0 0.5rem;
     color: $grey;
     cursor: pointer;
     &:hover {
@@ -104,7 +161,7 @@ form {
   width: 100%;
   height: 2.6rem;
   text-align: center;
-  padding-top: 0.6rem;
+  // padding-top: 0.6rem;
   border-style: solid;
   border-color: gray;
   border-width: 1px;

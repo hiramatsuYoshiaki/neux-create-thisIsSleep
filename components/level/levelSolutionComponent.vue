@@ -35,7 +35,11 @@ export default {
     buttonLinkStrechComponent
   },
   props: {
-    items: Array
+    items: {
+      type: Array,
+      required: true,
+      default: null
+    }
   },
   data() {
     return {
