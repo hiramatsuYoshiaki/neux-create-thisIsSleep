@@ -10,7 +10,8 @@
                             nuxt-link(to="/")
                                 div.h7 return to Home
                 template(v-slot:leve2)
-                    div.slot-wrape.level2-wrape
+                    div.slot-wrape
+                      div.create-block(v-if="!getRegistration && !getDisplayName")
                         form(@submit.prevent="createCheck" novalidate)
                             div(v-if="loginErrors.length")
                               p.error-title 入力項目を確認してください。
@@ -33,17 +34,31 @@
                                 label.label
                                     div.h7 Password
                                 input.input(v-model="password" type="text" placeholder="Password" required :style="{ background: errorBg.passwordBg }")
-                            div.subscription
-                                input#checkbox(type="checkbox" v-model="checked")
-                                label.label-checkbox(for="checkbox")
-                                    div.h7 Subscribe for bedtime reading, interesting thoughts and new product launches.
-                            button.submit-button(type="submit")
-                                div
-                                    div.h7 CREATE
+                            //- div.subscription
+                            //-     input#checkbox(type="checkbox" v-model="checked")
+                            //-     label.label-checkbox(for="checkbox")
+                            //-         div.h7 Subscribe for bedtime reading, interesting thoughts and new product launches.
+                            div
+                              button.submit-button(type="submit")
+                                  div
+                                      div.h7 CREATE
+
+                            div regidtration: {{getRegistration}}
+                            div displayName: {{getDisplayName}}
+                            div.auth
+                                    div.h7( @click="cansel()") Cancel
+                      div.create-block(v-else)
+                        div.auth
+                                    div.h7( @click="cansel()") Back
+                      div.message-block
+                        ul
+                          li(v-for="(msg, index) in message" :key="index")
+                              p.guid-msg {{ msg }}
+
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex'
-import { ADD_REGISTORY } from '~/store/actionTypes'
+import { mapState, mapMutations, mapGetters } from 'vuex'
+import { GET_REGISTORY, ADD_REGISTORY } from '~/store/actionTypes'
 import firebase from '@/plugins/firebase'
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
 export default {
@@ -62,17 +77,59 @@ export default {
   },
   computed: {
     ...mapState('account', ['loginErrors']),
-    ...mapState('account', ['errorBg'])
+    ...mapState('account', ['errorBg']),
+    ...mapState(['user']),
+    ...mapState(['regstar']),
+    ...mapGetters(['getDisplayName']),
+    ...mapGetters(['getRegistration']),
+    ...mapState(['message'])
   },
   mounted() {
+    // console.log('mounted')
     this.$store.commit('account/clearLoginError')
     this.$store.commit('account/clearErrorBg', '#e3f2fd')
+    this.$store.commit('clearMessage')
+    this.$store.commit(
+      'setMessage',
+      '各項目を入力して、CREATEボタンを押してください。'
+    )
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // this.uid = user.uid
+        // this.email = user.email
+        // this.displayName = user.displayName
+        // console.log('mounted user.uid: ' + user.uid)
+        // console.log('mounted user.uid: ' + user.email)
+        // console.log('mounted user.displayNmae: ' + user.displayName)
+        const loginUser = {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName
+        }
+        this.$store.commit('setUser', loginUser)
+        this.$store.dispatch(GET_REGISTORY, loginUser)
+        // this.setLogin()
+        // this.$router.push({ path: '/thisIsSleep/account/logout' })
+      } else {
+        this.email = null
+        this.displayName = null
+        const loginUser = {
+          uid: null,
+          email: null,
+          displayName: null
+        }
+        this.$store.commit('setUser', loginUser)
+        this.$store.dispatch(GET_REGISTORY, loginUser)
+      }
+    })
   },
   methods: {
     ...mapMutations({ setLogin: 'account/setLogin' }),
     accountCreate() {
       // alert('accountCreate')
       // console.log('signin')
+      // console.log('ccountCreate')
+      this.$store.commit('clearMessage')
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
@@ -85,17 +142,23 @@ export default {
           return user
         })
         .then((user) => {
+          // console.log('sendEmailVerification')
           firebase.auth().languageCode = 'jp'
           const actionCodeSettings = {
-            url: 'http://' + window.location.host + '/createAccount',
+            url:
+              'http://' +
+              window.location.host +
+              '/thisIsSleep/account/createAccount',
             handleCodeInApp: false
           }
           user.sendEmailVerification(actionCodeSettings)
           return user
         })
         .then((user) => {
+          console.log('ADD_REGISTORY')
           // const myName = this.fName + this.lName
           const myName = this.fName
+          console.info('displayName: ' + myName)
           this.$store.dispatch(ADD_REGISTORY, {
             uid: user.uid,
             email: user.email,
@@ -109,6 +172,11 @@ export default {
           // this.isWaiting = false
           // this.setLogin()
           // this.$router.push({ path: '/' })
+          this.$store.commit('setMessage', 'メールを送信しました。')
+          this.$store.commit(
+            'setMessage',
+            'メールのリンクをクリックしてアカウント作成を完了してください。'
+          )
           this.isWaiting = false
         })
         .catch((e) => {
@@ -148,7 +216,7 @@ export default {
       return re.test(email)
     },
     createCheck(e) {
-      alert('createCheck')
+      // alert('createCheck')
       this.$store.commit('account/clearLoginError')
       this.$store.commit('account/clearErrorBg', '#e3f2fd')
       if (!this.fName) {
@@ -183,12 +251,16 @@ export default {
         this.$store.commit('account/setEmailBg', '#f8bbd0')
       }
       if (this.loginErrors.length) {
-        alert('error')
+        // alert('error')
       } else {
-        alert('normal create account')
+        // alert('normal create account')
         this.accountCreate()
       }
       e.preventDefault()
+    },
+    cansel() {
+      this.$store.commit('clearMessage')
+      this.$router.push({ path: '/thisIsSleep/account/login' })
     }
   }
 }
@@ -315,5 +387,25 @@ form {
     margin-left: 1rem;
     margin-top: -0.3rem;
   }
+}
+.auth {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  .h7 {
+    margin-right: 1rem;
+    color: $grey;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}
+.create-block {
+  width: 100%;
+}
+.message-block {
+  margin-top: 1rem;
 }
 </style>

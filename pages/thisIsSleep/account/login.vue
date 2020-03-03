@@ -32,13 +32,17 @@
                                   div(v-if="!isResetPass")
                                       div.h7 SING IN
                                   div(v-else)
-                                      div.h7 SUBMIT
+                                      div.h7 RESET PASS
                           div.auth(v-if="!isResetPass")
                               nuxt-link( to="/thisIsSleep/account/registration")
                                   div.h7 Create account
-                              div.h7( @click="{isResetPass = true}") Forgot your password?
+                              div.h7( @click="forgetPass()") Forgot your password?
                           div.auth(v-if="isResetPass")
-                              div.h7( @click="{isResetPass = false}") Cancel
+                              div.h7( @click="cansel()") Cancel
+                          div.messege
+                            ul
+                                li(v-for="(msg, index) in message" :key="index")
+                                    p.guid-msg {{ msg }}
 </template>
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
@@ -56,21 +60,26 @@ export default {
       password: null,
       displayName: null,
       isResetPass: false
+      // isSendMail: false
     }
   },
   computed: {
     ...mapState(['regstar']),
     ...mapGetters(['isAuthenticated']),
     ...mapState('account', ['loginErrors']),
-    ...mapState('account', ['errorBg'])
+    ...mapState('account', ['errorBg']),
+    ...mapState(['message'])
   },
   mounted() {
     this.$store.commit('account/clearLoginError')
     this.$store.commit('account/clearErrorBg', '#e3f2fd')
+    this.$store.commit('clearMessage')
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         // this.email = user.email
         // this.displayName = user.displayName
+        console.log('login now')
+
         const loginUser = {
           uid: user.uid,
           email: user.email,
@@ -78,6 +87,7 @@ export default {
         }
         this.$store.commit('setUser', loginUser)
         this.$store.dispatch(GET_REGISTORY, loginUser)
+        // this.$router.push({ path: '/thisIsSleep/account/logout' })
         // setTimeout(() => {
         //   console.log('setTimeout: ' + this.user.email) // ここだと取得できる
         //   // なにかしらの処理
@@ -85,22 +95,145 @@ export default {
       } else {
         this.email = null
         this.displayName = null
-        this.$store.commit('setUser', null)
+        // this.$store.commit('setUser', null)
+        const loginUser = {
+          uid: null,
+          email: null,
+          displayName: null
+        }
+        this.$store.commit('setUser', loginUser)
+        this.$store.dispatch(GET_REGISTORY, loginUser)
       }
     })
   },
   methods: {
     ...mapMutations({ setLogin: 'account/setLogin' }),
+    mailLink() {
+      // ログオフ状態の場合は、メールリンクでログインしてからパスをリセットする。
+      console.log('mail link: ' + this.email)
+      alert('mail link: ' + this.email)
+      const actionCodeSettings = {
+        url:
+          'http://' +
+          window.location.host +
+          '/thisIsSleep/account/passResetLogin',
+        handleCodeInApp: true
+      }
+      const emaiUrl = this.email
+      firebase
+        .auth()
+        .sendSignInLinkToEmail(emaiUrl, actionCodeSettings)
+        .then((res) => {
+          window.localStorage.setItem('emailForSignIn', emaiUrl)
+          // this.isWaiting = true
+          console.log('success')
+          this.$store.commit('setMessage', 'メールを送信しました。')
+          this.$store.commit(
+            'setMessage',
+            'メールの「h-works デモチーム にログイン」をクリックしてください。'
+          )
+          this.isResetPass = false
+        })
+        .catch((error) => {
+          console.log('sendSignInLinkToEmail error: ' + error)
+          // this.isWaiting = true
+        })
+    },
+    passReset() {
+      // ログイン状態の場合はパスをリセットできる。
+      alert('passRest:' + this.email)
+      console.log('passReset:' + this.email)
+      this.isSendMail = false
+      const user = firebase.auth().currentUser
+      if (user) {
+        console.log(user.uid)
+        console.log(user.displayName)
+        console.log(user.email)
+        const isOk = window.confirm('パスワードをリセットしますか？')
+        if (isOk) {
+          // const emailAddress = user.email
+          const emailAddress = this.email
+          firebase
+            .auth()
+            .sendPasswordResetEmail(emailAddress)
+            .then(() => {
+              console.log('pass reset ')
+              this.$store.commit('setMessage', 'メールを送信しました。')
+              this.$store.commit(
+                'setMessage',
+                'メールリンクからパスワードを再設定してください。'
+              )
+              this.isResetPass = false
+            })
+            // .then(() => {
+            // console.log('pass reset loginEmail go to')
+            // this.link_commit('loginEmail')
+            // })
+            .catch((err) => {
+              console.log('firebase auth error' + err)
+            })
+        }
+      } else {
+        // ログオフ状態の場合は、パスリセットするとエラーになるためメールリンクでログインしてからパスをリセットする。
+
+        console.log('user null')
+        console.log('mail link login')
+        // パスなしでメールリンクからログインさせる。
+        this.mailLink()
+      }
+    },
     accountLogin() {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then((user) => {
-          // const lp = '/about'
-          // this.link_commit(lp)
+        .then((res) => {
           // this.isWaiting = false
-          this.setLogin()
-          this.$router.push({ path: '/' })
+          // this.setLogin()
+          // this.$router.push({ path: '/' })
+          const user = firebase.auth().currentUser
+          const userEmailVerified = firebase.auth().currentUser.emailVerified
+          if (userEmailVerified) {
+            console.log('lverify')
+            this.setLogin()
+            this.$router.push({ path: '/' })
+          } else {
+            console.log('not verify')
+            // console.log('sendEmailVerification')
+            firebase.auth().languageCode = 'jp'
+            const actionCodeSettings = {
+              url:
+                'http://' +
+                window.location.host +
+                '/thisIsSleep/account/createAccount',
+              handleCodeInApp: false
+            }
+            user.sendEmailVerification(actionCodeSettings)
+            this.$store.commit('setMessage', 'メールを送信しました。')
+            this.$store.commit(
+              'setMessage',
+              'メールリンクからアカウント登録を完了してください。'
+            )
+          }
+          // if (user) {
+          //   const loginUser = {
+          //     uid: user.uid,
+          //     email: user.email,
+          //     displayName: user.displayName
+          //   }
+          //   this.$store.commit('setUser', loginUser)
+          //   this.$store.dispatch(GET_REGISTORY, loginUser)
+          //   console.warn('regstar: ')
+          //   console.warn(this.regstar)
+          //   const reg = this.regstar
+
+          //   for (const key in reg) {
+          //     console.info('for')
+          //     console.info(reg['.key'])
+          //     console.info(reg[key].registration)
+          //   }
+
+          //   console.warn('registration: ' + this.getRegistration)
+          // }
         })
         .catch((e) => {
           // console.log('login error：' + e.code)
@@ -161,15 +294,19 @@ export default {
     loginCheck(e) {
       this.$store.commit('account/clearLoginError')
       this.$store.commit('account/clearErrorBg', '#e3f2fd')
-      if (!this.password) {
-        this.$store.commit('account/setLoginError', 'パスワードは必須です。')
-        this.$store.commit('account/setPasswordBg', '#f8bbd0')
-      } else if (this.password.length < 8) {
-        this.$store.commit(
-          'account/setLoginError',
-          'パスワードは８文字以上です。'
-        )
-        this.$store.commit('account/setPasswordBg', '#f8bbd0')
+      this.$store.commit('clearMessage')
+
+      if (!this.isResetPass) {
+        if (!this.password) {
+          this.$store.commit('account/setLoginError', 'パスワードは必須です。')
+          this.$store.commit('account/setPasswordBg', '#f8bbd0')
+        } else if (this.password.length < 8) {
+          this.$store.commit(
+            'account/setLoginError',
+            'パスワードは８文字以上です。'
+          )
+          this.$store.commit('account/setPasswordBg', '#f8bbd0')
+        }
       }
       if (!this.email) {
         this.$store.commit('account/setLoginError', 'メールは必須です。')
@@ -178,13 +315,26 @@ export default {
         this.$store.commit('account/setLoginError', '無効なメール形式です。')
         this.$store.commit('account/setEmailBg', '#f8bbd0')
       }
-      if (this.loginErrors.length) {
-        // alert('error')
-      } else {
-        // alert('normal')
-        this.accountLogin()
+      if (!this.loginErrors.length) {
+        if (this.isResetPass) {
+          this.passReset()
+        } else {
+          this.accountLogin()
+        }
       }
       e.preventDefault()
+    },
+    forgetPass() {
+      this.$store.commit('clearMessage')
+      this.$store.commit('account/clearLoginError')
+      this.$store.commit('account/clearErrorBg', '#e3f2fd')
+      this.isResetPass = true
+    },
+    cansel() {
+      this.$store.commit('clearMessage')
+      this.$store.commit('account/clearLoginError')
+      this.$store.commit('account/clearErrorBg', '#e3f2fd')
+      this.isResetPass = false
     }
   }
 }
@@ -311,6 +461,7 @@ form {
   margin: 2rem 0;
 }
 .auth {
+  margin-top: 1rem;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -322,5 +473,8 @@ form {
       opacity: 0.5;
     }
   }
+}
+.messege {
+  margin-top: 1rem;
 }
 </style>

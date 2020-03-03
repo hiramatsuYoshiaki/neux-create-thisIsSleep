@@ -139,7 +139,7 @@ export default {
         const loginUser = {
           uid: user.uid,
           email: user.email,
-          displayName: ''
+          displayName: user.displayName
         }
         this.$store.commit('setUser', loginUser)
         this.$store.dispatch(GET_REGISTORY, loginUser)

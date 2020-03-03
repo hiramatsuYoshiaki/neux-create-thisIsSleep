@@ -7,24 +7,26 @@
                     div.slot-wrape.level1-wrape
                         div.title
                             h5 My Account
-                            div.h7 name
-                              span( v-for="regstarItem of regstar" :key="regstarItem.key" )
-                                span.account-name {{regstarItem.displayName}}
+                            div.h7 {{getDisplayName}}
+                              //- span( v-for="regstarItem of regstar" :key="regstarItem.key" )
+                              //-   span.account-name {{regstarItem.displayName}}
                 template(v-slot:leve2)
-                    div( v-for="regstarItem of regstar" :key="regstarItem.key" )
-                      div.slot-wrape(v-if="regstarItem.registration")
-                        button.submit-button(@click="accountLogout()")
+                    //- div( v-for="regstarItem of regstar" :key="regstarItem.key" )
+                    //-   div.slot-wrape(v-if="regstarItem.registration")
+                    //-     button.submit-button(@click="accountLogout()")
+                    //-         div.h7 SING OUT
+                    //-   div.slot-wrape(v-else)
+                    //-     button.submit-button(@click="registration()")
+                    //-         div.h7 Registration
+                    //-     div.h7 登録完了していません。
+                    //-     div.h7 Registrationボタンを押してください。
+                    div.slot-wrape
+                          button.submit-button(@click="accountLogout()")
                             div.h7 SING OUT
-                      div.slot-wrape(v-else)
-
-                        button.submit-button(@click="registration()")
-                            div.h7 Registration
-                        div.h7 登録完了していません。
-                        div.h7 Registrationボタンを押してください。
 
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { GET_REGISTORY } from '~/store/actionTypes'
 import firebase from '@/plugins/firebase'
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
@@ -42,9 +44,10 @@ export default {
   },
   computed: {
     ...mapState(['user']),
-    ...mapState(['regstar'])
+    ...mapState(['regstar']),
     // ...mapGetters(['isAuthenticated'])
-    // ...mapGetters(['getRegistration'])
+    ...mapGetters(['getRegistration']),
+    ...mapGetters(['getDisplayName'])
   },
   mounted() {
     firebase.auth().onAuthStateChanged((user) => {
@@ -63,18 +66,42 @@ export default {
         // console.log(this.regstar) // ここだと取得できる
         // })
       } else {
-        this.email = null
-        this.displayName = null
-        this.$store.commit('setUser', null)
-        this.accountLogout()
+        // this.email = null
+        // this.displayName = null
+        // this.$store.commit('setUser', null)
+        const loginUser = {
+          uid: null,
+          email: null,
+          displayName: null
+        }
+        this.$store.commit('setUser', loginUser)
+        this.$store.dispatch(GET_REGISTORY, loginUser)
+        // this.setLogout()
+        // this.$router.push({ path: '/thisIsSleep/account/login' })
       }
     })
   },
   methods: {
     ...mapMutations({ setLogout: 'account/setLogout' }),
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          // this.email = null
+          // this.displayName = null
+          // this.password = null
+          console.log('logout firebase')
+          this.setLogout()
+          this.$store.commit('setUser', null)
+          this.$router.push({ path: '/' })
+        })
+        .catch((error) => {
+          alert('logout error: ' + error)
+        })
+    },
     accountLogout() {
-      this.setLogout()
-      this.$router.push({ path: '/' })
+      this.logout()
     },
     registration() {
       alert('registration')

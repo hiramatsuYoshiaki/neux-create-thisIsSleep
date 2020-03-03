@@ -24,6 +24,7 @@ export const state = () => ({
   authErrors: [],
   addTodoErrors: [],
   message: [],
+  resetMessage: [],
   doneInsta: false,
   // userProf: {
   //   name: '',
@@ -65,6 +66,12 @@ export const mutations = {
   },
   clearMessage(state) {
     state.message = []
+  },
+  setResetMessage(state, payload) {
+    state.resetMessage.push(payload)
+  },
+  clearResetMessage(state) {
+    state.resetMessage = []
   },
   setDoneInsta(state) {
     state.doneInsta = !state.doneInsta

@@ -64,7 +64,7 @@
                                     p.guid-msg {{ msg }}
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { GET_REGISTORY, UPDATEDANE_REGISTORY } from '~/store/actionTypes'
 import firebase from '@/plugins/firebase'
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
@@ -95,15 +95,15 @@ export default {
   },
   mounted() {
     this.$store.commit('clearMessage')
-    this.$store.commit('setMessage', 'アカウント登録は完了しています。')
+    // this.$store.commit('setMessage', 'アカウント登録は完了しています。')
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.uid = user.uid
         this.email = user.email
-        this.displayName = user.displayName
-        console.log('mounted user.uid: ' + user.uid)
-        console.log('mounted user.uid: ' + user.email)
-        console.log('mounted user.displayNmae: ' + user.displayName)
+
+        // console.log('mounted user.uid: ' + user.uid)
+        // console.log('mounted user.uid: ' + user.email)
+        // console.log('mounted user.displayNmae: ' + user.displayName)
         const loginUser = {
           uid: user.uid,
           email: user.email,
@@ -111,14 +111,25 @@ export default {
         }
         this.$store.commit('setUser', loginUser)
         this.$store.dispatch(GET_REGISTORY, loginUser)
+        this.displayName = this.getDisplayName
       } else {
         this.email = null
         this.displayName = null
-        this.$store.commit('setUser', null)
+        // this.$store.commit('setUser', null)
+        const loginUser = {
+          uid: null,
+          email: null,
+          displayName: null
+        }
+        this.$store.commit('setUser', loginUser)
+        this.$store.dispatch(GET_REGISTORY, loginUser)
+        // this.setLogout()
+        // this.$router.push({ path: '/thisIsSleep/account/login' })
       }
     })
   },
   methods: {
+    ...mapMutations({ setLogout: 'account/setLogout' }),
     // ...mapMutations({ setLogin: 'account/setLogin' }),
     accountCreate() {
       this.$store.commit('clearMessage')
