@@ -4,7 +4,8 @@ clone
 github repository: nuxt-univ-gae-todo2
 
 host  
-gcp project: nuxt-univ-create-gae-todo2-firebase
+gcp project: nuxt-univ-create-todo-firebase
+url: nuxt-univ-create-todo-firebase.appspot.com 
 
 ### アプリケーションの概要
 
