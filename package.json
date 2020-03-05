@@ -19,6 +19,7 @@
     "@nuxtjs/markdownit": "^1.2.5",
     "@nuxtjs/sitemap": "^1.2.0",
     "@nuxtjs/style-resources": "^0.1.2",
+    "@sendgrid/mail": "^6.5.3",
     "firebase": "^6.3.0",
     "nuxt": "^2.0.0",
     "nuxt-buefy": "^0.3.16",
