@@ -4,7 +4,7 @@ import 'firebase/firestore'
 import 'firebase/auth'
 import 'firebase/storage'
 // import 'firebase/messaging'
-// import 'firebase/functions'
+import 'firebase/functions'
 // const serviceAccount = require('../serviceAccountKey.json')
 // const config = serviceAccount
 const config = {

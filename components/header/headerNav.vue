@@ -1,8 +1,8 @@
 <template>
   <div class="headerBar">
     <div
-      class="mobile-menu"
       :class="{ v_open_menu: active, v_close_menu: !active }"
+      class="mobile-menu"
     >
       <div class="m-menu-wrap">
         <div class="menu_items menu_items_column">
@@ -95,9 +95,9 @@
 
             <div v-if="isAuthenticated" class="menu-item-box">
               <a
-                class="menu_link"
                 :class="{ menu_item_visible: page === '/auth' }"
                 @click="link_commit('/auth')"
+                class="menu_link"
               >
                 logoff
                 <!-- <div v-if="isAuthenticated">
@@ -116,9 +116,9 @@
             </div>
             <div v-if="!isAuthenticated" class="menu-item-box">
               <a
-                class="menu_link"
                 :class="{ menu_item_visible: page === '/auth' }"
                 @click="link_commit('/auth')"
+                class="menu_link"
               >
                 login
                 <!-- <div v-if="isAuthenticated">
@@ -140,14 +140,14 @@
       </div>
     </div>
     <div class="menu-button menu-button-display">
-      <div class="m-bar-wrap" @click="active = !active">
+      <div @click="active = !active" class="m-bar-wrap">
         <div
-          class="upper-bar"
           :class="{ close_upper: active, open_upper: !active }"
+          class="upper-bar"
         />
         <div
-          class="under-bar"
           :class="{ close_under: active, open_under: !active }"
+          class="under-bar"
         />
       </div>
     </div>

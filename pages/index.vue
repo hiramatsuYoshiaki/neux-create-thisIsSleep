@@ -135,7 +135,8 @@ export default {
       orderItems: [
         {
           title: 'Reliable support system ',
-          subTitle: `There is a safe support system that other travel agencies do not have, such as 24-hour Japanese language support at travel destinations.`,
+          subTitle:
+            'There is a safe support system that other travel agencies do not have, such as 24-hour Japanese language support at travel destinations.',
           link: 'explore Now',
           to: '/account/registration',
           icon: 'fas fa-headset',

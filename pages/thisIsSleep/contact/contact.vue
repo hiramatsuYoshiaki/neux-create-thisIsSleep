@@ -15,32 +15,42 @@
                                         | to see if we have the answer there?
 
                 template(v-slot:leve2)
-                    div.slot-wrape.level2-wrape
-                        div.error-msg(v-if="isError")
-                            div error message
-                        form
+                    div.slot-wrape
+                        //- form(@submit.prevent="sendMail" novalidate)
+                        form(@submit.prevent="mailCheck" novalidate)
+                            div(v-if="loginErrors.length")
+                              p.error-title 入力項目を確認してください。
+                                ul
+                                  li(v-for="(loginError, indexError) in loginErrors" :key="indexError")
+                                    p.error-msg {{ loginError}}
                             div.first-name
                                 label.label
                                     div.h7 name
-                                input.input(type="text" placeholder="name")
+                                input.input(v-model="firstName" type="text" placeholder="name" required :style="{ background: errorBg.fNameBg }")
                             div.email-enter
                                 label.label
                                     div.h7 Email
-                                input.input(type="email" placeholder="Email")
+                                input.input(v-model="email" type="email" placeholder="Email" required :style="{ background: errorBg.emailBg }")
                             div.phone-number
                                 label.label
                                     div.h7 phone number
-                                input.input(type="text" placeholder="phone number")
+                                input.input(v-model="phone" type="text" placeholder="phone" required :style="{ background: errorBg.phoneBg }")
                             div.message
                                 label.label
                                     div.h7 message
-                                textarea(name="textarea" rows="10" cols="50" placeholder="message")
+                                textarea(v-model="mailMessage" name="textarea" rows="10" cols="50" placeholder="message" required :style="{ background: errorBg.mailMessageBg }")
 
-                            buttun.submit-button(type="submit")
+                            button.submit-button(type="submit")
                                 div
                                     div.h7 SEND
+                        div.messege
+                            ul
+                                li(v-for="(msg, index) in message" :key="index")
+                                    p.guid-msg {{ msg }}
 </template>
 <script>
+import { mapState } from 'vuex'
+import { SENDGRID } from '~/store/actionTypes'
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
 export default {
   layout: 'layout3Parts',
@@ -50,7 +60,97 @@ export default {
   data() {
     return {
       checked: false,
-      isError: false
+
+      firstName: null,
+      email: null,
+      phone: null,
+      mailMessage: null
+    }
+  },
+  computed: {
+    ...mapState('account', ['loginErrors']),
+    ...mapState('account', ['errorBg']),
+    ...mapState(['message'])
+  },
+  mounted() {
+    this.$store.commit('account/clearLoginError')
+    this.$store.commit('account/clearErrorBg', '#e3f2fd')
+    this.$store.commit('clearMessage')
+  },
+  methods: {
+    validEmail: (email) => {
+      // incorrect code for this rule Disallow unnecessary escape usage (no-useless-escape) 28col-->\ del 53col-->\ del
+      // const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      // correct code for this rule
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      // const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      return re.test(email)
+    },
+    validPhonel: (phone) => {
+      const reg = /^\d{11}$/
+      return reg.test(phone)
+    },
+    sendMail() {
+      this.$store.commit('clearMessage')
+      // alert('sendMail')
+      const msg = {
+        to: 'hiramatsu3300@gmail.com',
+        from: this.email,
+        subject: 'CONTACT',
+        text: this.mailMessage,
+        name: this.firstName,
+        phone: this.phone
+      }
+      this.$store.dispatch(SENDGRID, msg)
+    },
+    mailCheck(e) {
+      // alert('mailCheck')
+      // alert('firstName--> ' + this.firstName)
+      // alert('email--> ' + this.email)
+      // alert('phone--> ' + this.phone)
+      // alert('mailMessage--> ' + this.mailMessage)
+      this.$store.commit('account/clearLoginError')
+      this.$store.commit('account/clearErrorBg', '#e3f2fd')
+      this.$store.commit('clearMessage')
+      if (!this.firstName) {
+        this.$store.commit('account/setLoginError', '氏名は必須です。')
+        this.$store.commit('account/setFNameBg', '#f8bbd0')
+      } else if (this.firstName.length > 16) {
+        this.$store.commit('account/setLoginError', '氏名は１６文字以下です。')
+        this.$store.commit('account/setFNameBg', '#f8bbd0')
+      }
+      if (!this.email) {
+        this.$store.commit('account/setLoginError', 'メールは必須です。')
+        this.$store.commit('account/setEmailBg', '#f8bbd0')
+      } else if (!this.validEmail(this.email)) {
+        this.$store.commit('account/setLoginError', '無効なメール形式です。')
+        this.$store.commit('account/setEmailBg', '#f8bbd0')
+      }
+      if (!this.phone) {
+        this.$store.commit('account/setLoginError', '電話番号は必須です。')
+        this.$store.commit('account/setPhoneBg', '#f8bbd0')
+      } else if (!this.validPhonel(this.phone)) {
+        this.$store.commit(
+          'account/setLoginError',
+          '電話番号は先頭が「0」で半角数字です'
+        )
+        this.$store.commit('account/setPhoneBg', '#f8bbd0')
+      } else if (this.phone.length > 11) {
+        this.$store.commit(
+          'account/setLoginError',
+          '電話番号は１１文字以下です。'
+        )
+        this.$store.commit('account/setPhoneBg', '#f8bbd0')
+      }
+      if (!this.mailMessage) {
+        this.$store.commit('account/setLoginError', 'メッセージは必須です。')
+        this.$store.commit('account/setmailMessageBg', '#f8bbd0')
+      }
+
+      if (!this.loginErrors.length) {
+        this.sendMail()
+      }
+      e.preventDefault()
     }
   }
 }
@@ -97,13 +197,22 @@ export default {
   }
 }
 
-form {
-  width: 100%;
+.error-title {
+  color: $red;
 }
 .error-msg {
   background-color: $grey-light;
   padding: 0.5rem;
   color: $black;
+}
+.reset-meg {
+  margin-bottom: 2rem;
+  h6 {
+    margin-bottom: 1rem;
+  }
+}
+form {
+  width: 100%;
 }
 .label {
   margin: 0.5rem 0;

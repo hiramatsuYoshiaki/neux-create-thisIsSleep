@@ -53,7 +53,7 @@
         </div>
         <div v-else>
           <div class="login-form">
-            <form novalidate @submit.prevent="loginCheck">
+            <form @submit.prevent="loginCheck" novalidate>
               <div v-if="authErrors.length">
                 <p class="error-title">
                   入力項目を確認してください。
@@ -69,10 +69,10 @@
               <p>
                 <input
                   v-model="email"
+                  :style="{ background: error.emailBg }"
                   type="text"
                   placeholder="メール"
                   required
-                  :style="{ background: error.emailBg }"
                 />
               </p>
               <!-- <p>
@@ -123,10 +123,10 @@
   </div>
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapState, mapGetters } from 'vuex'
 import { GET_REGISTORY } from '~/store/actionTypes'
 // import { ADD_REGISTORY, GET_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 export default {
   //   props: {
   //     pageTitle: {

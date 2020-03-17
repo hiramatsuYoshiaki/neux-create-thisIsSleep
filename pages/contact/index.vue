@@ -3,8 +3,8 @@
     <div class="bgImageFull">
       <transition name="bgTran" appear>
         <div
-          class="bgImage"
           :style="{ 'background-image': 'url(' + img + ') ' }"
+          class="bgImage"
         >
           <div class="bg_filter" />
         </div>

@@ -18,9 +18,9 @@
       <div class="menu_items">
         <div class="menu-item-box">
           <a
-            class="menu_link"
             :class="{ menu_item_visible: page === '/works' }"
             @click="link_commit('/works')"
+            class="menu_link"
           >
             AUTH
           </a>
@@ -29,9 +29,9 @@
 
         <div class="menu-item-box">
           <a
-            class="menu_link"
             :class="{ menu_item_visible: page === '/about' }"
             @click="link_commit('/about')"
+            class="menu_link"
           >
             CRUD
           </a>
@@ -39,9 +39,9 @@
         </div>
         <div class="menu-item-box">
           <a
-            class="menu_link"
             :class="{ menu_item_visible: page === '/contact' }"
             @click="link_commit('/contact')"
+            class="menu_link"
           >
             CONTACT
           </a>

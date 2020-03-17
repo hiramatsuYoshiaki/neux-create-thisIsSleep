@@ -48,9 +48,9 @@
   </div>
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { ADD_REGISTORY, GET_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 export default {
   //   props: {
   //     pageTitle: {

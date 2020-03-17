@@ -39,7 +39,7 @@
             </div> -->
 
           <div class="login-form">
-            <form novalidate @submit.prevent="loginCheck">
+            <form @submit.prevent="loginCheck" novalidate>
               <div v-if="authErrors.length">
                 <p class="error-title">
                   入力項目を確認してください。
@@ -78,7 +78,7 @@
                   </p>
                 </li>
               </ul>
-              <div class="add-btn" @click="link_commit('/auth')">
+              <div @click="link_commit('/auth')" class="add-btn">
                 <button>
                   Close
                 </button>
@@ -88,7 +88,7 @@
         </div>
         <div v-else>
           <p>ログインしていません。</p>
-          <div class="add-btn" @click="link_commit('/loginEmail')">
+          <div @click="link_commit('/loginEmail')" class="add-btn">
             <button>
               Email Password Login
             </button>
@@ -100,9 +100,9 @@
 </template>
 <script>
 // import { mapActions, mapState, mapGetters } from 'vuex'
+import firebase from '@/plugins/firebase'
 import { mapState, mapGetters } from 'vuex'
 import { GET_REGISTORY, REMOVE_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 export default {
   //   props: {
   //     pageTitle: {

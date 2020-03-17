@@ -1,21 +1,25 @@
 # nuxt-create-thisIsSleep
 
+nuxt-create-thisIsSleep-new
+
 clone
 github repository: nuxt-univ-gae-todo2
 
 host  
-gcp project: nuxt-univ-create-todo-firebase
-url: nuxt-univ-create-todo-firebase.appspot.com 
+gcp project nama: nuxt-univ-create-gae-sendgird
+gcp project id : nuxt-univ-create-gae-todo
+url: https://nuxt-univ-create-gae-todo.appspot.com/
 
 ### アプリケーションの概要
 
 Todos アプリケーション
 Vue.js のフレームワーク Nuxt.js
-firebase を使用する
-Google 認証する(email password)
-firebase database を使用
-firbase strage を使用
-インスタグラムの埋め込みコードを使用
+firebase Auth で認証する(email password)
+firebase database にユーザー情報を記録
+sendgrid を使いメール送信
+Canvas 使用
+
+### セットアップ
 
 ```
 $ npx create-nuxt-app <project-name>
@@ -76,7 +80,7 @@ export default {
 }
 ```
 
-# Google Cloud Platform
+# Google Cloud Platform へのデプロイ
 
 ## app.yaml 設置
 
@@ -1545,4 +1549,236 @@ h4 {{title2 | capitalize}}
     const textB = b.title.toUpperCase()
     return textA < textB ? -1 : textA > textB ? 1 : 0
   })
+```
+
+#　 sendgrid を使ってメールを送信する。
+
+## express install
+
+初期設定で express をインストールしていないので追加する。
+npm install --save express
+
+## GAE からサードパーティの SendGrid を使ってメールする
+
+Google Cloud Platform（以下、GCP）環境で,
+Google App Engine（以下、GAE）と SendGrid を利用する
+
+### Google Cloud Console を通じて SendGrid Email API プランに登録する
+
+参考：GAE に JSON 取得の Web サーバーを構築して SendGrid からメールするhttps://qiita.com/doki_k/items/c3409167fc33f767e86f
+
+1. GCP にアクセスし、ヘッダーバーで該当プロジェクトを選択（nuxt-create-gac-sendgrid）
+2. ナビゲーションバーのナビゲーションメニューをクリックして、Marketplace を選択
+3. sendgrid を選択
+4. 「無料プランで開始」ボタンをクリック
+5. Subscribe 項目で利用プランの選択
+6. Activate 項目で SendGrid アカウントの登録
+7. 認可画面で、許可をクリック
+8. "SendGrid ウェブサイトで API キーを管理する"ボタンをクリック
+9. SendGrid ウェブサイトの "Settings" から、"API Keys"タブを開き、"Create API Key" ボタンをクリックする
+10. Key が発行されるので文字列をコピー（一度しか表示されない）
+
+### .evn 設定
+
+1. .evn に key を追加
+   `SENDGRID_API_KEY='SG.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+2. nuxt.config.js に key を追加
+
+```
+  env: {
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY
+  },
+```
+
+### Nuxt.js の serverMiddleware を使って、sendmail(api) でメール送信する
+
+参考：Nuxt.js の serverMiddleware を使って、api を叩https://mabui.org/nuxtjs-servermiddleware-api/
+参考：Nuxt に「serverMiddleware」を設定して、API サーバ的な動きをさせてみたhttps://liginc.co.jp/438249
+参考：node.js + express で POST を受け取る & POST パラメータを JSON で取得するhttps://qiita.com/ktanaka117/items/596febd96a63ae1431f8
+参考：カスタムサーバーミドルウェアhttps://ja.nuxtjs.org/api/configuration-servermiddleware/
+参考：[axios] axios の導入と簡単な使い方https://qiita.com/ksh-fthr/items/2daaaf3a15c4c11956e9
+参考：Nuxt.js で axios の使い方と設定方法を紹介https://ma-vericks.com/nuxt-axios/
+
+1. フォームボタンより Vuex の dispatch メソッドを使用して、コンポーネントの任意のタイミングで実行
+   `pages/thisIsSleep/contact/contact.vue`
+
+```
+<template lang="pug">
+  div
+    form(@submit.prevent="sendMail" novalidate)
+        div(v-if="loginErrors.length")
+          p.error-title 入力項目を確認してください。
+            ul
+              li(v-for="(loginError, indexError) in loginErrors" :key="indexError")
+                p.error-msg {{ loginError}}
+        div.first-name
+            label.label
+                div.h7 name
+            input.input(v-model="firstName" type="text" placeholder="name" required :style="{ background: errorBg.fNameBg }")
+        div.email-enter
+            label.label
+                div.h7 Email
+            input.input(v-model="email" type="email" placeholder="Email" required :style="{ background: errorBg.emailBg }")
+        div.phone-number
+            label.label
+                div.h7 phone number
+            input.input(v-model="phone" type="text" placeholder="phone" required :style="{ background: errorBg.phoneBg }")
+        div.message
+            label.label
+                div.h7 message
+            textarea(v-model="mailMessage" name="textarea" rows="10" cols="50" placeholder="message" required :style="{ background: errorBg.mailMessageBg }")
+
+        button.submit-button(type="submit")
+            div
+                div.h7 SEND
+</template>
+<script>
+import { mapState } from 'vuex'
+import { SENDGRID } from '~/store/actionTypes'
+export default {
+  data() {
+    return {
+      firstName: null,
+      email: null,
+      phone: null,
+      mailMessage: null
+    }
+  },
+  methods: {
+    sendMail() {
+      const msg = {
+        to: 'hiramatsu3300@gmail.com',
+        from: this.email,
+        subject: 'CONTACT',
+        text: this.mailMessage,
+        name: this.firstName,
+        phone: this.phone
+      }
+      this.$store.dispatch(SENDGRID, msg)
+    },
+  }
+}
+</script>
+```
+
+2. store Action から axiou で http を使って POST する
+   `store/actionType.js`
+
+```
+export const SENDGRID = 'SENDGRID'
+```
+
+`store/index.js`
+
+```
+import { SENDGRID } from './actionTypes'
+import axios from 'axios'
+export const actions = {
+  [SENDGRID]: async (context, msg) => {
+    // ローカルのドメイン取得
+    const baseUrl = `${location.protocol}//${location.host}`
+    await axios
+      .post(`${baseUrl}/api/sendmail`, {
+        to: msg.to,
+        from: msg.from,
+        name: msg.name,
+        subject: msg.subject,
+        text: msg.text,
+        phone: msg.phone
+      })
+      .then((response) => {
+        context.commit('setMessage', 'ありがとうございます。')
+        context.commit('setMessage', 'メールを送信しました。')
+      })
+      .catch((err) => {
+        context.commit('setMessage', 'メールを送信できませんでした。')
+        context.commit('setMessage', `エラーコード：${err.response.status}`)
+        console.info('axiou post error')
+        console.log(err)
+      })
+  },
+}
+```
+
+3. SendGrid v3 API のメールエンドポイントとの対話専用のサービスパッケージをインストール
+   参考：Mail Service for the SendGrid v3 Web API 　https://github.com/sendgrid/sendgrid-nodejs/tree/master/packages/mail
+   `npm install --save @sendgrid/mail`
+
+4. API 用のディレクトリ api/ を作成します（ルートの app フォルダーに、index.js を作成します。）
+
+   `app/index.js`
+
+```
+require('dotenv').config()
+const express = require('express')
+const app = express()
+
+// app.post('/', (req, res, next) => {
+//   res.send('API root')
+// })
+
+//Expressでクライアント経由からデータを会得する場合、Body-Parserをインストールしてreq.body経由でデータを会得するのが一般的でした。
+const bodyParser = require('body-parser')
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+)
+app.use(bodyParser.json())
+
+//Body-Parserを基にExpressに組み込まれた機能です、クライアントから送信されたデータを、req.body経由で会得、操作できます。
+// app.use(express.json())
+// app.use(express.urlencoded({ extended: true }));
+
+//sendgrid API LibrariesのNode.jsを使う（コピペ）
+//https://sendgrid.com/docs/for-developers/sending-email/libraries/
+app.post('/sendmail', (req, res, next) => {
+  // using Twilio SendGrid's v3 Node.js Library
+  // https://github.com/sendgrid/sendgrid-nodejs
+
+  const sgMail = require('@sendgrid/mail')
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  //   const msg = {
+  //     to: 'hiramatsu3300@gmail.com',
+  //     from: 'hworksdev@gmail.com',
+  //     subject: 'Test SendGrid no.2',
+  //     text: 'This is a test of the SendGrid app on Node',
+  //     html:
+  //       '<strong>This is a test2 of the SendGrid app on Node</strong><h1>SendGrid</h1>'
+  //   }
+  const msg = {
+    to: req.body.to,
+    from: req.body.from,
+    subject: req.body.subject,
+    text: req.body.text,
+    html: `<h3>CONTACT MESSAGE</h3>
+        <strong>${req.body.text}</strong>
+        <br>
+        <p>Name:<span>${req.body.name}<span></p>
+        <p>from:<span>${req.body.from}</span><p>
+        <p>Phone:<span>${req.body.phone}<span></p>
+         `
+  }
+
+  sgMail.send(msg).then(() => {}, console.error)
+
+  // リクエストボディを出力
+  //   console.log(req)
+  // パラメータ名、nameを出力
+  //   console.log(req.body.to)
+
+  res.send('SendMail API test2 req: ')
+})
+// export the server middleware
+module.exports = {
+  path: '/api',
+  handler: app
+}
+```
+
+5. serverMiddleware を設定する
+   `nuxt.config.js`
+
+```
+serverMiddleware: [{ path: '/api', handler: '~/api/index.js' }],
 ```

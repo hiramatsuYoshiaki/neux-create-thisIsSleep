@@ -1,7 +1,7 @@
 <template>
   <div class="wrape">
     <div v-for="(item, key) of items" :key="key">
-      <div class="mobileElemntWrape" @click="closeMobileMenu()">
+      <div @click="closeMobileMenu()" class="mobileElemntWrape">
         <nuxt-link :to="item.to.name">
           {{ item.title }}
         </nuxt-link>

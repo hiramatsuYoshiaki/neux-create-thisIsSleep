@@ -14,7 +14,7 @@
           <div class="login-menu">
             <slot name="loginMenu" />
           </div>
-          <div class="btn-close hw--btn" @click="closeMobileMenu()">
+          <div @click="closeMobileMenu()" class="btn-close hw--btn">
             <i class="material-icons">close</i>
           </div>
         </div>

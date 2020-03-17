@@ -31,7 +31,7 @@
           <p>emai: {{ email }}</p>
           <p>Mail Reset ボタンを押してください。</p>
           <div class="login-form">
-            <form novalidate @submit.prevent="loginCheck">
+            <form @submit.prevent="loginCheck" novalidate>
               <div v-if="authErrors.length">
                 <p class="error-title">
                   入力項目を確認してください。
@@ -48,10 +48,10 @@
               <p>
                 <input
                   v-model="newEmail"
+                  :style="{ background: error.emailBg }"
                   type="text"
                   placeholder="新しいメールアドレス"
                   required
-                  :style="{ background: error.emailBg }"
                 />
               </p>
               <!-- <p>
@@ -77,7 +77,7 @@
                   </p>
                 </li>
               </ul>
-              <div class="add-btn" @click="link_commit('/auth')">
+              <div @click="link_commit('/auth')" class="add-btn">
                 <button>
                   Close
                 </button>
@@ -87,7 +87,7 @@
         </div>
         <div v-else>
           <p>ログインしていません。</p>
-          <div class="add-btn" @click="link_commit('/loginEmail')">
+          <div @click="link_commit('/loginEmail')" class="add-btn">
             <button>
               Email Password Login
             </button>
@@ -98,9 +98,9 @@
   </div>
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { UPDATEDANE_REGISTORY, GET_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 export default {
   //   props: {
   //     pageTitle: {

@@ -3,10 +3,10 @@
     <nuxt-link to="/">
       <div @click="closeMobileMenu()">
         <img
+          @click="closeMobileMenu()"
           src="~assets/img/logo/h-logo.svg"
           alt="h-works"
           class="brandLogo"
-          @click="closeMobileMenu()"
         />
       </div>
     </nuxt-link>

@@ -66,9 +66,9 @@
 
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapState, mapMutations } from 'vuex'
 import { ADD_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
 export default {
   layout: 'layout3Parts',

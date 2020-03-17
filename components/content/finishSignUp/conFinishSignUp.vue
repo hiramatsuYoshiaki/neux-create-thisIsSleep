@@ -28,7 +28,7 @@
           <p>ログインボタンを押してください。</p>
         </div>
         <div class="login-form">
-          <form novalidate @submit.prevent="loginCheck">
+          <form @submit.prevent="loginCheck" novalidate>
             <div v-if="authErrors.length">
               <p class="error-title">
                 入力項目を確認してください。
@@ -66,9 +66,9 @@
   </div>
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { GET_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 export default {
   //   props: {
   //     pageTitle: {

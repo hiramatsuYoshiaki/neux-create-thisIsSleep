@@ -2,7 +2,7 @@
   <div class="wrape">
     <!-- <div v-if="isLogin" class="hw--btn" @click="setLogout()"> -->
     <div v-if="isLogin" class="hw--btn">
-      <div class="link-wrape" @click="closeMobileMenu()">
+      <div @click="closeMobileMenu()" class="link-wrape">
         <nuxt-link to="/thisIsSleep/account/logout">
           Account
         </nuxt-link>
@@ -10,7 +10,7 @@
     </div>
     <!-- <div v-else class="hw--btn" @click="setLogin()"> -->
     <div v-else class="hw--btn">
-      <div class="link-wrape" @click="closeMobileMenu()">
+      <div @click="closeMobileMenu()" class="link-wrape">
         <nuxt-link to="/thisIsSleep/account/login">
           Log in
         </nuxt-link>

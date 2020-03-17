@@ -32,7 +32,7 @@
               <p class="modal-title">
                 TODO LIST に追加する
               </p>
-              <form novalidate @submit.prevent="addTodo">
+              <form @submit.prevent="addTodo" novalidate>
                 <div v-if="addTodoErrors.length" class="error-grp">
                   <p class="error-title">
                     入力項目を確認してください。
@@ -55,18 +55,18 @@
                 <p>
                   <input
                     v-model="text"
+                    :style="{ background: error.testBg }"
                     type="text"
                     placeholder="スポット"
-                    :style="{ background: error.testBg }"
                   />
                 </p>
                 <p>インスタグラムの写真のURL</p>
                 <p>
                   <input
                     v-model="insUrl"
+                    :style="{ background: error.insUrlBg }"
                     type="url"
                     placeholder="インスタ写真のURL"
-                    :style="{ background: error.insUrlBg }"
                   />
                 </p>
                 <div class="add-btn">
@@ -77,7 +77,7 @@
                   </button>
                 </div>
               </form>
-              <div class="modal-close" @click="isAddList = false">
+              <div @click="isAddList = false" class="modal-close">
                 <i class="material-icons">
                   close
                 </i>
@@ -96,35 +96,35 @@
                   {{ item.title }}
                 </span>
                 <span
-                  class="function-icon-more-vert"
                   @click="moreActive(index)"
+                  class="function-icon-more-vert"
                 >
                   <i class="material-icons">more_vert</i>
                 </span>
                 <transition name="fade05">
                   <div v-if="isMore && selectMore === index" class="more-vert">
-                    <span class="function-icon" @click="addActionPhoto(index)">
+                    <span @click="addActionPhoto(index)" class="function-icon">
                       <i class="material-icons">add_a_photo</i>
                       <span class="function-text">新規追加</span>
                     </span>
                     <span
-                      class="function-icon"
                       @click="editActionPhoto(index, item)"
+                      class="function-icon"
                     >
                       <i class="material-icons">edit</i>
                       <span class="function-text">編集</span>
                     </span>
                     <span
-                      class="function-icon"
                       @click="removeTodoFirebase(item['.key'])"
+                      class="function-icon"
                     >
                       <i class="material-icons">delete_forever</i>
                       <span class="function-text">削除</span>
                     </span>
                     <span
                       v-if="item.done"
-                      class="function-icon"
                       @click="fullActive(index)"
+                      class="function-icon"
                     >
                       <i class="material-icons">
                         fullscreen
@@ -135,8 +135,8 @@
                 </transition>
               </div>
               <blockquote
-                class="instagram-media"
                 :data-instgrm-permalink="item.insUrl"
+                class="instagram-media"
                 data-instgrm-version="12"
                 style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"
               >
@@ -152,7 +152,7 @@
               <div v-if="isAction && index === selectIndex" class="action-spot">
                 <div class="action-spot-wrap">
                   <div class="add-done-ins-form">
-                    <form novalidate @submit.prevent="onCreate(item)">
+                    <form @submit.prevent="onCreate(item)" novalidate>
                       <p class="modal-title">
                         DONE LIST に追加する
                       </p>
@@ -178,22 +178,22 @@
                       <p>
                         <input
                           v-model="insDaneUrl"
+                          :style="{ background: error.insDaneUrlBg }"
                           type="url"
                           placeholder="私のインスタ写真URL"
-                          :style="{ background: error.insDaneUrlBg }"
                         />
                       </p>
                       <div class="origin-photo-grp">
                         <div id="app">
                           <p>私のオリジナル写真を載せる</p>
                           <div
-                            class="origin-photo-add"
                             :style="{ background: error.fileBg }"
+                            class="origin-photo-add"
                           >
                             <input
+                              @change="onFileChange"
                               type="file"
                               class="selectBtn"
-                              @change="onFileChange"
                             />
                           </div>
 
@@ -210,7 +210,7 @@
                         </button>
                       </div>
                     </form>
-                    <div class="modal-close" @click="isAction = false">
+                    <div @click="isAction = false" class="modal-close">
                       <i class="material-icons">
                         close
                       </i>
@@ -227,7 +227,7 @@
               >
                 <div class="action-spot-wrap">
                   <div class="add-done-ins-form">
-                    <form novalidate @submit.prevent="editTodo(item)">
+                    <form @submit.prevent="editTodo(item)" novalidate>
                       <p class="modal-title">
                         LIST 修正する
                       </p>
@@ -253,9 +253,9 @@
                       <p>
                         <input
                           v-model="editSpotName"
-                          type="text"
                           :placeholder="item.title"
                           :style="{ background: error.editSpotNameBg }"
+                          type="text"
                         />
                       </p>
                       <div class="add-btn">
@@ -264,7 +264,7 @@
                         </button>
                       </div>
                     </form>
-                    <div class="modal-close" @click="isEdit = false">
+                    <div @click="isEdit = false" class="modal-close">
                       <i class="material-icons">
                         close
                       </i>
@@ -280,7 +280,7 @@
       <!-- done################################################## -->
       <div class="todo-list-header">
         <span>Done List</span>
-        <span class="function-icon" @click="foldDoneList">
+        <span @click="foldDoneList" class="function-icon">
           <i v-if="doneInsta" class="material-icons unfold">unfold_less</i>
           <i v-if="!doneInsta" class="material-icons unfold">unfold_more</i>
         </span>
@@ -295,8 +295,8 @@
                 </span>
 
                 <span
-                  class="function-icon-more-vert"
                   @click="moreActive(index)"
+                  class="function-icon-more-vert"
                 >
                   <i class="material-icons">more_vert</i>
                 </span>
@@ -304,30 +304,30 @@
                   <div v-if="isMore && selectMore === index" class="more-vert">
                     <span
                       v-if="!item.done"
-                      class="function-icon"
                       @click="addActionPhoto(index)"
+                      class="function-icon"
                     >
                       <i class="material-icons">add_a_photo</i>
                       <span class="function-text">新規追加</span>
                     </span>
                     <span
-                      class="function-icon"
                       @click="editActionPhoto(index, item)"
+                      class="function-icon"
                     >
                       <i class="material-icons">edit</i>
                       <span class="function-text">編集</span>
                     </span>
                     <span
-                      class="function-icon"
                       @click="removeTodoFirebase(item['.key'])"
+                      class="function-icon"
                     >
                       <i class="material-icons">delete_forever</i>
                       <span class="function-text">削除</span>
                     </span>
                     <span
                       v-if="item.done"
-                      class="function-icon"
                       @click="fullActive(index)"
+                      class="function-icon"
                     >
                       <i class="material-icons">
                         fullscreen
@@ -344,7 +344,7 @@
                 >
                   <div class="action-spot-wrap">
                     <div class="add-done-ins-form">
-                      <form novalidate @submit.prevent="editTodo(item)">
+                      <form @submit.prevent="editTodo(item)" novalidate>
                         <p>編集する</p>
                         <div v-if="addTodoErrors.length">
                           <p class="error-title">
@@ -368,9 +368,9 @@
                         <p>
                           <input
                             v-model="editSpotName"
-                            type="text"
                             :placeholder="item.title"
                             :style="{ background: error.editSpotNameBg }"
+                            type="text"
                           />
                         </p>
                         <div class="add-btn">
@@ -379,7 +379,7 @@
                           </button>
                         </div>
                       </form>
-                      <div class="modal-close" @click="isEdit = false">
+                      <div @click="isEdit = false" class="modal-close">
                         <i class="material-icons">
                           close
                         </i>
@@ -391,8 +391,8 @@
 
               <!-- my insta -->
               <blockquote
-                class="instagram-media"
                 :data-instgrm-permalink="item.insDaneUrl"
+                class="instagram-media"
                 data-instgrm-version="12"
                 style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"
               >
@@ -417,8 +417,8 @@
               </div>
 
               <blockquote
-                class="instagram-media"
                 :data-instgrm-permalink="item.insUrl"
+                class="instagram-media"
                 data-instgrm-version="12"
                 style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"
               >
@@ -434,14 +434,14 @@
               <div v-if="isFull && index === selectFull" class="action-spot">
                 <div class="full-image">
                   <div
-                    class="full-image-wrap"
                     :style="{
                       backgroundImage: 'url(' + item.imageUrl + ')',
                       backgroundSize: 'cover',
                       backgroundPosition: 'center'
                     }"
+                    class="full-image-wrap"
                   >
-                    <div class="img-close" @click="isFull = false">
+                    <div @click="isFull = false" class="img-close">
                       <i class="material-icons"> close </i>
                     </div>
                   </div>
@@ -501,8 +501,8 @@
 
 <script>
 // import { mapState, mapGetters, mapMutations } from 'vuex'
-import { mapState } from 'vuex'
 import firebase from '@/plugins/firebase'
+import { mapState } from 'vuex'
 import {
   ADD_TODO,
   REMOVE_TODO,

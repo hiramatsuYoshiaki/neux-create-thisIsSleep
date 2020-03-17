@@ -1,9 +1,9 @@
+const bodyParser = require('body-parser')
 export default {
   mode: 'universal',
   /*
    ** Headers of the page
    */
-
   head: {
     title: process.env.npm_package_name || '',
     meta: [
@@ -83,8 +83,19 @@ export default {
     FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
     FIREBASE_DATABASEURL: process.env.FIREBASE_DATABASEURL,
     FIREBASE_PROJECTID: process.env.FIREBASE_PROJECTID,
-    FIREBASE_STORAGEBUCKET: process.env.FIREBASE_STORAGEBUCKET
+    FIREBASE_STORAGEBUCKET: process.env.FIREBASE_STORAGEBUCKET,
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY
   },
+  /**
+   * add for API
+   */
+  serverMiddleware: [{ path: '/api', handler: '~/api/index.js' }],
+  // serverMiddleware: [bodyParser.json(), '~/api'],
+  // serverMiddleware: [
+  //   // { path: '/server-middleware-api', handler: '~/serverMiddleware/api.js' }
+  //   // { path: '/api/', handler: '~/serverMiddleware/api.js' }
+  //   // ['~~/api/']
+  // ],
   styleResources: {
     sass: ['~/assets/sass/variable.scss']
   },
@@ -104,6 +115,7 @@ export default {
   //     "/contact"
   //   ]
   // },
+
   markdownit: {
     preset: 'default',
     injected: true,
@@ -132,6 +144,12 @@ export default {
      */
     // extend(config, ctx) {}
     extend(config, ctx) {
+      config.node = {
+        console: true,
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+      }
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
           enforce: 'pre',

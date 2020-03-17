@@ -36,13 +36,13 @@
 
         <div class="login-type-sellect">
           <!-- email pass -->
-          <div class="auth-title login-type" @click="link_commit('loginEmail')">
+          <div @click="link_commit('loginEmail')" class="auth-title login-type">
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: !isAuthenticated,
                 logoutcolor: isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>Email and Password</h2>
               <h6>メールとパスワードに基づく認証</h6>
@@ -51,13 +51,13 @@
           </div>
           <br />
           <!-- email link -->
-          <div class="auth-title login-type" @click="link_commit('emailLink')">
+          <div @click="link_commit('emailLink')" class="auth-title login-type">
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: !isAuthenticated,
                 logoutcolor: isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>Email Link</h2>
               <h6>ユーザーに確認メールを送信する</h6>
@@ -69,15 +69,15 @@
           <br />
           <!-- google         -->
           <div
-            class="auth-title login-type"
             @click="link_commit('loginGoogle')"
+            class="auth-title login-type"
           >
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: !isAuthenticated,
                 logoutcolor: isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>Google</h2>
               <h6>フェデレーション ID プロバイダとの統合</h6>
@@ -87,15 +87,15 @@
           <br />
           <!-- Gituub -->
           <div
-            class="auth-title login-type"
             @click="link_commit('loginGithub')"
+            class="auth-title login-type"
           >
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: !isAuthenticated,
                 logoutcolor: isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>GitHub</h2>
               <h6>フェデレーション ID プロバイダとの統合</h6>
@@ -116,13 +116,13 @@
           </div> -->
         </div>
         <div class="login-type-sellect">
-          <div class="auth-title login-type" @click="link_commit('userSet')">
+          <div @click="link_commit('userSet')" class="auth-title login-type">
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: isAuthenticated,
                 logoutcolor: !isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>User Profele Update</h2>
               <h6>ユーザー情報の変更</h6>
@@ -130,13 +130,13 @@
             </div>
           </div>
           <br />
-          <div class="auth-title login-type" @click="link_commit('userMail')">
+          <div @click="link_commit('userMail')" class="auth-title login-type">
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: isAuthenticated,
                 logoutcolor: !isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>Email Upadet</h2>
               <h6>メールアドレス変更</h6>
@@ -144,13 +144,13 @@
             </div>
           </div>
           <br />
-          <div class="auth-title login-type" @click="link_commit('userPass')">
+          <div @click="link_commit('userPass')" class="auth-title login-type">
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: isAuthenticated,
                 logoutcolor: !isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>Pass Upadet</h2>
               <h6>パスワード変更変更</h6>
@@ -158,13 +158,13 @@
             </div>
           </div>
           <br />
-          <div class="auth-title login-type" @click="link_commit('userDel')">
+          <div @click="link_commit('userDel')" class="auth-title login-type">
             <div
-              class="login-type-wrap login-type-wrap-active"
               :class="{
                 loginColor: isAuthenticated,
                 logoutcolor: !isAuthenticated
               }"
+              class="login-type-wrap login-type-wrap-active"
             >
               <h2>user Delete</h2>
               <h6>ユザーを削除する</h6>
@@ -178,9 +178,9 @@
   </div>
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapState, mapGetters } from 'vuex'
 import { GET_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 export default {
   //   props: {
   //     pageTitle: {

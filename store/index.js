@@ -1,4 +1,4 @@
-import { vuexfireMutations, firebaseAction } from 'vuexfire'
+import firebase from '@/plugins/firebase'
 import {
   ADD_TODO,
   REMOVE_TODO,
@@ -9,9 +9,11 @@ import {
   GET_REGISTORY,
   UPDATEDANE_REGISTORY,
   REMOVE_REGISTORY,
-  EDIT_TODO
+  EDIT_TODO,
+  SENDGRID
 } from './actionTypes'
-import firebase from '@/plugins/firebase'
+import { vuexfireMutations, firebaseAction } from 'vuexfire'
+import axios from 'axios'
 
 const db = firebase.database()
 
@@ -97,6 +99,39 @@ export const actions = {
   //   commit('setUser', payload)
   // },
 
+  [SENDGRID]: async (context, msg) => {
+    // const msg = {
+    //   to: 'hiramatsu3300@gmail.com',
+    //   from: this.emai,
+    //   subject: 'CONTACT',
+    //   text: mailMessage,
+    //   name: this.firstName,
+    //   phone: this.phone
+    // }
+
+    // const api = 'https://api.coingecko.com/api/v3/coins/list'
+    // ローカルのドメイン取得
+    const baseUrl = `${location.protocol}//${location.host}`
+    await axios
+      .post(`${baseUrl}/api/sendmail`, {
+        to: msg.to,
+        from: msg.from,
+        name: msg.name,
+        subject: msg.subject,
+        text: msg.text,
+        phone: msg.phone
+      })
+      .then((response) => {
+        context.commit('setMessage', 'ありがとうございます。')
+        context.commit('setMessage', 'メールを送信しました。')
+      })
+      .catch((err) => {
+        context.commit('setMessage', 'メールを送信できませんでした。')
+        context.commit('setMessage', `エラーコード：${err.response.status}`)
+        console.info('axiou post error')
+        console.log(err)
+      })
+  },
   [ADD_REGISTORY]: firebaseAction(async (context, user) => {
     // console.log('dispatch ADD_REGISTORY')
     // console.log('disp uid: ' + user.uid)

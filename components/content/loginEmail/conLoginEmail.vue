@@ -32,7 +32,7 @@
           <p>{{ email }}でログイン中です。</p>
           <div v-if="displayName === '' || displayName === null">
             <p>ユーザー名が登録されていません。</p>
-            <div class="user-page" @click="link_commit('/userSet')">
+            <div @click="link_commit('/userSet')" class="user-page">
               <i class="material-icons">account_circle</i>
               ユーザー登録ページへ移動
               <i class="material-icons arr1 ">double_arrow</i>
@@ -42,7 +42,7 @@
           </div>
           <div v-else>
             <p>{{ displayName }}さん</p>
-            <div class="user-page" @click="link_commit('/mypage')">
+            <div @click="link_commit('/mypage')" class="user-page">
               <i class="material-icons">account_circle</i> ユーザーページへ移動
               <i class="material-icons arr1 ">double_arrow</i>
               <i class="material-icons arr2 ">double_arrow</i>
@@ -81,7 +81,7 @@
 
         <div v-else>
           <div class="login-form">
-            <form novalidate @submit.prevent="loginCheck">
+            <form @submit.prevent="loginCheck" novalidate>
               <div v-if="authErrors.length">
                 <p class="error-title">
                   入力項目を確認してください。
@@ -97,19 +97,19 @@
               <p>
                 <input
                   v-model="email"
+                  :style="{ background: error.emailBg }"
                   type="text"
                   placeholder="メール"
                   required
-                  :style="{ background: error.emailBg }"
                 />
               </p>
               <p>
                 <input
                   v-model="password"
+                  :style="{ background: error.passwordBg }"
                   type="password"
                   placeholder="パスワード"
                   required
-                  :style="{ background: error.passwordBg }"
                 />
               </p>
               <!-- <p v-if="register">
@@ -155,9 +155,9 @@
   </div>
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapState, mapGetters } from 'vuex'
 import { ADD_REGISTORY, GET_REGISTORY } from '~/store/actionTypes'
-import firebase from '@/plugins/firebase'
 export default {
   //   props: {
   //     pageTitle: {
