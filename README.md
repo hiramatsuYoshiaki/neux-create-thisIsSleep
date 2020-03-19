@@ -1260,8 +1260,7 @@ git branch -d new-branch
 
 2. plugins/persistedstate.js を作る
    `persistedstate.js`
-   `
-   import createPersistedState from "vuex-persistedstate";
+   `import createPersistedState from "vuex-persistedstate";`
 
 export default ({store, isHMR}) => {
 // In case of HMR, mutation occurs before nuxReady, so previously saved state
@@ -1558,7 +1557,7 @@ h4 {{title2 | capitalize}}
 初期設定で express をインストールしていないので追加する。
 npm install --save express
 
-## GAE からサードパーティの SendGrid を使ってメールする
+# GAE からサードパーティの SendGrid を使ってメールする
 
 Google Cloud Platform（以下、GCP）環境で,
 Google App Engine（以下、GAE）と SendGrid を利用する
@@ -1590,7 +1589,7 @@ Google App Engine（以下、GAE）と SendGrid を利用する
   },
 ```
 
-### Nuxt.js の serverMiddleware を使って、sendgrid(api) でメール送信する
+# Nuxt.js の serverMiddleware を使って、sendgrid(api) でメール送信する
 
 参考：Nuxt.js の serverMiddleware を使って、api を叩https://mabui.org/nuxtjs-servermiddleware-api/
 参考：Nuxt に「serverMiddleware」を設定して、API サーバ的な動きをさせてみたhttps://liginc.co.jp/438249
@@ -1786,7 +1785,7 @@ module.exports = {
 serverMiddleware: [{ path: '/api', handler: '~/api/index.js' }],
 ```
 
-### Nuxt.js から GoogleCloudFunction を使ってメール送信する
+# Nuxt.js から GoogleCloudFunction を使ってメール送信する
 
 参考：Node.js クイックスタートhttps://cloud.google.com/functions/docs/quickstart-nodejs?hl=ja
 参考：５分でわかる！Google Cloud Functions の使い方https://blog.apar.jp/web/10611/
