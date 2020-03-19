@@ -1590,7 +1590,7 @@ Google App Engine（以下、GAE）と SendGrid を利用する
   },
 ```
 
-### Nuxt.js の serverMiddleware を使って、sendmail(api) でメール送信する
+### Nuxt.js の serverMiddleware を使って、sendgrid(api) でメール送信する
 
 参考：Nuxt.js の serverMiddleware を使って、api を叩https://mabui.org/nuxtjs-servermiddleware-api/
 参考：Nuxt に「serverMiddleware」を設定して、API サーバ的な動きをさせてみたhttps://liginc.co.jp/438249
@@ -1634,7 +1634,7 @@ Google App Engine（以下、GAE）と SendGrid を利用する
 </template>
 <script>
 import { mapState } from 'vuex'
-import { SENDGRID } from '~/store/actionTypes'
+import { SENDGRID, CLOUD_FUNCTION } from '~/store/actionTypes'
 export default {
   data() {
     return {
@@ -1654,7 +1654,10 @@ export default {
         name: this.firstName,
         phone: this.phone
       }
-      this.$store.dispatch(SENDGRID, msg)
+      // sendgrid api からメール送信
+      this.$store.dispatch(SENDGRID, sendMsg)
+      // google cloud function からメール送信
+      //this.$store.dispatch(CLOUD_FUNCTION, sendMsg)
     },
   }
 }
@@ -1781,4 +1784,273 @@ module.exports = {
 
 ```
 serverMiddleware: [{ path: '/api', handler: '~/api/index.js' }],
+```
+
+### Nuxt.js から GoogleCloudFunction を使ってメール送信する
+
+参考：Node.js クイックスタートhttps://cloud.google.com/functions/docs/quickstart-nodejs?hl=ja
+参考：５分でわかる！Google Cloud Functions の使い方https://blog.apar.jp/web/10611/
+参考：Nuxt.js のメソッド内で外部 API を叩くと cors エラーが起きるhttps://qiita.com/naokada/items/394c1d85ad2975ba62f0
+
+## 1.Cloud Console を使用して Node.js Cloud 関数を作成
+
+Node.js クイックスタート(https://cloud.google.com/functions/docs/quickstart-nodejs?hl=ja)に従って作成します。
+
+1. GCP Console のプロジェクト セレクタのページで、GCP プロジェクト[nuxt-create-gac-sendgrid]を選択
+2. ナビゲーションバーのナビゲーションメニューをクリックして、[Cloud Function] を選択
+3. [関数を作成] をクリックします。
+4. 関数に名前(sendgrid)を付けます。
+5. [トリガー] フィールドで、[HTTP] を選択します。
+6. [ソースコード] フィールドで [インライン エディタ]
+7. [ランタイム] プルダウンで、必要な Node.js ランタイム(Node.js 10)を選択します。
+8. ページの下部にある [作成] をクリックします。
+9. 関数の操作メニューを表示して、[関数をテスト] をクリックします。
+10. [出力] 画面にテキスト "Hello World!" が表示されます。
+
+## 2.Cloud Console を使用して Node.js Cloud 関数を編集して sendgrid からメール送信させる。
+
+1. 関数の[名前]をクリックする。
+2. ヘッダーバーの[編集]をクリックする。
+3. [INDEX.JS]タグを選択して、ソースコードを編集して[ok]ボタンを押す。
+   `index.js`
+
+```
+/**
+ * Responds to any HTTP request.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+//require('dotenv').config()
+exports.helloWorld = (req, res) => {
+  //let message = req.query.message || req.body.message || 'Hello SendGrid!';
+  //res.status(200).send(message);
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, POST')
+
+  const sgMail = require('@sendgrid/mail')
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    // const msg = {
+    //   to: 'hiramatsu3300@gmail.com',
+    //   from: 'hworksdev@gmail.com',
+    //   subject: 'Test SendGrid GCF',
+    //   text: 'This is a test of the SendGrid app on Node by Google Cloud Function',
+    //   html:
+    //     '<strong>This is a test2 of the SendGrid app on Node by Google Cloud Function</strong><h1>SendGrid X by GCF</h1>'
+    //  }
+     const msg = {
+    	to: req.body.to,
+    	from: req.body.from,
+    	subject: req.body.subject,
+    	text: req.body.text,
+    	html: `<h3>MESSAGE GCF</h3>
+        	<strong>${req.body.text}</strong>
+        	<br>
+        	<p>Name:<span>${req.body.name}<span></p>
+        	<p>from:<span>${req.body.from}</span><p>
+        	<p>Phone:<span>${req.body.phone}<span></p>
+         `
+  }
+  sgMail.send(msg).then(() => {}, console.error)
+  res.send('SendMail API GCF test ')
+
+};
+```
+
+4. [PACKAGE.JSON]タグを選択して、ソースコードを編集して[ok]ボタンを押す。
+   `pakage.json`
+
+```
+{
+  "name": "sample-http",
+  "version": "0.0.1",
+  "dependencies": {
+    	"@sendgrid/mail": "^6.5.4"
+      }
+
+}
+```
+
+5. [環境変数]ボタンを押す。
+6. [変数を追加]ボタンを押し、名前と値を入力する。
+
+```
+  名前:SENDGRID_API_KEY
+  値:SG.RpXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+```
+
+名前は、nuxt.config の env で設定した名前
+`env: {SENDGRID_API_KEY: process.env.SENDGRID_API_KEY},`
+値は、SendGrid ウェブサイトで初期設定時に発行された API キー
+`SG.RpXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+
+7. [デプロイ]ボタンを押し、名前と値を入力する。
+8. ヘッダーバーの関数の編集の左の[←]ボタンを押し、前のページに戻る
+9. [テスト]タブを押す。
+10. トリガーとなるイベントを入力する。
+
+```
+ {
+     "to":"hiramatsuXXXX@gmail.com",
+     "from":"hworksXXX@gmail.com",
+     "name":"hworksXXX",
+     "subject":"sendgrid gcf test",
+     "text":"test google cloud function trriger",
+     "phone":"09011112222"
+  }
+```
+
+11. [関数をテスト] をクリックします。
+12. メールを確認します。
+
+## 3.Nuxt.js から GoogleCloudFunction の HTTP 関数を呼び出す。
+
+1. フォームボタンより Vuex の dispatch メソッドを使用して、コンポーネントの任意のタイミングで実行
+   `pages/thisIsSleep/contact/contact.vue`
+
+```
+<template lang="pug">
+  div
+    form(@submit.prevent="sendMail" novalidate)
+        div(v-if="loginErrors.length")
+          p.error-title 入力項目を確認してください。
+            ul
+              li(v-for="(loginError, indexError) in loginErrors" :key="indexError")
+                p.error-msg {{ loginError}}
+        div.first-name
+            label.label
+                div.h7 name
+            input.input(v-model="firstName" type="text" placeholder="name" required :style="{ background: errorBg.fNameBg }")
+        div.email-enter
+            label.label
+                div.h7 Email
+            input.input(v-model="email" type="email" placeholder="Email" required :style="{ background: errorBg.emailBg }")
+        div.phone-number
+            label.label
+                div.h7 phone number
+            input.input(v-model="phone" type="text" placeholder="phone" required :style="{ background: errorBg.phoneBg }")
+        div.message
+            label.label
+                div.h7 message
+            textarea(v-model="mailMessage" name="textarea" rows="10" cols="50" placeholder="message" required :style="{ background: errorBg.mailMessageBg }")
+
+        button.submit-button(type="submit")
+            div
+                div.h7 SEND
+</template>
+<script>
+import { mapState } from 'vuex'
+import { SENDGRID, CLOUD_FUNCTION } from '~/store/actionTypes'
+export default {
+  data() {
+    return {
+      firstName: null,
+      email: null,
+      phone: null,
+      mailMessage: null
+    }
+  },
+  methods: {
+    sendMail() {
+      const msg = {
+        to: 'hiramatsu3300@gmail.com',
+        from: this.email,
+        subject: 'CONTACT',
+        text: this.mailMessage,
+        name: this.firstName,
+        phone: this.phone
+      }
+      // sendgrid api からメール送信
+      //this.$store.dispatch(SENDGRID, sendMsg)
+      // google cloud function からメール送信
+      this.$store.dispatch(CLOUD_FUNCTION, sendMsg)
+    },
+  }
+}
+</script>
+```
+
+2. store Action から axiou で http を使って POST する
+   `store/actionType.js`
+
+```
+export const SENDGRID = 'SENDGRID'
+```
+
+`store/index.js`
+
+```
+import { CLOUD_FUNCTION } from './actionTypes'
+import axios from 'axios'
+export const actions = {
+  [CLOUD_FUNCTION]: async (context, msg) => {
+    // ローカルのドメイン取得
+    const baseUrl = `${location.protocol}//${location.host}`
+    await axios
+      .post(`${baseUrl}/function`, // 'https://us-central1-nuxt-univ-create-gae-todo.cloudfunctions.net/sendgrid '
+       {
+        to: msg.to,
+        from: msg.from,
+        name: msg.name,
+        subject: msg.subject,
+        text: msg.text,
+        phone: msg.phone
+      })
+      .then((response) => {
+        context.commit('setMessage', 'ありがとうございます。')
+        context.commit('setMessage', 'メールを送信しました。')
+      })
+      .catch((err) => {
+        context.commit('setMessage', 'メールを送信できませんでした。')
+        context.commit('setMessage', `エラーコード：${err.response.status}`)
+        console.info('axiou post error')
+        console.log(err)
+      })
+  },
+}
+```
+
+## 4. Nuxt.js のメソッド内で外部 API を叩くと cors エラーが起きるので@nuxtjs/axios にある機能を使用して Proxy を設定する。
+
+1. axios のオプションを有効にし、proxy を設定する。
+   `nuxt.config.js`
+
+```
+export default {
+  modules: [
+    '@nuxtjs/axios'
+  ],
+  axios: {
+    proxy: true
+  },
+  proxy: {
+    '/function': {
+      target:
+        'https://us-central1-nuxt-univ-create-gae-todo.cloudfunctions.net/sendgrid',
+      pathRewrite: {
+        '^/function': '/'
+      }
+    }
+  plugins: [
+    { src: 'plugins/axios.js', ssr: false }
+  ],
+}
+```
+
+proxy は、`axios.post(${baseUrl}/function`に一致させる(任意の名前)。
+traget は、GoogleCloudFunction の関数の詳細画面のトリガータブに表示された URL を使う。
+`https://us-central1-nuxt-univ-create-gae-todo.cloudfunctions.net/sendgrid`
+
+2. Nuxt.js の pulagin ディレクトリに`axios.js`を作り、編集する。
+   `pulugin/axios.js`
+
+```
+export default ({ $axios, redirect }) => {
+  $axios.setToken('access_token')
+
+  $axios.onResponse((config) => {
+    $axios.setHeader('Access-Control-Allow-Origin', '*')
+  })
+}
 ```

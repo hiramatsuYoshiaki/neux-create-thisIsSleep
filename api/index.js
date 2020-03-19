@@ -55,6 +55,7 @@ app.post('/sendmail', (req, res, next) => {
   // パラメータ名、nameを出力
   //   console.log(req.body.to)
 
+  //これでStatusをStoreへ返している
   res.send('SendMail API test2 req: ')
 })
 // export the server middleware

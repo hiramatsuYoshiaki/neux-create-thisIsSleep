@@ -1,20 +1,31 @@
 <template>
   <div class="wrape">
-    <!-- <div v-if="isLogin" class="hw--btn" @click="setLogout()"> -->
-    <div v-if="isLogin" class="hw--btn">
-      <div @click="closeMobileMenu()" class="link-wrape">
-        <nuxt-link to="/thisIsSleep/account/logout">
-          Account
-        </nuxt-link>
+    <div class="account-block">
+      <div v-if="isLogin" class="hw--btn">
+        <div @click="closeMobileMenu()" class="link-wrape">
+          <nuxt-link to="/thisIsSleep/account/logout">
+            Account
+          </nuxt-link>
+        </div>
+      </div>
+      <div v-else class="hw--btn">
+        <div @click="closeMobileMenu()" class="link-wrape">
+          <nuxt-link to="/thisIsSleep/account/login">
+            Log in
+          </nuxt-link>
+        </div>
       </div>
     </div>
-    <!-- <div v-else class="hw--btn" @click="setLogin()"> -->
-    <div v-else class="hw--btn">
-      <div @click="closeMobileMenu()" class="link-wrape">
-        <nuxt-link to="/thisIsSleep/account/login">
-          Log in
-        </nuxt-link>
+    <div class="cart-block">
+      <div @click="chekCart()">
+        <i class="fas fa-shopping-cart" />
+        {{ shoppingCart }}
+        <!-- <i class="fas fa-cart-plus" />
+        <i class="fas fa-cart-arrow-down" /> -->
       </div>
+    </div>
+    <div v-if="shoppingCart" class="shopping-list">
+      shipping list {{ shoppingCart }}
     </div>
   </div>
 </template>
@@ -48,7 +59,8 @@ export default {
   // },
   computed: {
     ...mapState('headerBar', ['isOpenMobileMenu']),
-    ...mapState('account', ['isLogin'])
+    ...mapState('account', ['isLogin']),
+    ...mapState('cart', ['shoppingCart'])
   },
   methods: {
     ...mapMutations({ close: 'headerBar/closeMobileMenu' }),
@@ -56,13 +68,16 @@ export default {
     // ...mapMutations({ logout: 'account/setLogout' }),
     closeMobileMenu() {
       this.close()
-    }
+    },
     // setLogin() {
     //   this.login()
     // },
     // setLogout() {
     //   this.logout()
     // }
+    chekCart() {
+      this.$store.commit('cart/setShoppingCart', !this.shoppingCart)
+    }
   }
 }
 </script>
@@ -70,5 +85,27 @@ export default {
 .link-wrape {
   width: 5rem;
   text-align: center;
+}
+.account-block {
+  display: none;
+  @media (min-width: 976px) {
+    display: block;
+  }
+}
+.cart-block {
+  cursor: pointer;
+}
+//shopping list
+.shopping-list {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10rem;
+  height: 20rem;
+  margin-top: 4rem;
+  background-color: white;
+  border: 1px solid red;
+  color: black;
+  padding: 1rem;
 }
 </style>

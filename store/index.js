@@ -10,7 +10,8 @@ import {
   UPDATEDANE_REGISTORY,
   REMOVE_REGISTORY,
   EDIT_TODO,
-  SENDGRID
+  SENDGRID,
+  CLOUD_FUNCTION
 } from './actionTypes'
 import { vuexfireMutations, firebaseAction } from 'vuexfire'
 import axios from 'axios'
@@ -95,23 +96,8 @@ export const mutations = {
 }
 
 export const actions = {
-  // setUser({ commit }, payload) {
-  //   commit('setUser', payload)
-  // },
-
   [SENDGRID]: async (context, msg) => {
-    // const msg = {
-    //   to: 'hiramatsu3300@gmail.com',
-    //   from: this.emai,
-    //   subject: 'CONTACT',
-    //   text: mailMessage,
-    //   name: this.firstName,
-    //   phone: this.phone
-    // }
-
-    // const api = 'https://api.coingecko.com/api/v3/coins/list'
-    // ローカルのドメイン取得
-    const baseUrl = `${location.protocol}//${location.host}`
+    const baseUrl = `${location.protocol}//${location.host}` // ローカルのドメイン取得
     await axios
       .post(`${baseUrl}/api/sendmail`, {
         to: msg.to,
@@ -124,6 +110,7 @@ export const actions = {
       .then((response) => {
         context.commit('setMessage', 'ありがとうございます。')
         context.commit('setMessage', 'メールを送信しました。')
+        console.log(response)
       })
       .catch((err) => {
         context.commit('setMessage', 'メールを送信できませんでした。')
@@ -131,6 +118,43 @@ export const actions = {
         console.info('axiou post error')
         console.log(err)
       })
+  },
+  [CLOUD_FUNCTION]: async (context, msg) => {
+    // google cloud function trriger
+    const baseUrl = `${location.protocol}//${location.host}` // ローカルのドメイン取得
+    await axios
+      .post(
+        `${baseUrl}/function`, // 'https://us-central1-nuxt-univ-create-gae-todo.cloudfunctions.net/sendgrid '
+        {
+          to: msg.to,
+          from: msg.from,
+          name: msg.name,
+          subject: msg.subject,
+          text: msg.text,
+          phone: msg.phone
+        }
+      )
+      .then((response) => {
+        context.commit('setMessage', 'ありがとうございます。')
+        context.commit('setMessage', 'メールを送信しました。')
+        console.info('send mail cloud function ok')
+        console.log(response)
+      })
+      .catch((err) => {
+        context.commit('setMessage', 'メールを送信できませんでした。')
+        context.commit('setMessage', `エラーコード：${err.response.status}`)
+        console.info('axiou post error cloud function no good ')
+        console.log(err)
+      })
+    // cloud function triger json
+    // {
+    // "to":"hiramatsu3300@gmail.com",
+    // "from":"hworksdev@gmail.com",
+    // "name":"hworksdev",
+    // "subject":"sendgrid gcf test",
+    // "text":"test google cloud function trriger",
+    // "phone":"09011112222"
+    //   }
   },
   [ADD_REGISTORY]: firebaseAction(async (context, user) => {
     // console.log('dispatch ADD_REGISTORY')

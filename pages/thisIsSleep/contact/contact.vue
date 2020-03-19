@@ -50,7 +50,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import { SENDGRID } from '~/store/actionTypes'
+import { SENDGRID, CLOUD_FUNCTION } from '~/store/actionTypes'
 import level2SlotsComponent from '~/components/layouts/levelSlots/level2SlotsComponent.vue'
 export default {
   layout: 'layout3Parts',
@@ -92,8 +92,7 @@ export default {
     },
     sendMail() {
       this.$store.commit('clearMessage')
-      // alert('sendMail')
-      const msg = {
+      const sendMsg = {
         to: 'hiramatsu3300@gmail.com',
         from: this.email,
         subject: 'CONTACT',
@@ -101,14 +100,12 @@ export default {
         name: this.firstName,
         phone: this.phone
       }
-      this.$store.dispatch(SENDGRID, msg)
+      // sendgrid api からメール送信
+      this.$store.dispatch(SENDGRID, sendMsg)
+      // google cloud function からメール送信
+      this.$store.dispatch(CLOUD_FUNCTION, sendMsg)
     },
     mailCheck(e) {
-      // alert('mailCheck')
-      // alert('firstName--> ' + this.firstName)
-      // alert('email--> ' + this.email)
-      // alert('phone--> ' + this.phone)
-      // alert('mailMessage--> ' + this.mailMessage)
       this.$store.commit('account/clearLoginError')
       this.$store.commit('account/clearErrorBg', '#e3f2fd')
       this.$store.commit('clearMessage')

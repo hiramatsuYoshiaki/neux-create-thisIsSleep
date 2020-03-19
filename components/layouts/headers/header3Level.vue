@@ -9,8 +9,8 @@ div.headerbarWrap
             glovalMenu
         div.loginMenu
             loginMenu
-    nav.modalMenu(v-if="isOpenMobileMenu")
 
+    nav.modalMenu(v-if="isOpenMobileMenu")
         div.brand
             brand2Parts
         div.mobileMenu

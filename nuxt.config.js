@@ -52,6 +52,8 @@ export default {
   plugins: [
     //firebaseを使う
     '~/plugins/firebase',
+    //proxy
+    { src: '~/plugins/axios', ssr: false },
     //localStorageでstoreを永続化する
     { src: '~/plugins/localStorage.js', ssr: false },
     //vue-carousel
@@ -90,12 +92,7 @@ export default {
    * add for API
    */
   serverMiddleware: [{ path: '/api', handler: '~/api/index.js' }],
-  // serverMiddleware: [bodyParser.json(), '~/api'],
-  // serverMiddleware: [
-  //   // { path: '/server-middleware-api', handler: '~/serverMiddleware/api.js' }
-  //   // { path: '/api/', handler: '~/serverMiddleware/api.js' }
-  //   // ['~~/api/']
-  // ],
+
   styleResources: {
     sass: ['~/assets/sass/variable.scss']
   },
@@ -134,7 +131,22 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    proxy: true
+  },
+  // cors
+  proxy: {
+    // '/api/': {target: 'YOUR API URL', pathRewrite: {'^/api/': '/'}}
+    '/function': {
+      target:
+        'https://us-central1-nuxt-univ-create-gae-todo.cloudfunctions.net/sendgrid',
+      pathRewrite: {
+        '^/function': '/'
+      }
+    }
+    // '/api':
+    //   'https://us-central1-nuxt-univ-create-gae-todo.cloudfunctions.net/sendgrid '
+  },
   /*
    ** Build configuration
    */
