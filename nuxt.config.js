@@ -61,7 +61,7 @@ export default {
     //transition on scroll
     { src: '~plugins/scroll.js', ssr: false },
     //filter orijinal
-    { src: '~/plugins/filter.js', ssr: false }
+    '~/plugins/filter.js'
   ],
   /*
    ** Nuxt.js modules

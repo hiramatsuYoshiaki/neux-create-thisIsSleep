@@ -5,17 +5,17 @@
             brand2Parts
         div.elementWrape
             mobileMenu
-        div.elementWrape
-            loginMenu
+        //- div.elementWrape
+        //-     loginMenu
 </template>
 <script>
 import mobileMenu from '~/components/header/mobileMenu.vue'
-import loginMenu from '~/components/header/loginMenu.vue'
+// import loginMenu from '~/components/header/loginMenu.vue'
 import brand2Parts from '~/components/header/brand2Parts.vue'
 
 export default {
   components: {
-    loginMenu,
+    // loginMenu,
     mobileMenu,
     brand2Parts
   }

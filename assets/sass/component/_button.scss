@@ -2,3 +2,83 @@
   cursor: pointer;
   outline: 0;
 }
+.component--btn {
+  display: block;
+  color: $white;
+  font-size: $size-6;
+  font-weight: $weight-normal;
+  background-color: $black-ter;
+  border-radius: 2.6rem;
+  max-width: 100%;
+  width: 100%;
+  height: 2.6rem;
+  text-align: center;
+  border-style: solid;
+  border-color: gray;
+  border-width: 1px;
+  box-shadow: 1px $black;
+  outline: 0;
+  cursor: pointer;
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: $grey-light;
+    border-style: solid;
+    border-color: $grey-darker;
+    border-width: 1px;
+    box-shadow: 1px $black;
+  }
+}
+
+.component--input {
+  display: block;
+  color: $grey;
+  font-size: $size-6;
+  font-weight: $weight-normal;
+  background-color: $white;
+  border-radius: 3.2rem;
+  max-width: 100%;
+  width: 15rem;
+  height: 2.6rem;
+  padding-left: 0.5rem;
+  border-style: solid;
+  border-color: $grey;
+  border-width: 1px;
+  box-shadow: 1px $grey;
+  outline: 0;
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: $grey;
+    border-style: solid;
+    border-color: $grey-darker;
+    border-width: 1px;
+    box-shadow: 1px $black;
+  }
+}
+.component--select {
+  display: block;
+  color: $grey;
+  font-size: $size-6;
+  font-weight: $weight-normal;
+  background-color: $white;
+  border-radius: 3.2rem;
+  max-width: 100%;
+  width: 15rem;
+  height: 2.6rem;
+  padding-left: 0.5rem;
+  border-style: solid;
+  border-color: $grey;
+  border-width: 1px;
+  box-shadow: 1px $grey;
+  outline: 0;
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: $grey;
+    border-style: solid;
+    border-color: $grey-darker;
+    border-width: 1px;
+    box-shadow: 1px $black;
+  }
+}

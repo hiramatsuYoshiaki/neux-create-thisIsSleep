@@ -5,8 +5,8 @@
         alternation
             template(v-slot:alternation)
               div.sort-wrape.left-group
-                //- h4 {{title1 | capitalize}}
                 h4 {{title2 | capitalize}}
+                //- h4 {{title2}}
         alternation
             template(v-slot:alternation)
               div.sort-wrape.right-group
@@ -61,9 +61,14 @@
                 div date:{{item.date}}
                 div featuerd:{{item.featured}}
                 div sellin:{{item.selling}}
+                div inventory:{{item.inventory}}
+                button(@click="addProductToCart(item)") addProductToCart
+                nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
+                  p(style="color:black")  product page
 
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
 import alternation from '~/components/layouts/alternationSlots/alternationSlot.vue'
 export default {
   layout: 'layout3Parts',
@@ -95,61 +100,68 @@ export default {
         { id: 5, name: '2000~', value: 2000 }
       ],
       filterStart: 0,
-      filterEnd: 999999999,
+      filterEnd: 999999999
 
-      items: [
-        {
-          id: 1,
-          img: require('~/assets/img/img3614.jpg'),
-          title: 'Bay Cruse  ',
-          subTitle: 'Discover the most amazing spot around the japan',
-          price: 800,
-          link: 'explore Now',
-          to: '/account/registration',
-          date: '2019-01-01',
-          featured: 100,
-          selling: 100
-        },
-        {
-          id: 2,
-          img: require('~/assets/img/img2731.jpg'),
-          title: 'safety simulator',
-          subTitle: 'Get inspired by the buzz of the Amusement ',
-          price: 0,
-          link: 'explore Now',
-          to: '/contact/countactUs',
-          date: '2019-01-02',
-          featured: 20,
-          selling: 70
-        },
-        {
-          id: 3,
-          img: require('~/assets/img/img3668.jpg'),
-          title: 'hotalna',
-          subTitle: 'River cruise on a futuristic design ship',
-          price: 2000,
-          link: 'return to home ',
-          to: '/account/registration',
-          date: '2019-01-03',
-          featured: 90,
-          selling: 20
-        },
-        {
-          id: 4,
-          img: require('~/assets/img/img3809.jpg'),
-          title: 'fuji tv',
-          subTitle: 'Amazing view from the observation deck',
-          price: 1200,
-          link: 'return to home ',
-          to: '/account/registration',
-          date: '2019-01-04',
-          featured: 50,
-          selling: 50
-        }
-      ]
+      // items: [
+      //   {
+      //     id: 1001,
+      //     img: require('~/assets/img/img3614.jpg'),
+      //     title: 'Bay Cruse  ',
+      //     subTitle: 'Discover the most amazing spot around the japan',
+      //     price: 800,
+      //     link: 'explore Now',
+      //     to: '/account/registration',
+      //     date: '2019-01-01',
+      //     featured: 100,
+      //     selling: 100,
+      //     inventory: 10
+      //   },
+      //   {
+      //     id: 1002,
+      //     img: require('~/assets/img/img2731.jpg'),
+      //     title: 'safety simulator',
+      //     subTitle: 'Get inspired by the buzz of the Amusement ',
+      //     price: 0,
+      //     link: 'explore Now',
+      //     to: '/contact/countactUs',
+      //     date: '2019-01-02',
+      //     featured: 20,
+      //     selling: 70,
+      //     inventory: 10
+      //   },
+      //   {
+      //     id: 1003,
+      //     img: require('~/assets/img/img3668.jpg'),
+      //     title: 'hotalna',
+      //     subTitle: 'River cruise on a futuristic design ship',
+      //     price: 2000,
+      //     link: 'return to home ',
+      //     to: '/account/registration',
+      //     date: '2019-01-03',
+      //     featured: 90,
+      //     selling: 20,
+      //     inventory: 10
+      //   },
+      //   {
+      //     id: 1004,
+      //     img: require('~/assets/img/img3809.jpg'),
+      //     title: 'fuji tv',
+      //     subTitle: 'Amazing view from the observation deck',
+      //     price: 1200,
+      //     link: 'return to home ',
+      //     to: '/account/registration',
+      //     date: '2019-01-04',
+      //     featured: 50,
+      //     selling: 50,
+      //     inventory: 10
+      //   }
+      // ]
     }
   },
   computed: {
+    ...mapState('products', {
+      items: 'all'
+    }),
     // sort
     sortedData() {
       if (this.sortType === 'Featured') {
@@ -233,6 +245,34 @@ export default {
     }
   },
   methods: {
+    ...mapActions('cart', ['addProductToCartAction']),
+    // ...mapActions('cart', { addProduct: ['addProductToCartAction'] }),
+    // ...mapActions('cart', { addProduct: ['checkout'] }),
+    addProductToCart(item) {
+      // alert('addProductToCart')
+      const product = {
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        inventory: item.inventory
+      }
+      console.log(item.title)
+      // this.$store.dispatch('cart/addProductToCartAction', product)
+      this.addProductToCartAction(product)
+      // this.$store.commit('cart/addProduct', product)
+      // {
+      //     id: 1,
+      //     img: require('~/assets/img/img3614.jpg'),
+      //     title: 'Bay Cruse  ',
+      //     subTitle: 'Discover the most amazing spot around the japan',
+      //     price: 800,
+      //     link: 'explore Now',
+      //     to: '/account/registration',
+      //     date: '2019-01-01',
+      //     featured: 100,
+      //     selling: 100
+      //   },
+    },
     onChange() {
       this.sortType = this.selected
       if (this.selected === 'Featured') {
@@ -279,6 +319,9 @@ export default {
       }
     }
   }
+  // created() {
+  //   this.$store.commit('cart/setAllProducts', this.items)
+  // }
 }
 </script>
 <style lang="scss" scoped>
