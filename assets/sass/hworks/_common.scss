@@ -12,13 +12,15 @@ html {
   background-color: $works-body-color;
   // font-size: 16px;
   // font-size: 62.5%;
-  font-size: $font-size; //1em=10px
+  font-size: $font-size; //62.8% 1em=10px
   min-width: $body-min-width;
   //   text-rendering: $body-rendering;
   text-size-adjust: 100%;
+  font-family: $font-family;
 }
 body {
   color: $body-color;
+  font-size: $font-size-px; //1.6rem=16px
   //   font-size: $body-font-size; //1.6rem=16px
   //   font-weight: $body-weight;
   //   line-height: $body-line-height;

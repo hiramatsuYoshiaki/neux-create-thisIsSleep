@@ -1,10 +1,18 @@
 export const state = () => ({
-  selectedId: null
+  selectedId: null,
+  reviewErrors: []
 })
 
 export const mutations = {
   setSelectedId(state, id) {
     state.selectedId = id
+  },
+  setRevueError(state, payload) {
+    console.log(payload)
+    state.reviewErrors.push(payload)
+  },
+  clearRevueError(state) {
+    state.reviewErrors.splice(0)
   }
 }
 
@@ -28,6 +36,50 @@ export const getters = {
       featured: selectProduct.featured,
       selling: selectProduct.selling,
       inventory: selectProduct.inventory
+    }
+  },
+  getErrorBgColorName: (state, getters, rootState) => {
+    console.log(state.reviewErrors)
+    const errorCheck = state.reviewErrors.find((error) => {
+      return error.check === 'name'
+    })
+    if (errorCheck) {
+      return errorCheck.bg
+    } else {
+      return '#e3f2fd'
+    }
+  },
+  getErrorBgColorMail: (state, getters, rootState) => {
+    console.log(state.reviewErrors)
+    const errorCheck = state.reviewErrors.find((error) => {
+      return error.check === 'mail'
+    })
+    if (errorCheck) {
+      return errorCheck.bg
+    } else {
+      return '#e3f2fd'
+    }
+  },
+  getErrorBgColorTitle: (state, getters, rootState) => {
+    console.log(state.reviewErrors)
+    const errorCheck = state.reviewErrors.find((error) => {
+      return error.check === 'title'
+    })
+    if (errorCheck) {
+      return errorCheck.bg
+    } else {
+      return '#e3f2fd'
+    }
+  },
+  getErrorBgColorReview: (state, getters, rootState) => {
+    console.log(state.reviewErrors)
+    const errorCheck = state.reviewErrors.find((error) => {
+      return error.check === 'review'
+    })
+    if (errorCheck) {
+      return errorCheck.bg
+    } else {
+      return '#e3f2fd'
     }
   }
 }

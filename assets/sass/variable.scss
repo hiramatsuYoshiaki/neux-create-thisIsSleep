@@ -27,9 +27,9 @@ $buycolor: #b6c1c7 !default;
 
 // Typography
 
-$family-sans-serif: BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto',
-  'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  'Helvetica', 'Arial', sans-serif !default;
+$family-sans-serif: Gilroy-Semibold, BlinkMacSystemFont, -apple-system,
+  'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+  'Droid Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !default;
 $family-monospace: monospace !default;
 $render-mode: optimizeLegibility !default;
 
@@ -131,7 +131,7 @@ $font-family: '游ゴシック Medium', 'Yu Gothic Medium', '游ゴシック体'
 // $font-size: 1.25em!default;
 // $line-height: 1.66em!default;
 $font-size: 62.5% !default;
-// $font-size: 16px !default;
+$font-size-px: 16px !default;
 $line-height: 16px !default;
 
 //link

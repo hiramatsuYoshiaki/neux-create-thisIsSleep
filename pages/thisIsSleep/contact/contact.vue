@@ -141,7 +141,7 @@ export default {
       }
       if (!this.mailMessage) {
         this.$store.commit('account/setLoginError', 'メッセージは必須です。')
-        this.$store.commit('account/setmailMessageBg', '#f8bbd0')
+        this.$store.commit('account/setMailMessageBg', '#f8bbd0')
       }
 
       if (!this.loginErrors.length) {

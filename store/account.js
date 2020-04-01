@@ -45,7 +45,7 @@ export const mutations = {
   setPhoneBg(state, payload) {
     state.errorBg.phoneBg = payload
   },
-  setMailMessage(state, payload) {
+  setMailMessageBg(state, payload) {
     state.errorBg.mailMessageBg = payload
   },
   clearErrorBg(state, payload) {

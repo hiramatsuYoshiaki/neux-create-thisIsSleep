@@ -45,7 +45,7 @@ export const mutations = {
 
 export const getters = {
   cartProducts: (state, getters, rootState) => {
-    console.info('getters cart Products')
+    // console.info('getters cart Products')
     return state.cartItems.map(({ id, quantity }) => {
       const cartData = rootState.products.all.find((product) => {
         return product.id === id

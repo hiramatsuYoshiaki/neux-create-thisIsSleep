@@ -56,6 +56,33 @@
     box-shadow: 1px $black;
   }
 }
+.component--textarea {
+  display: block;
+  color: $grey;
+  font-size: $size-6;
+  font-weight: $weight-normal;
+  background-color: $white;
+  border-radius: 1.2rem;
+  max-width: 100%;
+  width: 15rem;
+  height: 15rem;
+  padding-left: 0.5rem;
+  padding-top: 0.5rem;
+  border-style: solid;
+  border-color: $grey;
+  border-width: 1px;
+  box-shadow: 1px $grey;
+  outline: 0;
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: $grey;
+    border-style: solid;
+    border-color: $grey-darker;
+    border-width: 1px;
+    box-shadow: 1px $black;
+  }
+}
 .component--select {
   display: block;
   color: $grey;
