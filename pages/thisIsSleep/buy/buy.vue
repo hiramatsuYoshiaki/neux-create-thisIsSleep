@@ -58,13 +58,13 @@
                 div {{item.title}}
                 div {{item.subTitle}}
                 div {{yen}}{{item.price}}
-                div date:{{item.date}}
-                div featuerd:{{item.featured}}
-                div sellin:{{item.selling}}
-                div inventory:{{item.inventory}}
-                button(@click="addProductToCart(item)") addProductToCart
+                //- div date:{{item.date}}
+                //- div featuerd:{{item.featured}}
+                //- div sellin:{{item.selling}}
+                //- div inventory:{{item.inventory}}
+                //- button(@click="addProductToCart(item)") addProductToCart
                 nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
-                  p(style="color:black")  product page
+                  p(style="color:black")   Tour Detail
 
 </template>
 <script>
@@ -246,33 +246,15 @@ export default {
   },
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
-    // ...mapActions('cart', { addProduct: ['addProductToCartAction'] }),
-    // ...mapActions('cart', { addProduct: ['checkout'] }),
-    addProductToCart(item) {
-      // alert('addProductToCart')
-      const product = {
-        id: item.id,
-        title: item.title,
-        price: item.price,
-        inventory: item.inventory
-      }
-      console.log(item.title)
-      // this.$store.dispatch('cart/addProductToCartAction', product)
-      this.addProductToCartAction(product)
-      // this.$store.commit('cart/addProduct', product)
-      // {
-      //     id: 1,
-      //     img: require('~/assets/img/img3614.jpg'),
-      //     title: 'Bay Cruse  ',
-      //     subTitle: 'Discover the most amazing spot around the japan',
-      //     price: 800,
-      //     link: 'explore Now',
-      //     to: '/account/registration',
-      //     date: '2019-01-01',
-      //     featured: 100,
-      //     selling: 100
-      //   },
-    },
+    // addProductToCart(item) {
+    //   const product = {
+    //     id: item.id,
+    //     title: item.title,
+    //     price: item.price,
+    //     inventory: item.inventory
+    //   }
+    //   this.addProductToCartAction(product)
+    // },
     onChange() {
       this.sortType = this.selected
       if (this.selected === 'Featured') {

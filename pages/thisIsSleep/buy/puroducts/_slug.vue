@@ -11,12 +11,13 @@
                                     //- h5 route.params.slug: {{ $route.params.slug }}
                                     //- h5 store is : {{ selectedId }}
                                     //- h5 select product : {{ selectProduct.img }}
+                                    //- h5 select product : {{ selectProduct.img }}
                                     //- h5 select product : {{ selectProduct.id }}
                                     //- h5 select product : {{ selectProduct.title }}
                                     //- h5 select product : {{ selectProduct.subTitle }}
                                     //- h5 select product : {{ selectProduct.price }}
                                     //- h5 select product : {{ selectProduct.date }}
-                                    //- h5 select product : {{ selectProduct.inventory }}
+                                    h6 inventory : {{ selectProduct.inventory }}
                             div.prod-right
                                 div.prod-right-warpe
                                     div.p-title {{ selectProduct.title }}
@@ -26,23 +27,26 @@
                                         div.h7 type
                                         div.prod-type-button
                                             div.button-wrape
-                                                button.component--btn(autoFocus)  original eco
+                                                button.component--btn(autoFocus)  load Bike
                                             div.button-wrape
-                                                button.component--btn  allegray free
+                                                button.component--btn  Mountain Bike
                                             div.button-wrape
-                                                button.component--btn  breathe flow
+                                                button.component--btn  e-bike
                                     div.prod-firmless
                                         div.h7 firmless
                                         select.component--select(v-model="selected" @change="onChange()")
                                             //- option(disabled selected value="" placeholder="Please select one") Please select one
-                                            option soft
-                                            option medium
-                                            option firm
+                                            option Morning Tour
+                                            option Afternoon Tour
+                                            option Night Tour
                                     div.prod-quantity
-                                        div.h7 quantity
+                                        div.h7 Number of people
                                         input.component--input( v-model.number="quantity" type="number")
-                                    div.prod-addcart
-                                        button.component--btn  add cart
+                                    div.prod-addcart(v-if="selectProduct.inventory > 0")
+                                        button.component--btn(@click="addProductToCart(selectProduct)")  add cart
+                                    div.prod-addcart(v-else)
+                                        button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
+
                                     div.prud-subscrive
                                         div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
                                         div.h7 The Amicor® and microfibre filling, with 100% cotton cover, not only prevents dust mites but is luxuriously fluffy, too. It all adds up to you feeling more refreshed, rested and recuperated after every use.
@@ -131,6 +135,7 @@
                         div.cus-rev-body
                             div.h7 {{customerRreview.post}}
                             h6 rait: {{customerRreview.rait}}
+                            div.h7 review: {{customerRreview}}
 
                             //- p {{customerRreviews}}
                             //- div.cus-rev-post-list(v-for="customerRreview in customerRreviews" :key="customerRreview.id")
@@ -144,7 +149,7 @@
 
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   layout: 'layout3Parts',
 
@@ -152,8 +157,8 @@ export default {
     return {
       paramId: this.$route.params.slug,
       quantity: 1,
-      selected: 'soft',
-      isWrite: true,
+      selected: 'Morning Tour',
+      isWrite: false,
       name: null,
       email: null,
       title: null,
@@ -205,12 +210,46 @@ export default {
   },
   mounted() {
     this.$store.commit('buy/clearRevueError')
-    // this.$store.commit('account/clearLoginError')
-    // this.$store.commit('account/clearErrorBg', '#e3f2fd')
     this.$store.commit('clearMessage')
   },
 
   methods: {
+    ...mapActions('cart', ['addProductToCartAction']),
+    addProductToCart(item) {
+      alert(
+        'id: ' +
+          item.id +
+          ' title: ' +
+          item.title +
+          ' subTitle: ' +
+          item.subTitle +
+          ' price: ' +
+          item.price +
+          ' inventory: ' +
+          item.inventory +
+          ' img: ' +
+          item.img +
+          ' quantity: ' +
+          this.quantity
+      )
+      const product = {
+        id: item.id,
+        title: item.title,
+        subTitle: item.subTitle,
+        price: item.price,
+        inventory: item.inventory,
+        img: item.img,
+        quantity: this.quantity
+      }
+      this.addProductToCartAction(product)
+
+      // h5 select product : {{ selectProduct.img }}
+      // h5 select product : {{ selectProduct.id }}
+      // h5 select product : {{ selectProduct.title }}
+      // h5 select product : {{ selectProduct.subTitle }}
+      // h5 select product : {{ selectProduct.price }}
+      // h5 select product : {{ selectProduct.inventory }}
+    },
     starMark(starIndex) {
       this.mailStars.forEach((element) => {
         if (element.id > starIndex + 1) {
@@ -433,6 +472,10 @@ img {
       border-color: none;
       transition: all 0.4s;
     }
+  }
+  .disabl-btn {
+    background-color: $red;
+    color: $white;
   }
 }
 .prud-subscrive {

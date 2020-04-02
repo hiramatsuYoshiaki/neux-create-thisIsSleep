@@ -6,18 +6,32 @@ export const state = () => ({
 })
 
 export const mutations = {
-  pushProductToCart(state, { id }) {
+  // pushProductToCart(state, { id }) {
+  //   state.cartItems.push({
+  //     id,
+  //     quantity: 1
+  //   })
+  // },
+  pushProductToCart(state, cartItem) {
+    console.log('push quantity: ' + cartItem.quantity)
     state.cartItems.push({
-      id,
-      quantity: 1
+      id: cartItem.id,
+      title: cartItem.title,
+      subTitle: cartItem.subTitle,
+      price: cartItem.price,
+      inventory: cartItem.inventory,
+      img: cartItem.img,
+      quantity: cartItem.quantity
     })
   },
   incrementItemQuantity(state, { id }) {
+    console.log('increment')
     const cartItem = state.cartItems.find((item) => {
       return item.id === id
     })
     cartItem.quantity++
   },
+
   // setCartItems(state, { items }) {
   //   state.cartItems = items
   // },
@@ -31,7 +45,6 @@ export const mutations = {
     state.products = payload
   },
   setCheckoutStatus(state, payload) {
-    console.info('setCheckoutStatus')
     state.checkoutStatus = payload
   },
 
@@ -50,10 +63,16 @@ export const getters = {
       const cartData = rootState.products.all.find((product) => {
         return product.id === id
       })
+      const productTotal = quantity * cartData.price
       return {
+        id: cartData.id,
         title: cartData.title,
+        subTitle: cartData.subTitle,
         price: cartData.price,
-        quantity
+        inventory: cartData.inventory,
+        img: cartData.img,
+        quantity: quantity,
+        productTotal: productTotal
       }
     })
   },
@@ -83,15 +102,29 @@ export const actions = {
     commit('setCheckoutStatus', 'successfull')
   },
   addProductToCartAction({ state, commit }, product) {
-    console.log('check out: ' + product.title)
+    console.log('cartProductToCartAction product: ' + product.id)
+    console.log('cartProductToCartAction cartItems: ' + state.cartItems)
+    console.log(state.cartItems)
+
     commit('setCheckoutStatus', null)
-    if (product.inventory > 0) {
+    // if (product.inventory > 0) {
+    if (product.inventory >= product.quantity) {
       const cartItem = state.cartItems.find((item) => {
+        console.log('find: ' + product.id)
         return item.id === product.id
       })
 
       if (!cartItem) {
-        commit('pushProductToCart', { id: product.id })
+        // commit('pushProductToCart', { id: product.id })
+        commit('pushProductToCart', {
+          id: product.id,
+          title: product.title,
+          subTitle: product.subTitle,
+          price: product.price,
+          inventory: product.inventory,
+          img: product.img,
+          quantity: product.quantity
+        })
       } else {
         commit('incrementItemQuantity', cartItem)
       }

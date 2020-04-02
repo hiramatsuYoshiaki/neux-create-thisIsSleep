@@ -8,50 +8,75 @@
                 h6.quantity-title Quantity
                 h5.center-title Shopping Cart
                 h6.total-title Total
-            div.cart-detail(v-for="(item, index) in this.items" :key="item.id")
+            div.cart-detail(v-for="(item, index) in this.products" :key="item.id")
               div.cart-detail-product
                 div.cart-detail-product-img
-                  nuxt-link(to="/")
+                   nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
                     img(:src="item.img" alt="product image" )
                 div.cart-detail-product-name
                   nuxt-link(to="/")
                    h6 {{item.title}}
                   div.h7 {{item.subTitle}}
                   div.h7(@click="remove(item)") remove
+
               div.cart-detail-quantity
-                h6
-                  input.component--input.cart-detail-quantity-input( v-model.number="quantity[index]" type="number")
-                h6 Total
+                //- quantity
+                h6 {{item.quantity}}
+                  //- input.component--input.cart-detail-quantity-input( v-model.number="quantity[index]" type="number")
+                  //- input.component--input.cart-detail-quantity-input( v-model.number="quantity[index]" type="number")
+
+                //- total price
+                h6 {{item.productTotal}}
+                  //- input.compon}}
+
             div.cart-footer
               div.cart-footer-half
                 div.h7 Shipping & taxes calculated at checkout
                 div.cart-footer-subtotal
                     h5
                       span Subtotal
-                      span 1000
+                      //- subtotal
+                      span {{total}}
                 div.cart-footer-button
                   button.component--btn.cart-footer-button-width  update cart
-                  button.component--btn.cart-footer-button-width check out
+                  button.component--btn.cart-footer-button-width(@click="checkout()") check out
+            //- div.cart-detail(v-for="(product, index) in this.products" :key="product.id")
+            //-   div id:{{product.id}}
+            //-   div title:{{product.title}}
+            //-   div subTitle:{{product.subTitle}}
+            //-   div price:{{product.price}}
+            //-   div inventory:{{product.inventory}}
+            //-   div img:{{product.img}}
+            //-   div quantity:{{product.quantity}}
 
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   layout: 'layout3Parts',
 
   data() {
     return {
-      quantity: [1, 2, 3, 4]
+      quantity: [1, 2, 3, 4],
+      quan: []
     }
   },
   computed: {
     ...mapState('products', {
       items: 'all'
+    }),
+    ...mapGetters('cart', {
+      products: 'cartProducts', // cartItems
+      total: 'cartTotalPrice'
     })
   },
   methods: {
     remove(item) {
       alert('remove' + item.title)
+    },
+    checkout() {
+      alert('check out ')
+      this.$store.dispatch('cart/checkout', this.products)
     }
   }
 }
