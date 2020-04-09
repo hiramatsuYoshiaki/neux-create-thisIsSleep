@@ -8,7 +8,6 @@ export const mutations = {
     state.selectedId = id
   },
   setRevueError(state, payload) {
-    console.log(payload)
     state.reviewErrors.push(payload)
   },
   clearRevueError(state) {
@@ -39,7 +38,7 @@ export const getters = {
     }
   },
   getErrorBgColorName: (state, getters, rootState) => {
-    console.log(state.reviewErrors)
+    // console.log(state.reviewErrors)
     const errorCheck = state.reviewErrors.find((error) => {
       return error.check === 'name'
     })
@@ -50,7 +49,7 @@ export const getters = {
     }
   },
   getErrorBgColorMail: (state, getters, rootState) => {
-    console.log(state.reviewErrors)
+    // console.log(state.reviewErrors)
     const errorCheck = state.reviewErrors.find((error) => {
       return error.check === 'mail'
     })
@@ -61,7 +60,7 @@ export const getters = {
     }
   },
   getErrorBgColorTitle: (state, getters, rootState) => {
-    console.log(state.reviewErrors)
+    // console.log(state.reviewErrors)
     const errorCheck = state.reviewErrors.find((error) => {
       return error.check === 'title'
     })
@@ -72,7 +71,7 @@ export const getters = {
     }
   },
   getErrorBgColorReview: (state, getters, rootState) => {
-    console.log(state.reviewErrors)
+    // console.log(state.reviewErrors)
     const errorCheck = state.reviewErrors.find((error) => {
       return error.check === 'review'
     })

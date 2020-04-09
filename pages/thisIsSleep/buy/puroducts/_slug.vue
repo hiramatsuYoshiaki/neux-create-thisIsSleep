@@ -27,11 +27,11 @@
                                         div.h7 type
                                         div.prod-type-button
                                             div.button-wrape
-                                                button.component--btn(autoFocus)  load Bike
+                                                button.component--btn(autoFocus)  Load Bike
                                             div.button-wrape
                                                 button.component--btn  Mountain Bike
                                             div.button-wrape
-                                                button.component--btn  e-bike
+                                                button.component--btn  e-Bike
                                     div.prod-firmless
                                         div.h7 firmless
                                         select.component--select(v-model="selected" @change="onChange()")
@@ -63,11 +63,11 @@
                         h5 Coustomar Review
                         h5
                           span(v-for="(star, starIndex ) in stars" :key="star.id")
-                            span(v-if="star.id > cusRating ")
+                            span(v-if="star.id > reviewAveRait ")
                               i.far.fa-star
                             span(v-else)
                               i.fas.fa-star
-                          span.base based on 1 review
+                          span.base based on {{reviewBase}}  review {{reviewAveRait}}
                     div.cus-new-open
                         span(@click="isWrite=!isWrite") Write a review
         div.container-fluid.product-main(v-if="isWrite")
@@ -118,38 +118,59 @@
         div.container-fluid
             div.row
                 div.customer-reviews
-                    div.cus-rev-post(v-for="customerRreview in customerRreviews" :key="customerRreview.id")
-                        div.cus-rev-lating
-                            span(v-for="(star, starIndex ) in stars" :key="star.id")
-                              span(v-if="star.id > customerRreview.rait ")
-                                i.far.fa-star
-                              span(v-else)
-                                i.fas.fa-star
-                        div.cus-rev-title
-                            h5 {{customerRreview.title}}
-                        div.cus-rev-name-date
-                            h6
-                                span.date-name {{customerRreview.name}}
-                                span.date-separater on
-                                span {{customerRreview.date}}
-                        div.cus-rev-body
-                            div.h7 {{customerRreview.post}}
-                            h6 rait: {{customerRreview.rait}}
-                            div.h7 review: {{customerRreview}}
+                    div.cus-rev-post(v-for="customerRreview in selectProductId(customerRreviews)" :key="customerRreview.id")
+                          //- div(v-if="customerRreview.productId === paramId")
+                          div.cus-rev-lating
+                              span(v-for="(star, starIndex ) in stars" :key="star.id")
+                                span(v-if="star.id > customerRreview.rait ")
+                                  i.far.fa-star
+                                span(v-else)
+                                  i.fas.fa-star
+                          div.cus-rev-title
+                              h5 {{customerRreview.title}}
+                          div.cus-rev-name-date
+                              h6
+                                  span.date-name {{customerRreview.name}}
+                                  span.date-separater on
+                                  span {{customerRreview.date}}
+                          div.cus-rev-body
+                              div.h7 {{customerRreview.review}}
+                              //- h6 rait: {{customerRreview.rait}}
+                              //- div.h7 review: {{customerRreview}}
 
-                            //- p {{customerRreviews}}
-                            //- div.cus-rev-post-list(v-for="customerRreview in customerRreviews" :key="customerRreview.id")
-                            //-     h5 {{customerRreview.id}}
-                            //-     h5 {{customerRreview.product}}
-                            //-     h5 {{customerRreview.name}}
-                            //-     h5 {{customerRreview.title}}
-                            //-     h5 {{customerRreview.post}}
-                            //-     h5 {{customerRreview.date}}
-                            //-     h5 {{customerRreview.rait}}
+                              //- p {{customerRreviewsSellected}}
+                              //- p {{items}}
+
+                              //- div.cus-rev-post-list(v-for="customerRreview in customerRreviews" :key="customerRreview.id")
+                              //-     h5 {{customerRreview.id}}
+                              //-     h5 {{customerRreview.product}}
+                              //-     h5 {{customerRreview.name}}
+                              //-     h5 {{customerRreview.title}}
+                              //-     h5 {{customerRreview.post}}
+                              //-     h5 {{customerRreview.date}}
+                              //-     h5 {{customerRreview.rait}}
+                              //- p {{selectProduct}}
+                              //- p {{revs}}
+                              //- p {{Object.keys(revs)}}
+                              //- p {{sleepreviews[productId]}}
+                              //- p {{sleepreviews.nama}}
+                              //- p {{sleepreviews.title}}
+                              //- p {{sleepreviews.email}}
+                              //- p {{sleepreviews.rait}}sleepReviews
+                              //- p {{sleepreviews.review}}
+                              //- p {{sleepreviews.reviewDate}}
+                              //- div(v-for="(sleepreview, revIndex ) in revs" :key="revIndex")
+                              //-   p {{sleepreview}}
+                              //-   p {{Object.keys(sleepreview)}}
 
 </template>
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
+import {
+  SENDGRID,
+  SLEEP_ADD_REVIEW,
+  SLEEP_GET_REVIEW
+} from '~/store/actionTypes'
 export default {
   layout: 'layout3Parts',
 
@@ -161,10 +182,11 @@ export default {
       isWrite: false,
       name: null,
       email: null,
+      rait: 1,
       title: null,
       review: null,
-      cusRating: 3,
-      cusBase: 1,
+      // cusRating: 3,
+      // cusBase: 1,
       stars: [
         { id: 1, isMark: true },
         { id: 2, isMark: true },
@@ -178,11 +200,16 @@ export default {
         { id: 3, isMark: false },
         { id: 4, isMark: false },
         { id: 5, isMark: false }
-      ]
+      ],
+      reviewBase: 0,
+      reviewAveRait: 0
     }
   },
   computed: {
+    ...mapState({ items: 'sleepProducts' }),
+
     ...mapState('buy', ['selectedId']),
+    ...mapState({ customerRreviews: 'sleepreviews' }),
     ...mapGetters('buy', {
       selectProduct: 'selectProduct'
     }),
@@ -199,14 +226,12 @@ export default {
     ...mapGetters('buy', {
       bgColorRewiew: 'getErrorBgColorReview'
     }),
-    ...mapGetters('review', {
-      customerRreviews: 'fillterReviews'
-    }),
 
     ...mapState(['message'])
   },
-  created() {
+  async created() {
     this.$store.commit('buy/setSelectedId', this.paramId)
+    await this.$store.dispatch(SLEEP_GET_REVIEW)
   },
   mounted() {
     this.$store.commit('buy/clearRevueError')
@@ -215,23 +240,23 @@ export default {
 
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
+    selectProductId(reviews) {
+      const selectedReview = []
+      let cnt = 0
+      let rait = 0
+      for (const review in reviews) {
+        if (reviews[review].productId === this.paramId) {
+          selectedReview.push(reviews[review])
+          cnt++
+          rait += parseInt(reviews[review].rait)
+        }
+      }
+      this.reviewBase = cnt
+      this.reviewAveRait = rait / cnt
+      return selectedReview
+    },
+
     addProductToCart(item) {
-      alert(
-        'id: ' +
-          item.id +
-          ' title: ' +
-          item.title +
-          ' subTitle: ' +
-          item.subTitle +
-          ' price: ' +
-          item.price +
-          ' inventory: ' +
-          item.inventory +
-          ' img: ' +
-          item.img +
-          ' quantity: ' +
-          this.quantity
-      )
       const product = {
         id: item.id,
         title: item.title,
@@ -242,15 +267,9 @@ export default {
         quantity: this.quantity
       }
       this.addProductToCartAction(product)
-
-      // h5 select product : {{ selectProduct.img }}
-      // h5 select product : {{ selectProduct.id }}
-      // h5 select product : {{ selectProduct.title }}
-      // h5 select product : {{ selectProduct.subTitle }}
-      // h5 select product : {{ selectProduct.price }}
-      // h5 select product : {{ selectProduct.inventory }}
     },
     starMark(starIndex) {
+      this.rait = starIndex + 1
       this.mailStars.forEach((element) => {
         if (element.id > starIndex + 1) {
           element.isMark = false
@@ -258,6 +277,61 @@ export default {
           element.isMark = true
         }
       })
+    },
+    sendMail() {
+      const sendMsg = {
+        to: 'hiramatsu3300@gmail.com',
+        from: this.email,
+        subject: this.title,
+        text: this.review,
+        name: this.name,
+        phone: this.paramId
+      }
+      // sendgrid api からメール送信
+      this.$store.dispatch(SENDGRID, sendMsg)
+      // google cloud function からメール送信
+      // this.$store.dispatch(CLOUD_FUNCTION, sendMsg)
+    },
+    reviewSend() {
+      const dd = new Date()
+      const year = dd.getFullYear()
+      let month = dd.getMonth() + 1
+      let date = dd.getDate()
+
+      month = String(month).padStart(2, '0')
+      date = String(date).padStart(2, '0')
+      const reviewDate = year + '-' + month + '-' + date
+      // alert(
+      //   'product-id: ' +
+      //     this.paramId +
+      //     'name: ' +
+      //     this.name +
+      //     ' email: ' +
+      //     this.title +
+      //     ' rait: ' +
+      //     this.email +
+      //     ' title: ' +
+      //     this.rait +
+      //     ' review: ' +
+      //     this.review +
+      //     ' today: ' +
+      //     year +
+      //     '-' +
+      //     month +
+      //     '-' +
+      //     date
+      // )
+      const msg = {
+        productId: this.paramId,
+        name: this.name,
+        email: this.email,
+        rait: this.rait,
+        title: this.title,
+        review: this.review,
+        date: reviewDate,
+        id: null
+      }
+      this.$store.dispatch(SLEEP_ADD_REVIEW, msg)
     },
     validEmail: (email) => {
       const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -331,8 +405,9 @@ export default {
       }
 
       if (!this.reviewErrors.length) {
-        // this.sendMail()
-        this.$store.commit('setMessage', 'メールを送信しました。')
+        this.$store.commit('clearMessage')
+        this.reviewSend()
+        this.sendMail()
       }
       e.preventDefault()
     },

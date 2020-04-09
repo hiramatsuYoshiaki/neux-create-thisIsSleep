@@ -52,8 +52,23 @@
         alternation(v-for="(item, index) in filterData.slice(this.filterStart,this.filterEnd) " :key="item.id")
             template(v-slot:alternation)
               div.alternation-wrape(:class="{altright: ( index % 2 ) != 0 }")
+                //- div {{item.imgName}}
+                //- div {{productsImg[index].img}}
+                //- div {{ productsImgUrl[index].img}}
+                //- div {{ productsImgUrl[index] }}
+                //- div {{ getUrl(item.id) }}
                 div
-                  <img :src="item.img" alt="product image" >
+                  //-forebase strage
+                  img(:src="getUrl(item.id)" alt="product image")
+                div imgPass
+                //- div
+                  //-静的ローカルファイルの場合
+                  //- img(:src="require(`~/assets/img/img3614.jpg`)" alt="product image")
+                  //-データオブジェクトでやるローカルファイルの場合
+                  //- img(:src="productsImg[index].img" alt="product image")
+                  //-動的ローカルファイルの場合
+                  //img(:src="imgPass(item.imgName)" alt="product image")
+
                 div {{item.id}}
                 div {{item.title}}
                 div {{item.subTitle}}
@@ -65,10 +80,17 @@
                 //- button(@click="addProductToCart(item)") addProductToCart
                 nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
                   p(style="color:black")   Tour Detail
+    //- div.container
+    //-   div.row
+        //- button(@click="createTestData()" style="color: red" ) CreateTestData
+        //- div(v-for="test in tests" :key="test.id")
+        //-   div {{test}}
+        div {{items}}
 
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
+import { GET_SLEEP_DATA, SET_SLEEP_IMG_URL } from '~/store/actionTypes'
 import alternation from '~/components/layouts/alternationSlots/alternationSlot.vue'
 export default {
   layout: 'layout3Parts',
@@ -100,7 +122,13 @@ export default {
         { id: 5, name: '2000~', value: 2000 }
       ],
       filterStart: 0,
-      filterEnd: 999999999
+      filterEnd: 999999999,
+      productsImg: [
+        { id: 1001, img: require('~/assets/img/img3614.jpg') },
+        { id: 1002, img: require('~/assets/img/img2731.jpg') },
+        { id: 1003, img: require('~/assets/img/img3668.jpg') },
+        { id: 1004, img: require('~/assets/img/img3809.jpg') }
+      ]
 
       // items: [
       //   {
@@ -159,9 +187,12 @@ export default {
     }
   },
   computed: {
-    ...mapState('products', {
-      items: 'all'
-    }),
+    // ...mapState('products', {
+    //   items: 'all'
+    // }),
+    ...mapState({ items: 'sleepProducts' }),
+    ...mapState({ productsImgUrl: 'sleepProductsImgUrl' }),
+    ...mapGetters({ getUrl: 'getProductsImgUrl' }),
     // sort
     sortedData() {
       if (this.sortType === 'Featured') {
@@ -244,8 +275,20 @@ export default {
       })
     }
   },
+  // created() {
+  //   this.$store.dispach(GET_SLEEP_DATA)
+  // },
+  async mounted() {
+    await this.$store.dispatch(GET_SLEEP_DATA)
+    await this.$store.dispatch(SET_SLEEP_IMG_URL)
+  },
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
+    imgPass(imgName) {
+      return require('~/assets/img/' + imgName)
+    },
+    // ~/assets/img/img3614.jpg
+
     // addProductToCart(item) {
     //   const product = {
     //     id: item.id,
@@ -255,6 +298,11 @@ export default {
     //   }
     //   this.addProductToCartAction(product)
     // },
+    // createTestData() {
+    // alert('create test data')
+    // this.$store.dispatch(SLEEP_DATA_CREATE, this.tests)
+    // },
+
     onChange() {
       this.sortType = this.selected
       if (this.selected === 'Featured') {
@@ -301,9 +349,6 @@ export default {
       }
     }
   }
-  // created() {
-  //   this.$store.commit('cart/setAllProducts', this.items)
-  // }
 }
 </script>
 <style lang="scss" scoped>

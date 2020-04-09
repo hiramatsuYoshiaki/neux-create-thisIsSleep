@@ -13,7 +13,7 @@ export const mutations = {
   //   })
   // },
   pushProductToCart(state, cartItem) {
-    console.log('push quantity: ' + cartItem.quantity)
+    // console.log('push quantity: ' + cartItem.quantity)
     state.cartItems.push({
       id: cartItem.id,
       title: cartItem.title,
@@ -25,7 +25,7 @@ export const mutations = {
     })
   },
   incrementItemQuantity(state, { id }) {
-    console.log('increment')
+    // console.log('increment')
     const cartItem = state.cartItems.find((item) => {
       return item.id === id
     })
@@ -102,15 +102,15 @@ export const actions = {
     commit('setCheckoutStatus', 'successfull')
   },
   addProductToCartAction({ state, commit }, product) {
-    console.log('cartProductToCartAction product: ' + product.id)
-    console.log('cartProductToCartAction cartItems: ' + state.cartItems)
-    console.log(state.cartItems)
+    // console.log('cartProductToCartAction product: ' + product.id)
+    // console.log('cartProductToCartAction cartItems: ' + state.cartItems)
+    // console.log(state.cartItems)
 
     commit('setCheckoutStatus', null)
     // if (product.inventory > 0) {
     if (product.inventory >= product.quantity) {
       const cartItem = state.cartItems.find((item) => {
-        console.log('find: ' + product.id)
+        // console.log('find: ' + product.id)
         return item.id === product.id
       })
 

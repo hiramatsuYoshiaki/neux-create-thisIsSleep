@@ -2053,3 +2053,24 @@ export default ({ $axios, redirect }) => {
   })
 }
 ```
+
+# Vue.js + webpack で slug から動的に img src を作成する方法
+
+https://qiita.com/rotelstift/items/4717c15d263327a26b34
+
+```
+<template lang="pug">
+  //- item.imgName: img3614.jpg
+  img(:src="imgPass(item.imgName)" alt="product image")
+</template>
+<script>
+export default {
+  methods: {
+    imgPass(imgName) {
+      return require('~/assets/img/' + imgName)
+    }
+  }
+}
+</script>
+
+```
