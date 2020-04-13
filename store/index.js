@@ -17,7 +17,9 @@ import {
   GET_SLEEP_DATA,
   SET_SLEEP_IMG_URL,
   SLEEP_ADD_REVIEW,
-  SLEEP_GET_REVIEW
+  SLEEP_GET_REVIEW,
+  SLEEP_QUESTIONS_CREATE,
+  GET_QUESTION_DATA
 } from './actionTypes'
 import { vuexfireMutations, firebaseAction } from 'vuexfire'
 import axios from 'axios'
@@ -40,7 +42,8 @@ export const state = () => ({
   sleepData: jsonData, // assets json create sleep products
   sleepProducts: [], // sllep Products
   sleepProductsImgUrl: [],
-  sleepreviews: [] // sllep review
+  sleepreviews: [], // sllep review
+  sleepQuestions: [] // sllep Questions
 })
 export const mutations = {
   resetImgUrl(state) {
@@ -153,14 +156,25 @@ export const actions = {
       wait: true
     })
   }),
-
+  // firebase data create -----------------------------------------
   [SLEEP_DATA_CREATE]: firebaseAction(async (context, sleep) => {
     await sleep.map((product) => {
       db.ref('sleepProducts').push(product)
     })
   }),
+  // firebase data create -----------------------------------------
+  [SLEEP_QUESTIONS_CREATE]: firebaseAction(async (context, questions) => {
+    await questions.map((question) => {
+      db.ref('sleepQuestions').push(question)
+    })
+  }),
   [GET_SLEEP_DATA]: firebaseAction(async ({ bindFirebaseRef }) => {
     await bindFirebaseRef('sleepProducts', db.ref('sleepProducts/'), {
+      wait: true
+    })
+  }),
+  [GET_QUESTION_DATA]: firebaseAction(async ({ bindFirebaseRef }) => {
+    await bindFirebaseRef('sleepQuestions', db.ref('sleepQuestions/'), {
       wait: true
     })
   }),

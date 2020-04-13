@@ -11,9 +11,17 @@
                             h1 gole
                         div.sub-title
                             h5 We help you build yuer travel plans solution, suited to your specific needs.
+                        //- div.link-button
+                        //-     buttonLinkCustomComponent(link="/" name="new create" bgColor="#212121" textColor="white" btnWidth="10rem" btnRadius="28px")
+                        //-     buttonLinkCustomComponent(link="/" name="your create" bgColor="lightcoral" textColor="white" btnWidth="10rem" btnRadius="28px")
                         div.link-button
-                            buttonLinkCustomComponent(link="/" name="new create" bgColor="#212121" textColor="white" btnWidth="10rem" btnRadius="28px")
-                            buttonLinkCustomComponent(link="/" name="your create" bgColor="lightcoral" textColor="white" btnWidth="10rem" btnRadius="28px")
+                          button.component--btn.create-button.your-solution
+                            nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
+                              span Your Solution
+                          button.component--btn.create-button.solution-create
+                            nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
+                              span Solution Create
+
 </template>
 <script>
 import buttonLinkCustomComponent from '~/components/button/buttonLinkCustomComponent.vue'
@@ -49,7 +57,8 @@ export default {
       // bgImg: require('~/assets/img/img2731.jpg'), // safty
       loadImag: null,
       circleRectX: 20,
-      circleRotetion: 0
+      circleRotetion: 0,
+      question: 1
     }
   },
   mounted() {
@@ -361,11 +370,21 @@ export default {
 }
 .link-button {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: flex-start;
   flex-direction: column;
   @media (min-width: 976px) {
     flex-direction: row;
   }
+}
+.create-button {
+  color: $white;
+  width: 10rem;
+}
+.solution-create {
+  background-color: $black-ter;
+}
+.your-solution {
+  background-color: $your-solution;
 }
 </style>
