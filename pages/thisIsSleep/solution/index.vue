@@ -246,6 +246,7 @@ export default {
       this.context.globalCompositeOperation = 'destination-over'
       this.drawWaveVer('#c5ced3', 1, -3, 0)
       this.context.rotate((Math.PI / 180) * 8)
+
       this.context.globalCompositeOperation = 'source-over'
       this.drawWaveHor('#b2b6bb', 1, 1, 0)
 
@@ -383,8 +384,12 @@ export default {
 }
 .solution-create {
   background-color: $black-ter;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 .your-solution {
   background-color: $your-solution;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 </style>

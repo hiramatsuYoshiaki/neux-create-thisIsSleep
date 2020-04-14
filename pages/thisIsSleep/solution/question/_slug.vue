@@ -3,48 +3,51 @@
         div.container-fluid
             div.row
                 canvas(id="canvas" ref="refs_canvas")
-                div.ques-content(v-for="question in selectedPage()" :key="question.id")
-                    div.ques-wrape
-                        div.question
-                            div.pageId
-                                span.h7 {{quesId}}
-                                span.h7 /
-                                span.h7 {{totalQ}}
-                            h4.quesTitle {{question.ques}}
-                            div.doYouKnow
-                                div.doYouKnowCatchWrap
-                                    div.doYouKnowCatch
-                                    div.doYouKnowMark.h6 ?
-                                div.doYouKnowText Do you know?
 
-                    div.ques-wrape
-                        div.anser
-                            div.anser-element(v-for="ans in question.ansr" )
-                                div.anser-title-wrap(@click="nextPage()")
-                                    div.anser-title
-                                    div.anser-title-mark.h6 {{ans.mark}}
-                                div.anser-items(@click="nextPage()")
-                                    div.h7 {{ans.ans}}
-                                    div.h7 {{ans.ansText}}
-                            //- div.anser-element
-                            //-     div.anser-title
-                            //-         p B
-                            //-     div.anser-items
-                            //-         h6 No
-                            //-         div.h7 I useually waik to simmiler position
-                //- div.create
-                    div(v-for="question in selectedPage()" :key="question.id")
-                        h3 {{question.id}}
-                        p {{question.ques}}
-                        //- p {{question.ansr}}
-                        div(v-for="(ans , ansIndex) in question.ansr" :key="ansIndex")
-                                p {{ans.mark}}
-                                p {{ans.ans}}
-                                p {{ans.ansText}}
-                    //- p {{questions}}
-                //- div.create
-                    //- button(@click="createQuestions()")
-                    //-     h3  create questions
+                div.ques-content(v-for="question in selectedPage()" :key="question.id")
+                  div.container-question
+                    div.row
+                      div.ques-wrape
+                          div.question
+                              div.pageId
+                                  span.h7 {{quesId}}
+                                  span.h7 /
+                                  span.h7 {{totalQ}}
+                              h4.quesTitle {{question.ques}}
+                              div.doYouKnow
+                                  div.doYouKnowCatchWrap
+                                      div.doYouKnowCatch
+                                      div.doYouKnowMark.h6 ?
+                                  div.doYouKnowText Do you know?
+
+                      div.ques-wrape
+                          div.anser
+                              div.anser-element(v-for="ans in question.ansr" )
+                                  div.anser-title-wrap(@click="nextPage()")
+                                      div.anser-title
+                                      div.anser-title-mark.h6 {{ans.mark}}
+                                  div.anser-items(@click="nextPage()")
+                                      div.h6 {{ans.ans}}
+                                      div.h7 {{ans.ansText}}
+                              //- div.anser-element
+                              //-     div.anser-title
+                              //-         p B
+                              //-     div.anser-items
+                              //-         h6 No
+                              //-         div.h7 I useually waik to simmiler position
+                  //- div.create
+                      div(v-for="question in selectedPage()" :key="question.id")
+                          h3 {{question.id}}
+                          p {{question.ques}}
+                          //- p {{question.ansr}}
+                          div(v-for="(ans , ansIndex) in question.ansr" :key="ansIndex")
+                                  p {{ans.mark}}
+                                  p {{ans.ans}}
+                                  p {{ans.ansText}}
+                      //- p {{questions}}
+                  //- div.create
+                      //- button(@click="createQuestions()")
+                      //-     h3  create questions
 
 </template>
 <script>
@@ -55,8 +58,6 @@ export default {
   layout: 'layout2Parts',
   data() {
     return {
-      quesId: this.$route.params.slug,
-      totalQ: 1
       //   questions: [
       //     {
       //       id: 1,
@@ -83,6 +84,23 @@ export default {
       //       ]
       //     }
       //   ]
+      quesId: this.$route.params.slug,
+      totalQ: 1,
+      canvas: null,
+      context: null,
+      height: 0,
+      width: 0,
+      innerWidth: 0,
+      innerHeight: 0,
+      reqAnimation: null,
+      drawHor: {
+        seconds: 0,
+        t: 0
+      },
+      xAxis: 0,
+      yAxis: 0,
+      unit: 100,
+      circleRectX: 20
     }
   },
   computed: {
@@ -90,9 +108,117 @@ export default {
     // ...mapState('questions', { questions: 'questionsTest' }) // develop
   },
   async mounted() {
+    // firebase
     await this.$store.dispatch(GET_QUESTION_DATA)
+    // window size
+    window.addEventListener('resize', this.handleResize)
+    // canvas
+    // const img = new Image()
+    // img.src = this.bgImg
+    // img.onload = () => {
+    // this.loadImg = img
+    this.canvas = this.$refs.refs_canvas
+    this.context = this.canvas.getContext('2d')
+    this.handleResize()
+    this.init()
+    this.loop()
+    // }
+  },
+  destroyed() {
+    window.addEventListener('resize', this.handleResize)
   },
   methods: {
+    init() {
+      this.canvas.width = this.innerWidth
+      this.canvas.height = this.innerHeight
+      this.width = this.canvas.width
+      this.height = this.canvas.height
+      // cricle
+      this.circleRectX = 20
+      // horizon
+      this.xAxis = Math.floor(this.height / 2) + 20
+      // this.yAxis = 0
+      // this.yAxis = this.width / 2 + this.circleRectX //水平ウェイブ開始位置
+      this.yAxis = this.circleRectX - 100 // 水平ウェイブ開始位置
+      // verticle
+      // this.xAxisVer = Math.floor(this.width / 1.5)
+      // this.yAxisVer = 0
+      // this.draws()
+    },
+    loop() {
+      this.maskWave()
+      this.reqAnimation = requestAnimationFrame(this.loop)
+      setTimeout(() => {
+        cancelAnimationFrame(this.reqAnimation)
+      }, 50000)
+    },
+    maskWave() {
+      this.context.clearRect(0, 0, this.width, this.height)
+      this.context.save()
+
+      // this.context.beginPath()
+      // this.context.moveTo(50, 50)
+      // this.context.lineTo(550, 400)
+      // this.context.lineWidth = 10
+      // this.context.strokeStyle = 'red'
+      // this.context.stroke()
+
+      this.context.globalCompositeOperation = 'source-over'
+      // this.drawWaveHor('#b2b6bb', 1, 1, 0)
+      this.drawWaveHor('#b2b6bb', 1, 1, 0)
+      this.drawHor.seconds = this.drawHor.seconds + 0.05 // 速い
+      this.drawHor.t = this.drawHor.seconds * Math.PI
+
+      this.context.restore()
+    },
+    handleResize() {
+      this.canvas.width = this.width = this.innerWidth = window.innerWidth
+      this.canvas.height = this.height = this.innerHeight = window.innerHeight
+      this.init()
+    },
+    drawWaveHor(color, alpha, zoom, delay) {
+      this.context.fillStyle = color
+      this.context.globalAlpha = alpha
+      // パスの太さ
+      this.context.lineWidth = 2
+      this.context.strokeStyle = color
+      // パスの開始
+      this.context.beginPath()
+      // 波のパスを描く
+      // this.drawSineHor(this.drawHor.t / 3, zoom, delay)
+      this.drawSineHor(this.drawHor.t / 2, zoom, delay)
+      // パスをCanvasの右下へ
+      // this.context.lineTo(this.width + 10, this.height)
+      // パスをCanvasの左下へ
+      // this.context.lineTo(0, this.height)
+      // パスを閉じる
+      // this.context.closePath()
+      // 塗りつぶす
+      // this.context.fill()
+      // 線を描画
+      this.context.stroke()
+      // this.context.rotate((Math.PI / 180) * -3)
+      // this.context.clip()
+    },
+    drawSineHor(t, zoom, delay) {
+      // 横の位置(時間)
+      // const x = t
+      // 縦の位置 zoom:3
+      // const y = Math.sin(x) / zoom
+      // スタート位置にパスを置く moveTo(x,y)
+      // unit:100 this.xAxis: Math.floor(this.height / 2)  this.yAxis: 0
+      // this.context.moveTo(this.yAxis - 50, this.unit * y + this.xAxis)
+      this.context.moveTo(this.yAxis, this.xAxis)
+      // 波のパスをパスをCanvas描く
+      for (let i = this.yAxis; i <= this.width + 50; i += 10) {
+        // 波の長さ
+        const x = t + (-this.yAxis + i) / this.unit / zoom
+        // 波の高さ
+        // const noiseNum = noise(i * 0.2, this._time + timeOffset) - 0.5;
+        const y = Math.sin(x - delay) / 10
+        this.context.lineTo(i, this.unit * y + this.xAxis)
+      }
+    },
     selectedPage() {
       const selectedQues = []
       let cnt = 0
@@ -123,7 +249,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 // * {
-//   border: 1px dotted green;
+//   border: 1px dotted purple;
 // }
 .main-wrape {
   margin-top: $header-height;
@@ -141,6 +267,7 @@ export default {
   overflow: hidden;
 }
 .ques-content {
+  // border: 5px solid purple;
   position: absolute;
   top: 0;
   left: 0;
@@ -148,62 +275,98 @@ export default {
   height: 100%;
   padding-top: $header-height;
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
   z-index: 10;
   overflow: hidden;
-  @media (min-width: 992px) {
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
+  //   @media (min-width: 992px) {
+  //     justify-content: center;
+  //     align-items: center;
+  //     flex-direction: row;
+  //   }
+}
+.container-question {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+// @media (min-width: 576px) {
+//   .container-question {
+//     max-width: 540px;
+//     max-width: 100%;
+//   }
+// }
+// @media (min-width: 768px) {
+//   .container-question {
+//     width: 720px;
+//     max-width: 100%;
+//   }
+// }
+
+@media (min-width: 992px) {
+  .container-question {
+    // width: 960px;
+    width: 880px;
+    max-width: 100%;
   }
 }
+@media (min-width: 1200px) {
+  .container-question {
+    // width: 1140px;
+    width: 1100px;
+    max-width: 100%;
+  }
+}
+@media (min-width: 1400px) {
+  .container-question {
+    // width: 1140px;
+    width: 1300px;
+    max-width: 100%;
+  }
+}
+
 .ques-wrape {
-  width: 100%;
-  height: 50%;
+  // border: 1px solid green;
+  width: 50%;
+  // height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
+}
+.anser {
+  // border: 1px solid red;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
   flex-direction: column;
-  padding: 0 1.5rem 0 1.5rem;
+  padding: 0 1rem 0 0;
   @media (min-width: 992px) {
-    width: 50%;
-    height: 100%;
-    // padding: 0 5rem 0 1.5rem;
-    align-items: flex-start;
-  }
-  @media (min-width: 1200px) {
-    width: 50%;
-    height: 100%;
-    // padding: 0 10rem 0 1.5rem;
-    align-items: flex-start;
-  }
-  //   .question {
-  //     margin-left: 0;
-  //     @media (min-width: 1200px) {
-  //       margin-left: 10rem;
-  //       margin-right: 10rem;
-  //     }
-  //   }
-  .question,
-  .anser {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    @media (min-width: 576px) {
-      width: 540px;
-    }
-    @media (min-width: 992px) {
-      width: 100%;
-      align-items: flex-start;
-    }
+    padding: 0;
   }
 }
 .question {
-  border: 1px solid red;
+  // border: 1px solid blue;
+  width: 100%;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 0 1rem 0 1rem;
+  @media (min-width: 992px) {
+    padding: 0 10rem 0 0;
+  }
+  @media (min-width: 1200px) {
+    padding: 0 13rem 0 0;
+  }
+  @media (min-width: 1400px) {
+    padding: 0 16rem 0 0;
+  }
   color: $grey-darker;
   h4 {
     font-weight: $weight-semibold;
@@ -263,9 +426,15 @@ export default {
   align-items: center;
   flex-direction: row;
   cursor: pointer;
+  margin-bottom: 1rem;
 
   .anser-title-wrap {
     position: relative;
+    // border: 1px solid blue;
+  }
+  .anser-items {
+    position: relative;
+    // border: 1px solid green;
   }
   .anser-title {
     margin: 1rem;

@@ -43,7 +43,8 @@ export const state = () => ({
   sleepProducts: [], // sllep Products
   sleepProductsImgUrl: [],
   sleepreviews: [], // sllep review
-  sleepQuestions: [] // sllep Questions
+  sleepQuestions: [], // sllep Questions
+  sleepSelectedQuestions: [] // sllep Questions of Page
 })
 export const mutations = {
   resetImgUrl(state) {
