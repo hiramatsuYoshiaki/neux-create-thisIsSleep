@@ -140,11 +140,21 @@
 // under right
 .fadeInFromUnderRight-enter-active,
 .fadeInFromUnderRight-leave-active {
-  transition: all 0.5s ease-in-out;
+  transition: all 0.25s ease-in-out;
 }
 .fadeInFromUnderRight-enter,
 .fadeInFromUnderRight-leave-to {
   transform: translate(12rem, 12rem);
+  opacity: 0;
+}
+//  right
+.fadeInFromRight-enter-active,
+.fadeInFromRight-leave-active {
+  transition: all 0.5s ease-in-out;
+}
+.fadeInFromRight-enter,
+.fadeInFromRight-leave-to {
+  transform: translate(12rem, 0);
   opacity: 0;
 }
 

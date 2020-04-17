@@ -6,22 +6,39 @@
                 div.sol-content
                     div.sol-content-wrape
                         div.title
-                            h1 Three Steps
-                            h1 for your
-                            h1 gole
-                        div.sub-title
-                            h5 We help you build yuer travel plans solution, suited to your specific needs.
-                        //- div.link-button
-                        //-     buttonLinkCustomComponent(link="/" name="new create" bgColor="#212121" textColor="white" btnWidth="10rem" btnRadius="28px")
-                        //-     buttonLinkCustomComponent(link="/" name="your create" bgColor="lightcoral" textColor="white" btnWidth="10rem" btnRadius="28px")
-                        div.link-button
-                          button.component--btn.create-button.your-solution
-                            nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
-                              span Your Solution
-                          button.component--btn.create-button.solution-create
-                            nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
-                              span Solution Create
+                          //-start
+                          div
+                            transition(name="fadeInFromRight")
+                              h1(v-if="isShowTitle1 && isShowSolution1") Three Steps
+                          div
+                            transition(name="fadeInFromRight")
+                              h1(v-if="isShowTitle2  && isShowSolution1") for your
+                          div
+                            transition(name="fadeInFromRight")
+                              h1(v-if="isShowTitle3  && isShowSolution1") gole
+                          //- end
+                          div
+                            transition(name="fadeInFromRight")
+                              h1(v-if="isShowEndTitle ") Let's take a look at
+                          div
+                            transition(name="fadeInFromRight")
+                              h1(v-if="isShowEndTitle ") you overall sleep
+                          div
+                            transition(name="fadeInFromRight")
+                              h1(v-if="isShowEndTitle ") health
 
+                        div.sub-title
+                          transition(name="fadeInFromRight")
+                            h5(v-if="isShowTitle4 && isShowSolution2") We help you build yuer travel plans solution, suited to your specific needs.
+                        div.link-button
+                          transition(name="fadeInFromRight")
+                            button(v-if="isShowTitle5 && isShowSolution3").component--btn.create-button.your-solution
+                                //- nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
+                                span(@click="clinkQuestion('solution')") Your Solution
+                          transition(name="fadeInFromRight")
+                            button(v-if="isShowTitle5 && isShowSolution3").component--btn.create-button.solution-create
+                                //- nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
+                                span(@click="clinkQuestion('question')") Solution Create
 </template>
 <script>
 import buttonLinkCustomComponent from '~/components/button/buttonLinkCustomComponent.vue'
@@ -58,7 +75,29 @@ export default {
       loadImag: null,
       circleRectX: 20,
       circleRotetion: 0,
-      question: 1
+      question: 1,
+      circleCenterX: 0,
+      circleCenterY: 0,
+      // transition
+      isShowSolutionVer1: true,
+      isShowSolutionVer2: true,
+      isShowSolution1: true,
+      isShowSolution2: true,
+      isShowSolution3: true,
+      isShowSolution4: true,
+      isShowSolution5: true,
+      isShowCanvasVer1: false,
+      isShowCanvasVer2: false,
+      isShowTitle1: false,
+      isShowTitle2: false,
+      isShowTitle3: false,
+      isShowTitle4: false,
+      isShowTitle5: false,
+      alpha1: 0,
+      alpha2: 0,
+      loopCnt: 0,
+      isShowEndTitle: false,
+      isShowMoveStart: false
     }
   },
   mounted() {
@@ -78,6 +117,55 @@ export default {
     window.addEventListener('resize', this.handleResize)
   },
   methods: {
+    clinkQuestion(param) {
+      setTimeout(() => {
+        this.isShowSolution5 = false
+      }, 250)
+      setTimeout(() => {
+        this.isShowSolution4 = false
+      }, 500)
+      setTimeout(() => {
+        this.isShowSolution3 = false
+      }, 750)
+      setTimeout(() => {
+        this.isShowSolution2 = false
+      }, 1000)
+      setTimeout(() => {
+        this.isShowSolution1 = false
+      }, 1250)
+      setTimeout(() => {
+        this.isShowSolutionVer2 = false // canvas ｓ字ウェーブ
+      }, 1300)
+      setTimeout(() => {
+        this.isShowSolutionVer1 = false // canvas ｓ字ウェーブ
+      }, 2300)
+      if (param === !'solution') {
+        setTimeout(() => {
+          this.isShowEndTitle = true
+        }, 3300)
+      }
+      setTimeout(() => {
+        this.isShowMoveStart = true
+      }, 3800)
+      if (param === !'solution') {
+        setTimeout(() => {
+          this.isShowEndTitle = false
+        }, 6300)
+      }
+      // - nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
+      // this.isShowCanvasVer1 = this.isShowCanvasVer2 = this.isShowTitle1 = this.isShowTitle2 = this.isShowTitle3 = this.isShowTitle4 = this.isShowTitle5 = false
+      setTimeout(() => {
+        if (param === 'solution') {
+          this.$router.push({
+            path: '/thisIsSleep/solution/solution'
+          })
+        } else {
+          this.$router.push({
+            path: `/thisIsSleep/solution/question/${this.question}`
+          })
+        }
+      }, 7000)
+    },
     handleResize() {
       this.canvas.width = this.width = this.innerWidth = window.innerWidth
       this.canvas.height = this.height = this.innerHeight = window.innerHeight
@@ -119,6 +207,7 @@ export default {
       this.context.beginPath()
       // 波のパスを描く
       this.drawSineVer(this.drawVer.t / 0.5, zoom, delay)
+
       // パスをCanvasの右下へ
       // this.context.lineTo(this.width + 10, this.height)
       // パスをCanvasの左下へ
@@ -186,9 +275,9 @@ export default {
       let radius = 0
       const rectSize = 2
       const rectX = this.circleRectX
-      this.context.translate(this.width / 2, this.height / 2)
+      this.context.translate(positionX, this.height / 2)
       this.context.rotate(((Math.PI / 180) * this.circleRotetion) / 4)
-      this.context.translate(-this.width / 2, -this.height / 2)
+      this.context.translate(-positionX, -this.height / 2)
       for (let i = 0; i <= numberOfRect; i++) {
         // setTimeout(() => {
         this.context.beginPath()
@@ -225,8 +314,30 @@ export default {
       setTimeout(() => {
         cancelAnimationFrame(this.reqAnimation)
       }, 50000)
+      setTimeout(() => {
+        this.isShowCanvasVer1 = true
+      }, 1000)
+      setTimeout(() => {
+        this.isShowCanvasVer2 = true
+      }, 2000)
+      setTimeout(() => {
+        this.isShowTitle1 = true
+      }, 2250)
+      setTimeout(() => {
+        this.isShowTitle2 = true
+      }, 2500)
+      setTimeout(() => {
+        this.isShowTitle3 = true
+      }, 2750)
+      setTimeout(() => {
+        this.isShowTitle4 = true
+      }, 3000)
+      setTimeout(() => {
+        this.isShowTitle5 = true
+      }, 3250)
     },
     maskWave() {
+      this.loopCnt++
       this.context.clearRect(0, 0, this.width, this.height)
       if (this.canvas.width > 976) {
         this.context.drawImage(this.loadImg, 0, 0, this.width, this.height)
@@ -235,18 +346,57 @@ export default {
       // mask
       this.context.save()
       // draw wave
-
+      // ｓ字ウェーブ
       this.context.rotate((Math.PI / 180) * 8)
       this.context.globalCompositeOperation = 'destination-in'
       if (this.canvas.width > 976) {
-        this.drawWaveVer('#c5ced3', 1, 3, 0)
+        if (this.isShowCanvasVer1 && this.isShowSolutionVer1) {
+          this.drawWaveVer('#c5ced3', 0.5, 3, 0)
+        } else if (!this.isShowCanvasVer1 && this.isShowSolutionVer1) {
+          if (this.alpha1 >= 0.5) {
+            this.drawWaveVer('#c5ced3', 0.5, 3, 0)
+          } else {
+            this.alpha1 = this.alpha1 + 0.008
+            this.drawWaveVer('#c5ced3', this.alpha1, 3, 0)
+          }
+        } else if (this.isShowCanvasVer1 && !this.isShowSolutionVer1) {
+          if (this.alpha1 <= 0) {
+            this.drawWaveVer('#c5ced3', 0, 3, 0)
+          } else {
+            this.alpha1 = this.alpha1 - 0.008
+            this.drawWaveVer('#c5ced3', this.alpha1, 3, 0)
+          }
+        } else {
+          this.drawWaveVer('#c5ced3', 0, 3, 0)
+        }
       }
 
+      // ｓ字ウェーブ
       this.context.rotate((Math.PI / 180) * -16)
       this.context.globalCompositeOperation = 'destination-over'
-      this.drawWaveVer('#c5ced3', 1, -3, 0)
+      if (this.isShowCanvasVer2 && this.isShowSolutionVer2) {
+        this.drawWaveVer('#c5ced3', 1, -3, 0)
+      } else if (this.isShowCanvasVer1 && this.isShowSolutionVer2) {
+        if (this.alpha2 >= 1) {
+          this.drawWaveVer('#c5ced3', 1, -3, 0)
+        } else {
+          this.alpha2 = this.alpha2 + 0.016
+          this.drawWaveVer('#c5ced3', this.alpha2, -3, 0)
+        }
+      } else if (this.isShowCanvasVer2 && !this.isShowSolutionVer2) {
+        if (this.alpha2 <= 0) {
+          this.drawWaveVer('#c5ced3', 0, -3, 0)
+        } else {
+          this.alpha2 = this.alpha2 - 0.016
+          this.drawWaveVer('#c5ced3', this.alpha2, -3, 0)
+        }
+      } else {
+        this.drawWaveVer('#c5ced3', 0, -3, 0)
+      }
+
       this.context.rotate((Math.PI / 180) * 8)
 
+      // 水平ウェーブ
       this.context.globalCompositeOperation = 'source-over'
       this.drawWaveHor('#b2b6bb', 1, 1, 0)
 
@@ -261,8 +411,10 @@ export default {
       // center circle
       this.context.globalCompositeOperation = 'source-over'
       this.drawRectYellowBlack(
-        this.width / 2,
-        this.height / 2,
+        // this.width / 2,
+        // this.height / 2,
+        this.circleCenterX,
+        this.circleCenterY,
         10,
         10,
         36,
@@ -270,7 +422,11 @@ export default {
         '#444',
         '#0d2636'
       )
-
+      // wave mome left
+      if (this.yAxis > 0 && this.isShowMoveStart) {
+        this.yAxis = this.yAxis - 10
+        this.circleCenterX = this.circleCenterX - 10
+      }
       this.context.restore()
     },
 
@@ -281,6 +437,8 @@ export default {
       this.height = this.canvas.height
       // cricle
       this.circleRectX = 20
+      this.circleCenterX = this.width / 2
+      this.circleCenterY = this.height / 2
       // horizon
       this.xAxis = Math.floor(this.height / 2)
       // this.yAxis = 0
@@ -353,6 +511,7 @@ export default {
 }
 .sol-content-wrape {
   width: 100%;
+  height: 60%;
   margin: 0 2.5rem;
   @media (min-width: 976px) {
     margin: 0 15rem;

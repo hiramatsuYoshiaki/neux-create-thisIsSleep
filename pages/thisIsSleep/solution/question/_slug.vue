@@ -9,32 +9,33 @@
                     div.row
                       div.ques-wrape
                           div.question
-                              div.pageId
-                                  span.h7 {{quesId}}
-                                  span.h7 /
-                                  span.h7 {{totalQ}}
-                              h4.quesTitle {{question.ques}}
-                              div.doYouKnow
-                                  div.doYouKnowCatchWrap
-                                      div.doYouKnowCatch
-                                      div.doYouKnowMark.h6 ?
-                                  div.doYouKnowText Do you know?
+                              transition(name="fadeInFromRight")
+                                div(v-if="isShowTitle1 && isShowQuestion1").pageId
+                                    span.h7 {{quesId}}
+                                    span.h7 /
+                                    span.h7 {{totalQ}}
+                              transition(name="fadeInFromRight")
+                                h4(v-if="isShowTitle2 && isShowQuestion2").quesTitle {{question.ques}}
+                              transition(name="fadeInFromRight")
+                                div(v-if="isShowTitle3 && isShowQuestion3").doYouKnow
+                                    div.doYouKnowCatchWrap
+                                        div.doYouKnowCatch
+                                        div.doYouKnowMark.h6 ?
+                                    div.doYouKnowText Do you know?
 
                       div.ques-wrape
                           div.anser
                               div.anser-element(v-for="ans in question.ansr" )
-                                  div.anser-title-wrap(@click="nextPage()")
+                                transition(name="fadeInFromRight")
+                                  div(v-if="isShowTitle4 && isShowQuestion4").anser-title-wrap(@click="nextPage()")
                                       div.anser-title
                                       div.anser-title-mark.h6 {{ans.mark}}
-                                  div.anser-items(@click="nextPage()")
+                                      //- <canvas width="90" height="90" style="position: absolute; top: 0px; left: 0px; width: 45px; height: 45px;"></canvas>
+                                transition(name="fadeInFromRight")
+                                  div(v-if="isShowTitle5 && isShowQuestion5").anser-items(@click="nextPage()")
                                       div.h6 {{ans.ans}}
                                       div.h7 {{ans.ansText}}
-                              //- div.anser-element
-                              //-     div.anser-title
-                              //-         p B
-                              //-     div.anser-items
-                              //-         h6 No
-                              //-         div.h7 I useually waik to simmiler position
+
                   //- div.create
                       div(v-for="question in selectedPage()" :key="question.id")
                           h3 {{question.id}}
@@ -100,7 +101,22 @@ export default {
       xAxis: 0,
       yAxis: 0,
       unit: 100,
-      circleRectX: 20
+      circleRectX: 20,
+      circleRotetion: 0,
+      circleCenterX: 0,
+      circleCenterY: 0,
+      // transition
+
+      isShowQuestion1: true,
+      isShowQuestion2: true,
+      isShowQuestion3: true,
+      isShowQuestion4: true,
+      isShowQuestion5: true,
+      isShowTitle1: false,
+      isShowTitle2: false,
+      isShowTitle3: false,
+      isShowTitle4: false,
+      isShowTitle5: false
     }
   },
   computed: {
@@ -133,17 +149,26 @@ export default {
       this.canvas.height = this.innerHeight
       this.width = this.canvas.width
       this.height = this.canvas.height
-      // cricle
+      // dot cricle----------------------
       this.circleRectX = 20
-      // horizon
-      this.xAxis = Math.floor(this.height / 2) + 20
-      // this.yAxis = 0
-      // this.yAxis = this.width / 2 + this.circleRectX //水平ウェイブ開始位置
+      // dot circle position
+      // if (this.$route.params.slug === '1') {
+      //   this.circleCenterX = this.width / 2
+      //   this.circleCenterY = this.height / 2
+      // } else {
+      this.circleCenterX = -this.width
+      this.circleCenterY = -this.height
+      // }
+
+      // horizon wave--------------------
+
+      this.xAxis = Math.floor(this.height / 2)
+      // this.xAxis = Math.floor(this.height / 2) + 20
+      // if (this.$route.params.slug === '1') {
+      //   this.yAxis = this.width / 2 + this.circleRectX // 水平ウェイブ開始位置
+      // } else {
       this.yAxis = this.circleRectX - 100 // 水平ウェイブ開始位置
-      // verticle
-      // this.xAxisVer = Math.floor(this.width / 1.5)
-      // this.yAxisVer = 0
-      // this.draws()
+      // }
     },
     loop() {
       this.maskWave()
@@ -151,6 +176,21 @@ export default {
       setTimeout(() => {
         cancelAnimationFrame(this.reqAnimation)
       }, 50000)
+      setTimeout(() => {
+        this.isShowTitle1 = true
+      }, 250)
+      setTimeout(() => {
+        this.isShowTitle2 = true
+      }, 500)
+      setTimeout(() => {
+        this.isShowTitle3 = true
+      }, 750)
+      setTimeout(() => {
+        this.isShowTitle4 = true
+      }, 1000)
+      setTimeout(() => {
+        this.isShowTitle5 = true
+      }, 1250)
     },
     maskWave() {
       this.context.clearRect(0, 0, this.width, this.height)
@@ -163,11 +203,32 @@ export default {
       // this.context.strokeStyle = 'red'
       // this.context.stroke()
 
+      // 水平ウェーブ
       this.context.globalCompositeOperation = 'source-over'
       // this.drawWaveHor('#b2b6bb', 1, 1, 0)
       this.drawWaveHor('#b2b6bb', 1, 1, 0)
       this.drawHor.seconds = this.drawHor.seconds + 0.05 // 速い
       this.drawHor.t = this.drawHor.seconds * Math.PI
+
+      // center circle
+      this.context.globalCompositeOperation = 'source-over'
+      this.drawRectYellowBlack(
+        // this.width / 2,
+        // this.height / 2,
+        this.circleCenterX,
+        this.circleCenterY,
+        10,
+        10,
+        36,
+        2,
+        '#444',
+        '#0d2636'
+      )
+      // wave mome left
+      // if (this.yAxis > 0 && this.$route.params.slug === '1') {
+      //   this.yAxis = this.yAxis - 4
+      //   this.circleCenterX = this.circleCenterX - 4
+      // }
 
       this.context.restore()
     },
@@ -219,6 +280,52 @@ export default {
         this.context.lineTo(i, this.unit * y + this.xAxis)
       }
     },
+    drawRectYellowBlack(
+      positionX, // 100
+      positionY, // 100
+      radiusStep, // 30
+      translateXSpet, // 10
+      numberOfRect, // 20
+      rectXStep, // 2
+      colorStringOne, // #f7bf3d
+      colorStringTwo // #0d2636
+    ) {
+      this.circleRotetion++
+      let radius = 0
+      const rectSize = 2
+      const rectX = this.circleRectX
+      this.context.translate(positionX, this.height / 2)
+      this.context.rotate(((Math.PI / 180) * this.circleRotetion) / 4)
+      this.context.translate(-positionX, -this.height / 2)
+      for (let i = 0; i <= numberOfRect; i++) {
+        // setTimeout(() => {
+        this.context.beginPath()
+        this.context.save()
+        this.context.translate(positionX, positionY)
+        this.context.rotate((Math.PI / 180) * radius)
+        //   if (i % 2 === 0) {
+        this.context.fillStyle = colorStringOne
+        //   }else {
+        //       this.context.fillStyle = colorStringTwo
+        //   }
+        //   if (i % 2 === 0) {
+        //     this.context.fillStyle = colorStringOne
+        //   }
+        // ctx.fillStyle = "rgba("+20+i*20+","+20+i*10+",100,1)";
+        //   this.context.fillRect(rectX, 0, rectSize, rectSize)
+        this.context.arc(rectX, 0, rectSize / 2, 0, 2 * Math.PI)
+        // this.context.arc(20, 0, rectSize / 2, 0, 2 * Math.PI)
+        this.context.fill()
+        //   this.context.stroke()
+        this.context.restore()
+
+        radius += radiusStep
+        // rectSize += 1.8;
+        // positionX += translateXSpet;
+        // rectX += rectXStep;
+        // }, 200 * i)
+      }
+    },
     selectedPage() {
       const selectedQues = []
       let cnt = 0
@@ -233,11 +340,28 @@ export default {
     },
     nextPage() {
       const addPage = Number(this.$route.params.slug) + 1
-      if (addPage > this.totalQ) {
-        this.$router.push('/')
-      } else {
-        this.$router.push(`/thisIsSleep/solution/question/${addPage}`)
-      }
+      setTimeout(() => {
+        this.isShowQuestion5 = false
+      }, 250)
+      setTimeout(() => {
+        this.isShowQuestion4 = false
+      }, 500)
+      setTimeout(() => {
+        this.isShowQuestion3 = false
+      }, 750)
+      setTimeout(() => {
+        this.isShowQuestion2 = false
+      }, 1000)
+      setTimeout(() => {
+        this.isShowQuestion1 = false
+      }, 1250)
+      setTimeout(() => {
+        if (addPage > this.totalQ) {
+          this.$router.push('/thisIsSleep/solution/results')
+        } else {
+          this.$router.push(`/thisIsSleep/solution/question/${addPage}`)
+        }
+      }, 2000)
     }
     // initial data create firebase
     // createQuestions() {
