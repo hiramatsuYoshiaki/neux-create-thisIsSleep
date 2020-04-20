@@ -2,8 +2,8 @@
     div.main-wrap
         div.container-fluid
             div.row
-                canvas(id="canvas" ref="refs_canvas")
-
+                canvas(id="canvas" ref="refsCanvas")
+                //- canvas(id="canvas2" ref="refsCanvas2")
                 div.ques-content(v-for="question in selectedPage()" :key="question.id")
                   div.container-question
                     div.row
@@ -25,11 +25,18 @@
 
                       div.ques-wrape
                           div.anser
+
                               div.anser-element(v-for="ans in question.ansr" )
                                 transition(name="fadeInFromRight")
-                                  div(v-if="isShowTitle4 && isShowQuestion4").anser-title-wrap(@click="nextPage()")
-                                      div.anser-title
+
+                                  //- div(v-if="isShowTitle4 && isShowQuestion4").anser-title-wrap(@click="nextPage()")
+                                  div.anser-title-wrap(@click="nextPage()")
+                                      //- div.anser-title
+                                      canvas(id="canvas2" ref="refsCanvas2")
                                       div.anser-title-mark.h6 {{ans.mark}}
+                                      //- div
+                                      //-   canvas(id="canvas2" ref="refsCanvas2")
+
                                       //- <canvas width="90" height="90" style="position: absolute; top: 0px; left: 0px; width: 45px; height: 45px;"></canvas>
                                 transition(name="fadeInFromRight")
                                   div(v-if="isShowTitle5 && isShowQuestion5").anser-items(@click="nextPage()")
@@ -89,11 +96,32 @@ export default {
       totalQ: 1,
       canvas: null,
       context: null,
+      canvas2: [],
+      context2: [],
+      reqAnimation: null,
       height: 0,
       width: 0,
       innerWidth: 0,
       innerHeight: 0,
-      reqAnimation: null,
+      pageQuestion: [],
+      // canvas wave ----------------------------------------------
+      // code pen url:https://codepen.io/waidhoferj/details/QWWjxgW
+      colors: {
+        accent: '#4dbaed',
+        base: '#5c8abd',
+        dark: '#504e4e'
+      },
+      // buildFrame: null,
+      pointDx: 0,
+      speed: 0,
+      noise: null,
+      iteration: 0,
+      amplitude: 0,
+      strands: [],
+      //
+      // option: []
+      waveHeight: 100, // 波の高さ
+      // -----------------------------------------------------------
       drawHor: {
         seconds: 0,
         t: 0
@@ -105,8 +133,8 @@ export default {
       circleRotetion: 0,
       circleCenterX: 0,
       circleCenterY: 0,
-      // transition
 
+      // transition-------------------------------------------------
       isShowQuestion1: true,
       isShowQuestion2: true,
       isShowQuestion3: true,
@@ -133,11 +161,54 @@ export default {
     // img.src = this.bgImg
     // img.onload = () => {
     // this.loadImg = img
-    this.canvas = this.$refs.refs_canvas
+    this.canvas = this.$refs.refsCanvas
     this.context = this.canvas.getContext('2d')
+
+    for (const i in this.questions) {
+      if (this.questions[i].id === Number(this.$route.params.slug)) {
+        console.log('aaa')
+        for (const idx in this.questions[i].ansr) {
+          console.log('this.questions[i].ansr: ' + idx)
+          console.log(this.questions[i].ansr[idx].ansText)
+          this.canvas2[idx] = this.$refs.refsCanvas2[idx]
+          this.context2[idx] = this.canvas2[idx].getContext('2d')
+        }
+      }
+    }
+
+    // for (const i in this.pageQuestion.ansr) {
+    //   console.log('for')
+    //   console.log(i, this.pageQuestion.ansr[i].ansText)
+    // }
+    // for(let i = 0, i < this.question, i++){
+
+    // }
+    // this.question.forEach((value, index) => {
+    //   console.log(index, value.ans)
+    //   this.canvas2[index] = this.$refs.refsCanvas2[index]
+    //   this.context2[index] = this.canvas2[index].getContext('2d')
+    // })
+
+    // canvas wave ----------------------------------------------
+    // code pen url:https://codepen.io/waidhoferj/details/QWWjxgW
+    // this.buildFrame = this.buildFrame.bind(this);
+    this.pointDx = 3
+    this.waveHeight = 40
+    this.speed = 0.001
+    // this.noise = new SimplexNoise();
+    const SimplexNoise = require('simplex-noise')
+    this.noise = new SimplexNoise()
+    this.iteration = 0
+    this.amplitude = 0
+    this.strands = []
+
     this.handleResize()
     this.init()
-    this.loop()
+    // canvas wave ----------------------------------------------
+    // code pen url:https://codepen.io/waidhoferj/details/QWWjxgW
+    this.optionSet()
+    // this.loop()
+    this.animate()
     // }
   },
   destroyed() {
@@ -147,6 +218,8 @@ export default {
     init() {
       this.canvas.width = this.innerWidth
       this.canvas.height = this.innerHeight
+      this.canvas2.width = 100
+      this.canvas2.height = 100
       this.width = this.canvas.width
       this.height = this.canvas.height
       // dot cricle----------------------
@@ -169,6 +242,159 @@ export default {
       // } else {
       this.yAxis = this.circleRectX - 100 // 水平ウェイブ開始位置
       // }
+    },
+    optionSet() {
+      // console.log('option set')
+      // const options = [
+      // { offset: 1, color: '#4dbaed' },
+      // { offset: 5, color: '#4dbaed' },
+      // { offset: 10, color: '#4dbaed' },
+      // { offset: 50, color: '#4dbaed' },
+      // { offset: 60, color: '#4dbaed' },
+      // { offset: 600, color: '#4dbaed' }
+      // ]
+      const options = [{ offset: 1, color: 'hsl(0, 0%, 48%) ' }]
+
+      //   addStrand(strand = new Strand()) {
+      //   this.strands.push(strand);
+      // }
+      options.forEach((option) => {
+        // console.log('option set')
+        // console.log(option)
+        // this.addStrand(this.Strand(option))
+        // this.amplitudeScalar = 1;
+        // this.inverted = false;
+        // this.offset = 0;
+        // this.color = "blue";
+        // Object.assign(this, options);
+        //  let { inverted, offset, amplitudeScalar, color } = options;
+
+        this.strands.push({
+          inverted: false,
+          offset: option.offset,
+          amplitudeScalar: 1,
+          color: option.color
+        })
+      })
+    },
+    animate() {
+      // console.log('animate')
+      this.amplitude += 1
+      if (this.amplitude === 1) {
+        this.drawMark()
+        setTimeout(() => {
+          this.isShowTitle1 = true
+        }, 250)
+        setTimeout(() => {
+          this.isShowTitle2 = true
+        }, 500)
+        setTimeout(() => {
+          this.isShowTitle3 = true
+        }, 750)
+        setTimeout(() => {
+          this.isShowTitle4 = true
+        }, 1000)
+        setTimeout(() => {
+          this.isShowTitle5 = true
+        }, 1250)
+        this.buildFrame()
+        console.log('buildFrame')
+      }
+      this.isActive = true
+      // this.animateTransition()
+    },
+    buildFrame(t) {
+      if (this.amplitude > 0) requestAnimationFrame(this.buildFrame)
+      this.context.clearRect(0, 0, this.width, this.height)
+      for (let i = 0; i < this.strands.length; i++) {
+        this.drawWave(t, this.strands[i])
+      }
+
+      this.iteration++
+    },
+    drawMark() {
+      // this.question.forEach((value, index) => {
+      // this.canvas2[index] = this.$refs.refsCanvas2[index]
+      // this.context2[index] = this.canvas2[index].getContext('2d')
+      // console.log('drawMark')
+      // this.context2.clearRect(0, 0, this.width, this.height)
+      // this.context2.save()
+      // circle
+      // this.context2[index].fillStyle = 'rgba(0,115,99,0.5)'
+      // this.context2[index].beginPath()
+      // this.context2[index].arc(50, 50, 50, 0, Math.PI * 2, true)
+      // this.context2[index].closePath()
+      // this.context2[index].fill()
+      // this.context2.restore()
+      // })
+      for (const i in this.questions) {
+        if (this.questions[i].id === Number(this.$route.params.slug)) {
+          for (const idx in this.questions[i].ansr) {
+            console.log('draw: ' + idx)
+            console.log(this.questions[i].ansr[idx].mark)
+            // this.canvas2[idx] = this.$refs.refsCanvas2[idx]
+            // this.context2[idx] = this.canvas2[idx].getContext('2d')
+            this.context2[idx].fillStyle = 'rgba(0,115,99,0.5)'
+            this.context2[idx].beginPath()
+            this.context2[idx].arc(50, 50, 50, 0, Math.PI * 2, true)
+            this.context2[idx].closePath()
+            this.context2[idx].fill()
+          }
+        }
+      }
+    },
+    drawWave(t, options = {}) {
+      const { inverted, offset, amplitudeScalar, color } = options
+      const sign = inverted ? -1 : 1
+      const points = this.canvas.width / this.pointDx // pointDx:10
+      this.context.beginPath()
+      this.context.moveTo(0, this.canvas.height / 2)
+      for (let i = 0; i < points; i++) {
+        const x = i * this.pointDx // pointDx:10
+        const noise = this.noise.noise2D(
+          (i + this.iteration) / 100,
+          (this.iteration + offset) / 100
+        )
+        const y =
+          this.canvas.height / 2 -
+          sign *
+            this.envelopeScalar(x, amplitudeScalar) *
+            noise *
+            this.waveHeight // 波の高さ
+
+        this.context.lineTo(x, y)
+      }
+      this.context.strokeStyle = color
+      this.context.stroke()
+
+      // const { inverted, offset, amplitudeScalar, color } = {
+      //   offset: 1,
+      //   color: colors.accent
+      // }
+
+      // let sign = inverted ? -1 : 1;
+      // const points = this.width / this.pointDx
+      // console.log(points)
+      // this.context.beginPath()
+      // this.context.moveTo(0, this.height / 2)
+      // for (let i = 0; i < points; i++) {
+      //   const x = i * this.pointDx
+      //   const Y = (i * this.canvas.height) / 2
+      //   // let y = this.canvas.height / 2 - sign * this.envelopeScalar(x, amplitudeScalar) * noise;
+      //   this.context.lineTo(x, Y)
+      //   console.log('x: ' + x + ' Y: ' + Y)
+      // }
+
+      // this.context.lineTo(100, 100)
+      // this.context.strokeStyle = '#000000'
+      // this.context.stroke()
+    },
+    envelopeScalar(x, amplitudeScalar = 1) {
+      return (
+        this.amplitude *
+        Math.cos((3 * Math.PI) / 2 + Math.PI * (x / this.canvas.width)) *
+        amplitudeScalar
+      )
     },
     loop() {
       this.maskWave()
@@ -329,13 +555,14 @@ export default {
     selectedPage() {
       const selectedQues = []
       let cnt = 0
-      for (const ques in this.questions) {
-        if (this.questions[ques].id === Number(this.$route.params.slug)) {
-          selectedQues.push(this.questions[ques])
+      for (const i in this.questions) {
+        if (this.questions[i].id === Number(this.$route.params.slug)) {
+          selectedQues.push(this.questions[i])
         }
         cnt++
       }
       this.totalQ = cnt
+      this.pageQuestion = selectedQues
       return selectedQues
     },
     nextPage() {
@@ -388,6 +615,16 @@ export default {
   height: 100%;
   z-index: -1;
   background-color: rgb(205, 211, 216);
+  overflow: hidden;
+}
+#canvas2 {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 3rem;
+  height: 3rem;
+  z-index: 1;
+  // background-color: rgb(205, 211, 216);
   overflow: hidden;
 }
 .ques-content {

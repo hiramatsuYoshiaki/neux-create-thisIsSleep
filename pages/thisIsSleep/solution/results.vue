@@ -5,10 +5,11 @@
                 canvas(id="canvas" ref="refs_canvas")
                 div.result-content
                   div(@mouseenter="mouseEnter()" @mouseleave="mouseLeaf()")
-                    h3 that's is ...
-                    h5 Now that we know, we're pulling together
-                    h5 a sleep solution tailored to you.
-                    h1 {{message}}
+                    div.resluts-title
+                      h5 that's is ...
+                      h6 Now that we know, we're pulling together
+                      h6 sleep solution tailored to you.
+                      h6 {{message}}
 </template>
 <script>
 export default {
@@ -28,9 +29,13 @@ export default {
       posY: 0,
       color: '#000',
       numberPoint: 0,
+      rate: 0,
       pXArr: [],
       pYArr: [],
-
+      pXUpArr: [],
+      pYUpArr: [],
+      pXDwArr: [],
+      pYDwArr: [],
       pArr: [],
       rand: [],
       wavePoint: {
@@ -94,55 +99,62 @@ export default {
 
       this.posX = this.width / 2
       this.posY = this.height / 2
-      this.color = 'rgba(0,115,99,0.5)'
-      this.numberPoint = 8
+      //   this.color = 'rgba(0,115,99,0.5)'
+      this.color = 'rgba(0,50,99,0.5)'
+      // this.numberPoint = 8
+      this.numberPoint = 72
+      this.rate = 25
     },
 
     waveCircle() {
-      console.log('waveCircle')
       this.context.clearRect(0, 0, this.width, this.height)
       this.context.save()
 
       const degree = 360 / this.numberPoint
       for (let i = 0; i < this.numberPoint; i++) {
+        // const radian = (Math.PI / 180) * degree * i
+        // this.pXArr.push(this.radius * Math.cos(radian) + this.posX)
+        // this.pYArr.push(this.radius * Math.sin(radian) + this.posY)
         const radian = (Math.PI / 180) * degree * i
         this.pXArr.push(this.radius * Math.cos(radian) + this.posX)
         this.pYArr.push(this.radius * Math.sin(radian) + this.posY)
-        // console.log(this.radius * Math.cos(radian) + this.posX)
-        // console.log(this.radius * Math.cos(radian) + this.posY)
+        this.pXUpArr.push(
+          (this.radius + this.rate) * Math.cos(radian) + this.posX
+        )
+        this.pYUpArr.push(
+          (this.radius + this.rate) * Math.sin(radian) + this.posY
+        )
+        this.pXDwArr.push(
+          (this.radius - this.rate) * Math.cos(radian) + this.posX
+        )
+        this.pYDwArr.push(
+          (this.radius - this.rate) * Math.sin(radian) + this.posY
+        )
       }
       this.pArr = []
-      this.rand = this.radius / 8
+      this.rand = this.radius / this.numberPoint
       this.createPoint()
     },
     createPoint() {
-      console.log('createPoint')
-
       for (let i = 0; i < this.numberPoint; i++) {
-        console.log('numberPoint loop')
-        console.log(i)
         if (i % 2 === 0) {
-          this.wavePoint.x = this.pXArr[i] - Math.random() * this.rand
-          this.wavePoint.y = this.pYArr[i] - Math.random() * this.rand
-          //   this.setWavePoint(
-          //     this.pXArr[i] - Math.random() * this.rand,
-          //     this.pYArr[i] - Math.random() * this.rand
-          //   )
-          //   // console.log(this.wavePoint)
+          //   this.wavePoint.x = this.pXArr[i] - this.rand
+          //   this.wavePoint.y = this.pYArr[i] - this.rand
+          //   this.wavePoint.x = this.pXArr[i]
+          //   this.wavePoint.y = this.pYArr[i]
+          this.wavePoint.x = this.pXDwArr[i]
+          this.wavePoint.y = this.pYDwArr[i]
         } else {
-          this.wavePoint.x = this.pXArr[i] + Math.random() * this.rand
-          this.wavePoint.y = this.pYArr[i] + Math.random() * this.rand
-          //   this.setWavePoint(
-          //     this.pXArr[i] + Math.random() * this.rand,
-          //     this.pVArr[i] + Math.random() * this.rand
-          //   )
-          //   // console.log(this.wavePoint)
+          //   this.wavePoint.x = this.pXArr[i] + this.rand
+          //   this.wavePoint.y = this.pYArr[i] + this.rand
+          //   this.wavePoint.x = this.pXArr[i]
+          //   this.wavePoint.y = this.pYArr[i]
+          this.wavePoint.x = this.pXUpArr[i]
+          this.wavePoint.y = this.pYUpArr[i]
         }
         this.wavePoint.tx = this.pXArr[i]
         this.wavePoint.ty = this.pYArr[i]
-        this.wavePoint.spring = Math.random() * 0.03
-        // this.wavePoint.spring = 2 * 0.03
-        console.log('spring: ' + this.wavePoint.spring)
+        // this.wavePoint.spring = Math.random() * 0.03
         this.pArr.push({
           x: this.wavePoint.x,
           y: this.wavePoint.y,
@@ -152,9 +164,12 @@ export default {
           vy: this.wavePoint.vx,
           tx: this.wavePoint.tx,
           ty: this.wavePoint.ty,
-          spring: this.wavePoint.spring
+          maxx: this.pXDwArr[i],
+          maxy: this.pXDwArr[i],
+          minx: this.pXDwArr[i],
+          miny: this.pXDwArr[i],
+          spring: 0.01
         })
-        console.log('pArr')
       }
     },
     loop() {
@@ -163,8 +178,9 @@ export default {
 
       this.timer = setInterval(() => {
         this.context.clearRect(0, 0, this.width, this.height)
+
         this.drawCircle()
-      }, 1000 / 40)
+      }, 10000 / 40)
 
       // this.drawCircle()
       // this.reqAnimation = requestAnimationFrame(this.loop)
@@ -199,42 +215,23 @@ export default {
         xc1,
         yc1
       )
-      this.context.fillStyle = this.color
-      this.context.fill()
+      // this.context.fillStyle = this.color
+      // this.context.fill()
+      this.context.strokeStyle = 'hsl(0, 0%, 48%) '
+      this.context.stroke()
     },
     movePoint() {
       console.log('movePoint')
+
       for (let i = 0; i < this.pArr.length; i++) {
-        console.log(i)
-        const dx = this.pArr[i].tx - this.pArr[i].x
-        const dy = this.pArr[i].ty - this.pArr[i].y
-        this.pArr[i].ax = dx * this.pArr[i].spring
-        this.pArr[i].ay = dy * this.pArr[i].spring
-        this.pArr[i].vx += this.pArr[i].ax
-
-        this.pArr[i].vy += this.pArr[i].ay //
+        const dx = this.pArr[i].tx - this.pArr[i].x // 円状態からの差
+        const dy = this.pArr[i].ty - this.pArr[i].y // 円状態からの差
+        this.pArr[i].ax = dx * this.pArr[i].spring // 増減値
+        this.pArr[i].ay = dy * this.pArr[i].spring // 増減値
+        this.pArr[i].vx += this.pArr[i].ax // 増減値の合計
+        this.pArr[i].vy += this.pArr[i].ay // 増減値の合計
         this.pArr[i].x += this.pArr[i].vx
-
-        this.pArr[i].y += this.pArr[i].vy //
-        console.log(dx)
-        console.log(dy)
-        console.log(this.pArr[i].ax)
-        console.log(this.pArr[i].ay)
-        console.log(this.pArr[i].vx)
-        console.log(this.pArr[i].vy) // nan
-        console.log(this.pArr[i].x)
-        console.log(this.pArr[i].y) // nan
-        console.log(this.pArr[i].spring)
-
-        // const dx = 10
-        // const dy = 20
-        // this.pArr[i].ax = dx * this.pArr[i].spring
-        // this.pArr[i].ay = dy * this.pArr[i].spring
-        // this.pArr[i].vx += 2
-        // this.pArr[i].vy += 4
-        // this.pArr[i].x += 3
-        // this.pArr[i].y += 6
-        // console.log(this.pArr[i].x)
+        this.pArr[i].y += this.pArr[i].vy
       }
     }
     // draw() {
@@ -259,10 +256,10 @@ export default {
   }
 }
 </script>
-<style lans="scss" scoped>
-* {
+<style lang="scss" scoped>
+/* * {
   border: 1px dotted grey;
-}
+} */
 /* .main-wrape {
   margin-top: $header-height;
   overflow: hidden;
@@ -291,5 +288,11 @@ export default {
   flex-direction: column;
   z-index: 10;
   overflow: hidden;
+}
+.resluts-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 </style>
