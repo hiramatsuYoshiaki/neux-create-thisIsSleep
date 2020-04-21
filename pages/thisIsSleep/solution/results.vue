@@ -9,7 +9,6 @@
                       h5 that's is ...
                       h6 Now that we know, we're pulling together
                       h6 sleep solution tailored to you.
-                      h6 {{message}}
 </template>
 <script>
 export default {
@@ -173,7 +172,6 @@ export default {
       }
     },
     loop() {
-      console.log('loop')
       this.drawCircle()
 
       this.timer = setInterval(() => {
@@ -191,7 +189,6 @@ export default {
     drawCircle() {
       this.context.clearRect(0, 0, this.width, this.height)
       // this.context.save()
-      console.log('drawCircle')
 
       this.drawGraphics()
       this.movePoint()
@@ -199,7 +196,6 @@ export default {
       // this.context.restore()
     },
     drawGraphics() {
-      console.log('drawGraphics')
       this.context.beginPath()
       const xc1 = (this.pArr[0].x + this.pArr[this.numberPoint - 1].x) / 2
       const yc1 = (this.pArr[0].y + this.pArr[this.numberPoint - 1].y) / 2
@@ -221,8 +217,6 @@ export default {
       this.context.stroke()
     },
     movePoint() {
-      console.log('movePoint')
-
       for (let i = 0; i < this.pArr.length; i++) {
         const dx = this.pArr[i].tx - this.pArr[i].x // 円状態からの差
         const dy = this.pArr[i].ty - this.pArr[i].y // 円状態からの差

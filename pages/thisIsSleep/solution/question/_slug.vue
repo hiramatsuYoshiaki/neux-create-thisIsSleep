@@ -9,39 +9,44 @@
                     div.row
                       div.ques-wrape
                           div.question
+                            div.pageId
                               transition(name="fadeInFromRight")
-                                div(v-if="isShowTitle1 && isShowQuestion1").pageId
-                                    span.h7 {{quesId}}
-                                    span.h7 /
-                                    span.h7 {{totalQ}}
-                              transition(name="fadeInFromRight")
-                                h4(v-if="isShowTitle2 && isShowQuestion2").quesTitle {{question.ques}}
-                              transition(name="fadeInFromRight")
-                                div(v-if="isShowTitle3 && isShowQuestion3").doYouKnow
-                                    div.doYouKnowCatchWrap
-                                        div.doYouKnowCatch
-                                        div.doYouKnowMark.h6 ?
-                                    div.doYouKnowText Do you know?
+                                div(v-show="isShowTitle1 && isShowQuestion1")
+                                  span.h7 {{quesId}}
+                                  span.h7 /
+                                  span.h7 {{totalQ}}
+
+                            h4.quesTitle
+                                transition(name="fadeInFromRight")
+                                  div(v-show="isShowTitle2 && isShowQuestion2") {{question.ques}}
+
+                            div.doYouKnow
+                                transition(name="fadeInFromRight")
+                                  div(v-show="isShowTitle3 && isShowQuestion3")
+                                    div.doYouKnowWrap
+                                      div.doYouKnowCatchWrap
+                                          div.doYouKnowCatch
+                                          div.doYouKnowMark.h6 ?
+                                      div.doYouKnowText Do you know?
 
                       div.ques-wrape
                           div.anser
 
                               div.anser-element(v-for="ans in question.ansr" )
-                                transition(name="fadeInFromRight")
+                                  //- div(@mouseenter="mouseEnter(ans)" @mouseleave="mouseLeaf(ans)")
+                                  transition(name="fadeInFromRight")
+                                    div(v-show="isShowTitle4 && isShowQuestion4").anser-title-wrap
+                                      div.anser-title-wrap(@click="nextPage()")
+                                          div.anser-title-mark.h6 {{ans.mark}}
+                                          div.anser-title
+                                          div.canvas2-wrap
+                                            canvas(id="canvas2" ref="refsCanvas2")
+                                          //- canvas(id="canvas2" ref="refsCanvas2" )
 
-                                  //- div(v-if="isShowTitle4 && isShowQuestion4").anser-title-wrap(@click="nextPage()")
-                                  div.anser-title-wrap(@click="nextPage()")
-                                      //- div.anser-title
-                                      canvas(id="canvas2" ref="refsCanvas2")
-                                      div.anser-title-mark.h6 {{ans.mark}}
-                                      //- div
-                                      //-   canvas(id="canvas2" ref="refsCanvas2")
-
-                                      //- <canvas width="90" height="90" style="position: absolute; top: 0px; left: 0px; width: 45px; height: 45px;"></canvas>
-                                transition(name="fadeInFromRight")
-                                  div(v-if="isShowTitle5 && isShowQuestion5").anser-items(@click="nextPage()")
-                                      div.h6 {{ans.ans}}
-                                      div.h7 {{ans.ansText}}
+                                  transition(name="fadeInFromRight")
+                                    div(v-if="isShowTitle5 && isShowQuestion5").anser-items(@click="nextPage()")
+                                        div.h6 {{ans.ans}}
+                                        div.h7 {{ans.ansText}}
 
                   //- div.create
                       div(v-for="question in selectedPage()" :key="question.id")
@@ -134,6 +139,36 @@ export default {
       circleCenterX: 0,
       circleCenterY: 0,
 
+      // circle
+      // cordpen 波打つ円----------------------------------------------
+      // https://codepen.io/sebavien/details/jAjKVE
+      radius: 0,
+      posX: 0,
+      posY: 0,
+      color: '#000',
+      numberPoint: 0,
+      rate: 0,
+      pXArr: [],
+      pYArr: [],
+      pXUpArr: [],
+      pYUpArr: [],
+      pXDwArr: [],
+      pYDwArr: [],
+      pArr: [],
+      rand: [],
+      wavePoint: {
+        x: 0,
+        y: 0,
+        ax: 0,
+        ay: 0,
+        vx: 0,
+        vy: 0,
+        tx: 0,
+        ty: 0,
+        spring: 0
+      },
+      timer: 0,
+
       // transition-------------------------------------------------
       isShowQuestion1: true,
       isShowQuestion2: true,
@@ -164,14 +199,15 @@ export default {
     this.canvas = this.$refs.refsCanvas
     this.context = this.canvas.getContext('2d')
 
+    // cordpen 波打つ円
+    // https://codepen.io/sebavien/details/jAjKVE
     for (const i in this.questions) {
       if (this.questions[i].id === Number(this.$route.params.slug)) {
-        console.log('aaa')
         for (const idx in this.questions[i].ansr) {
-          console.log('this.questions[i].ansr: ' + idx)
-          console.log(this.questions[i].ansr[idx].ansText)
           this.canvas2[idx] = this.$refs.refsCanvas2[idx]
           this.context2[idx] = this.canvas2[idx].getContext('2d')
+          this.canvas2[idx].width = 80
+          this.canvas2[idx].height = 80
         }
       }
     }
@@ -215,11 +251,19 @@ export default {
     window.addEventListener('resize', this.handleResize)
   },
   methods: {
+    mouseEnter(i) {
+      // alert(this.isOnMarks[i].isOnMark)
+      this.isOnMarks[i].isOnMark = true
+    },
+    mouseLeaf(i) {
+      // alert(i)
+      // alert(this.isOnMarks[i].isOnMark)
+      this.isOnMarks[i].isOnMark = false
+    },
     init() {
       this.canvas.width = this.innerWidth
       this.canvas.height = this.innerHeight
-      this.canvas2.width = 100
-      this.canvas2.height = 100
+
       this.width = this.canvas.width
       this.height = this.canvas.height
       // dot cricle----------------------
@@ -242,6 +286,10 @@ export default {
       // } else {
       this.yAxis = this.circleRectX - 100 // 水平ウェイブ開始位置
       // }
+      this.numberPoint = 9
+      this.radius = 24
+      this.posX = 40
+      this.posY = 40
     },
     optionSet() {
       // console.log('option set')
@@ -281,7 +329,6 @@ export default {
       // console.log('animate')
       this.amplitude += 1
       if (this.amplitude === 1) {
-        this.drawMark()
         setTimeout(() => {
           this.isShowTitle1 = true
         }, 250)
@@ -297,11 +344,26 @@ export default {
         setTimeout(() => {
           this.isShowTitle5 = true
         }, 1250)
+        this.waveCircle()
+        this.waveCircleLoop()
+        this.timer = setInterval(() => {
+          this.context.clearRect(0, 0, 80, 80)
+          this.waveCircleLoop()
+        }, 3000 / 40)
+
         this.buildFrame()
-        console.log('buildFrame')
       }
       this.isActive = true
       // this.animateTransition()
+      //   this.canvas.addEventListener("mouseover",function(e){
+      //     this.timer = setInterval(function(){
+      //         oThis.ctx.clearRect(0, 0, oThis.canvas.width, oThis.canvas.height);
+      //         oThis.circle.init();
+      //     }, 1000/40);
+      // },false);
+      // this.canvas.addEventListener("mouseleave",function(e){
+      //     clearInterval(this.timer);
+      // },false);
     },
     buildFrame(t) {
       if (this.amplitude > 0) requestAnimationFrame(this.buildFrame)
@@ -312,7 +374,7 @@ export default {
 
       this.iteration++
     },
-    drawMark() {
+    waveCircle() {
       // this.question.forEach((value, index) => {
       // this.canvas2[index] = this.$refs.refsCanvas2[index]
       // this.context2[index] = this.canvas2[index].getContext('2d')
@@ -330,15 +392,136 @@ export default {
       for (const i in this.questions) {
         if (this.questions[i].id === Number(this.$route.params.slug)) {
           for (const idx in this.questions[i].ansr) {
-            console.log('draw: ' + idx)
-            console.log(this.questions[i].ansr[idx].mark)
-            // this.canvas2[idx] = this.$refs.refsCanvas2[idx]
-            // this.context2[idx] = this.canvas2[idx].getContext('2d')
-            this.context2[idx].fillStyle = 'rgba(0,115,99,0.5)'
+            // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
+            // this.context2[idx].beginPath()
+            // this.context2[idx].arc(40, 40, 40, 0, Math.PI * 2, true)
+            // this.context2[idx].closePath()
+            // this.context2.lineWidth = 2
+            // // this.context2[idx].fill()
+            // this.context2[idx].stroke()
+
+            // cordpen 波打つ円----------------------------------------------
+            // https://codepen.io/sebavien/details/jAjKVE
+            this.context2[idx].clearRect(0, 0, this.width, this.height)
+            this.context2[idx].save()
+            const degree = 360 / this.numberPoint
+            for (let i = 0; i < this.numberPoint; i++) {
+              const radian = (Math.PI / 180) * degree * i
+              this.pXArr.push(this.radius * Math.cos(radian) + this.posX)
+              this.pYArr.push(this.radius * Math.sin(radian) + this.posY)
+              // this.pXUpArr.push(
+              //   (this.radius + this.rate) * Math.cos(radian) + this.posX
+              // )
+              // this.pYUpArr.push(
+              //   (this.radius + this.rate) * Math.sin(radian) + this.posY
+              // )
+              // this.pXDwArr.push(
+              //   (this.radius - this.rate) * Math.cos(radian) + this.posX
+              // )
+              // this.pYDwArr.push(
+              //   (this.radius - this.rate) * Math.sin(radian) + this.posY
+              // )
+            }
+            this.pArr = []
+            this.rand = this.radius / this.numberPoint
+            this.createPoint()
+
+            // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
+            // this.context2[idx].beginPath()
+            // this.context2[idx].arc(40, 40, 40, 0, Math.PI * 2, true)
+            // this.context2[idx].closePath()
+            // this.context2.lineWidth = 2
+            // // this.context2[idx].fill()
+            // this.context2[idx].stroke()
+          }
+        }
+      }
+    },
+    createPoint() {
+      for (let i = 0; i < this.numberPoint; i++) {
+        if (i % 2 === 0) {
+          this.wavePoint.x = this.pXArr[i] - this.rand
+          this.wavePoint.y = this.pYArr[i] - this.rand
+        } else {
+          this.wavePoint.x = this.pXArr[i] + this.rand
+          this.wavePoint.y = this.pYArr[i] + this.rand
+        }
+        this.wavePoint.tx = this.pXArr[i]
+        this.wavePoint.ty = this.pYArr[i]
+        this.wavePoint.spring = Math.random() * 0.3
+        this.pArr.push({
+          x: this.wavePoint.x,
+          y: this.wavePoint.y,
+          ax: this.wavePoint.ax,
+          ay: this.wavePoint.ay,
+          vx: this.wavePoint.vx,
+          vy: this.wavePoint.vx,
+          tx: this.wavePoint.tx,
+          ty: this.wavePoint.ty,
+          // maxx: this.pXDwArr[i],
+          // maxy: this.pXDwArr[i],
+          // minx: this.pXDwArr[i],
+          // miny: this.pXDwArr[i],
+          spring: 0.01
+        })
+      }
+    },
+    waveCircleLoop() {
+      for (const i in this.questions) {
+        if (this.questions[i].id === Number(this.$route.params.slug)) {
+          for (const idx in this.questions[i].ansr) {
+            this.context2[idx].clearRect(0, 0, 80, 80)
+            // this.drawGraphics()-------------------
             this.context2[idx].beginPath()
-            this.context2[idx].arc(50, 50, 50, 0, Math.PI * 2, true)
-            this.context2[idx].closePath()
-            this.context2[idx].fill()
+            const xc1 = (this.pArr[0].x + this.pArr[this.numberPoint - 1].x) / 2
+            const yc1 = (this.pArr[0].y + this.pArr[this.numberPoint - 1].y) / 2
+            this.context2[idx].moveTo(xc1, yc1)
+            for (let i = 0; i < this.pArr.length - 1; i++) {
+              const xc = (this.pArr[i].x + this.pArr[i + 1].x) / 2
+              const yc = (this.pArr[i].y + this.pArr[i + 1].y) / 2
+              this.context2[idx].quadraticCurveTo(
+                this.pArr[i].x,
+                this.pArr[i].y,
+                xc,
+                yc
+              )
+            }
+            this.context2[idx].quadraticCurveTo(
+              this.pArr[this.pArr.length - 1].x,
+              this.pArr[this.pArr.length - 1].y,
+              xc1,
+              yc1
+            )
+            // this.context[idx].fillStyle = this.color
+            // this.context[idx].fill()
+            this.context2[idx].strokeStyle = 'hsl(0, 0%, 21%)'
+            this.context2[idx].lineWidth = 2
+            this.context2[idx].stroke()
+            // this.movePoint()----------------------
+            for (let i = 0; i < this.pArr.length; i++) {
+              const dx = this.pArr[i].tx - this.pArr[i].x // 円状態からの差
+              const dy = this.pArr[i].ty - this.pArr[i].y // 円状態からの差
+              this.pArr[i].ax = dx * this.pArr[i].spring // 増減値
+              this.pArr[i].ay = dy * this.pArr[i].spring // 増減値
+              this.pArr[i].vx += this.pArr[i].ax // 増減値の合計
+              this.pArr[i].vy += this.pArr[i].ay // 増減値の合計
+              this.pArr[i].x += this.pArr[i].vx
+              this.pArr[i].y += this.pArr[i].vy
+            }
+
+            // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
+            // this.context2[idx].beginPath()
+            // this.context2[idx].arc(
+            //   this.posX,
+            //   this.posY,
+            //   40,
+            //   0,
+            //   Math.PI * 2,
+            //   true
+            // )
+            // this.context2[idx].closePath()
+            // this.context2.lineWidth = 2
+            // this.context2[idx].stroke()
           }
         }
       }
@@ -619,13 +802,15 @@ export default {
 }
 #canvas2 {
   position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 3rem;
-  height: 3rem;
-  z-index: 1;
-  // background-color: rgb(205, 211, 216);
+  top: 0;
+  left: 0;
+  // width: 3rem;
+  // height: 3rem;
+  width: 80px;
+  height: 80px;
+  z-index: 0;
   overflow: hidden;
+  // border: 1px solid red;
 }
 .ques-content {
   // border: 5px solid purple;
@@ -699,7 +884,7 @@ export default {
   flex-direction: row;
 }
 .anser {
-  // border: 1px solid red;
+  // border: 1px solid orange;
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -711,9 +896,7 @@ export default {
   }
 }
 .question {
-  // border: 1px solid blue;
   width: 100%;
-
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -745,10 +928,20 @@ export default {
   }
   .pageId {
     margin-bottom: 1rem;
+    height: 2rem;
+    width: 100%;
+  }
+  .quesTitle {
+    margin-bottom: 1rem;
+    height: 20rem;
+    width: 100%;
   }
   .doYouKnow {
     width: 100%;
     height: 2rem;
+    margin-bottom: 1rem;
+  }
+  .doYouKnowWrap {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -783,22 +976,31 @@ export default {
 .anser-element {
   color: $white;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: row;
+  // justify-content: flex-start;
+  // align-items: center;
+  // flex-direction: row;
   cursor: pointer;
   margin-bottom: 1rem;
+  width: 100%;
+  // border: 1px solid green;
 
   .anser-title-wrap {
     position: relative;
+    width: 80px;
+    height: 80px;
     // border: 1px solid blue;
   }
   .anser-items {
     position: relative;
     // border: 1px solid green;
+    margin-left: 1rem;
   }
   .anser-title {
-    margin: 1rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    // margin: 1rem;
     display: block;
     width: 3rem;
     height: 3rem;
@@ -810,11 +1012,22 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -55%);
+    margin-top: -0.1rem;
+    transition: all 0.15s;
+  }
+  .canvas2-wrap {
+    opacity: 0;
+    transition: all 0.15s;
   }
   &:hover {
     color: $grey-darker;
     .anser-title {
-      border: 2px solid $grey-darker;
+      border: none;
+      transition: all 0.15;
+    }
+    .canvas2-wrap {
+      opacity: 1;
+      transition: all 0.15s;
     }
   }
 }

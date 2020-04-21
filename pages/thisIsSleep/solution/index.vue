@@ -139,19 +139,24 @@ export default {
       setTimeout(() => {
         this.isShowSolutionVer1 = false // canvas ｓ字ウェーブ
       }, 2300)
-      if (param === !'solution') {
-        setTimeout(() => {
-          this.isShowEndTitle = true
-        }, 3300)
-      }
+      // if (param === !'solution') {
+      //   setTimeout(() => {
+      //     this.isShowEndTitle = true
+      //   }, 2300)
+      // }
+      // if (param === !'solution') {
+      setTimeout(() => {
+        this.isShowEndTitle = true
+      }, 2300)
+      // }
       setTimeout(() => {
         this.isShowMoveStart = true
-      }, 3800)
-      if (param === !'solution') {
-        setTimeout(() => {
-          this.isShowEndTitle = false
-        }, 6300)
-      }
+      }, 4800)
+      // if (param === !'solution') {
+      setTimeout(() => {
+        this.isShowEndTitle = false
+      }, 8800)
+      // }
       // - nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
       // this.isShowCanvasVer1 = this.isShowCanvasVer2 = this.isShowTitle1 = this.isShowTitle2 = this.isShowTitle3 = this.isShowTitle4 = this.isShowTitle5 = false
       setTimeout(() => {
@@ -164,7 +169,7 @@ export default {
             path: `/thisIsSleep/solution/question/${this.question}`
           })
         }
-      }, 7000)
+      }, 9000)
     },
     handleResize() {
       this.canvas.width = this.width = this.innerWidth = window.innerWidth
@@ -424,8 +429,8 @@ export default {
       )
       // wave mome left
       if (this.yAxis > 0 && this.isShowMoveStart) {
-        this.yAxis = this.yAxis - 10
-        this.circleCenterX = this.circleCenterX - 10
+        this.yAxis = this.yAxis - 20
+        this.circleCenterX = this.circleCenterX - 20
       }
       this.context.restore()
     },

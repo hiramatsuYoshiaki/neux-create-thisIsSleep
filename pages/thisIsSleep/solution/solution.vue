@@ -150,7 +150,6 @@ export default {
     // },
     // drawWave(t, options = {}) {
     drawWave(t, options = {}) {
-      console.log('drawWave')
       const { inverted, offset, amplitudeScalar, color } = options
       const sign = inverted ? -1 : 1
       const points = this.canvas.width / this.pointDx // pointDx:10
