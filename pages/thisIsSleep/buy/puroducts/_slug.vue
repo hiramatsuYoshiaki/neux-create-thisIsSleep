@@ -230,7 +230,7 @@ export default {
     ...mapState(['message'])
   },
   async created() {
-    this.$store.commit('buy/setSelectedId', this.paramId)
+    await this.$store.commit('buy/setSelectedId', this.paramId)
     await this.$store.dispatch(SLEEP_GET_REVIEW)
   },
   mounted() {

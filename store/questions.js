@@ -4,6 +4,8 @@ export const state = () => ({
     {
       id: 1,
       ques: 'Do you notice that you move around a lot when you sleep?',
+      doyouknow:
+        'You can tell how active you are when you sleep by taking a look at your duvet before making your bed. A messier duvet usually means a more fidgety sleeper.',
       ansr: [
         { mark: 'A', ans: 'YES', ansText: 'I tend to move around a lot' },
         {
@@ -16,6 +18,9 @@ export const state = () => ({
     {
       id: 2,
       ques: 'Do you often get to hot during the night?',
+      doyouknow:
+        'Body temperature issues are one of the leading causes of sleep problems. Exercise and a warm bath one hour before bedtime can help.',
+
       ansr: [
         {
           mark: 'A',
@@ -28,6 +33,9 @@ export const state = () => ({
     {
       id: 3,
       ques: 'Are you aware any allergies you might have',
+      doyouknow:
+        'Allergies are estimated to affect around one in five people in the UK.',
+
       ansr: [
         {
           mark: 'A',
@@ -45,6 +53,9 @@ export const state = () => ({
     {
       id: 4,
       ques: 'In what position do you usually  sllep in?',
+      doyouknow:
+        'Most people sleep on their sides, with 41% af adults choosing the fetal position as their favoured way to snooze.',
+
       ansr: [
         {
           mark: 'A',

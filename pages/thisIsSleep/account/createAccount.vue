@@ -133,8 +133,8 @@ export default {
     // ...mapMutations({ setLogin: 'account/setLogin' }),
     accountCreate() {
       this.$store.commit('clearMessage')
-      console.log('accountCreate')
-      console.log('displayName---> ' + this.getDisplayName)
+      // console.log('accountCreate')
+      // console.log('displayName---> ' + this.getDisplayName)
 
       const user = firebase.auth().currentUser
       if (user) {

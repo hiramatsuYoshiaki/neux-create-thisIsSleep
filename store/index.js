@@ -19,7 +19,9 @@ import {
   SLEEP_ADD_REVIEW,
   SLEEP_GET_REVIEW,
   SLEEP_QUESTIONS_CREATE,
-  GET_QUESTION_DATA
+  GET_QUESTION_DATA,
+  SLEEP_GET_SOLUTION,
+  SLEEP_ADD_SOLUTION
 } from './actionTypes'
 import { vuexfireMutations, firebaseAction } from 'vuexfire'
 import axios from 'axios'
@@ -30,6 +32,11 @@ export const state = () => ({
   page: 'home',
   items: [],
   user: null,
+  // const loginUser = {
+  //   uid: user.uid,
+  //   email: user.email,
+  //   displayName: user.displayName
+  // }
   reloadkey: 0,
   regstar: [],
   authErrors: [],
@@ -44,7 +51,8 @@ export const state = () => ({
   sleepProductsImgUrl: [],
   sleepreviews: [], // sllep review
   sleepQuestions: [], // sllep Questions
-  sleepSelectedQuestions: [] // sllep Questions of Page
+  sleepSelectedQuestions: [], // sllep Questions of Page
+  sleepSolutions: [] // sllep Questions of Page
 })
 export const mutations = {
   resetImgUrl(state) {
@@ -179,7 +187,33 @@ export const actions = {
       wait: true
     })
   }),
+  // firebase solution ---------------------------------------------------
+  [SLEEP_ADD_SOLUTION]: firebaseAction(async (context, solutions) => {
+    // console.log('sleep add solution')
+    console.log(solutions)
+    await db
+      .ref('sleepSolutions')
+      .child(solutions.uid)
+      .update(solutions)
+      .then(() => {
+        console.log('ok')
+        context.commit('setMessage', 'ありがとうございます。')
+        context.commit('setMessage', 'ソリューションを作成しました。')
+      })
+      .catch((err) => {
+        console.log('error' + err)
+        context.commit('setMessage', 'エラーが発生しました。')
+      })
+  }),
+  [SLEEP_GET_SOLUTION]: firebaseAction(async ({ bindFirebaseRef }, uid) => {
+    console.log('sleep get solution')
+    console.log(uid)
 
+    await bindFirebaseRef('sleepSolutions', db.ref('sleepSolutions/' + uid), {
+      wait: true
+    })
+  }),
+  // fsendmail ---------------------------------------------------
   [SENDGRID]: async (context, msg) => {
     const baseUrl = `${location.protocol}//${location.host}` // ローカルのドメイン取得
     await axios

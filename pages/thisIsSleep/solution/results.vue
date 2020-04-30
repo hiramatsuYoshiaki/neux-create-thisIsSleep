@@ -9,8 +9,23 @@
                       h5 that's is ...
                       h6 Now that we know, we're pulling together
                       h6 sleep solution tailored to you.
+                      div(v-for="msg in msgs")
+                        p {{ msg }}
+                      //- p {{message}}
+                      br
+                      br
+                      button(@click="mySolution()") i see ...
+                      br
+                      br
+
+                      p {{user}}
+                      p {{solutions}}
+                      p sleepSolutions firebase data
+                      p {{sleepSolutions}}
 </template>
 <script>
+import { mapState } from 'vuex'
+import { SLEEP_ADD_SOLUTION, SLEEP_GET_SOLUTION } from '~/store/actionTypes'
 export default {
   layout: 'layout2Parts',
   data() {
@@ -52,9 +67,28 @@ export default {
       message: 'leaf mouse'
     }
   },
-  mounted() {
+  computed: {
+    ...mapState(['user']),
+    ...mapState({ msgs: ['message'] }),
+    ...mapState(['sleepSolutions']),
+    ...mapState('solutions', ['solutions'])
+  },
+  async mounted() {
     // window size
     window.addEventListener('resize', this.handleResize)
+    this.$store.commit('clearMessage')
+    console.log('mount sleep add solution')
+    console.log(this.user)
+    if (this.user && this.user.email === this.solutions.user) {
+      console.log('user.email: ' + this.user.email)
+      console.log('solution.user: ' + this.solutions.user)
+      await this.$store.dispatch(SLEEP_ADD_SOLUTION, this.solutions)
+      this.message = 'ソリューションを作成しています。'
+    } else {
+      this.message = 'ログインしてください。'
+      this.$router.push('/thisIsSleep/account/logout')
+    }
+    await this.$store.dispatch(SLEEP_GET_SOLUTION, this.user.uid)
     // canvas
     // const img = new Image()
     // img.src = this.bgImg
@@ -79,6 +113,9 @@ export default {
     },
     mouseLeaf() {
       this.message = 'leaf mouse'
+    },
+    mySolution() {
+      this.$router.push('/thisIsSleep/solution/solution')
     },
     handleResize() {
       this.canvas.width = this.width = this.innerWidth = window.innerWidth

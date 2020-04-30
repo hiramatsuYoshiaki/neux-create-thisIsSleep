@@ -6,7 +6,6 @@
                 div.sol-content
                     div.sol-content-wrape
                         div.title
-                          //-start
                           div
                             transition(name="fadeInFromRight")
                               h1(v-if="isShowTitle1 && isShowSolution1") Three Steps
@@ -16,31 +15,34 @@
                           div
                             transition(name="fadeInFromRight")
                               h1(v-if="isShowTitle3  && isShowSolution1") gole
-                          //- end
+                        div.title
                           div
                             transition(name="fadeInFromRight")
-                              h1(v-if="isShowEndTitle ") Let's take a look at
+                              h4(v-if="isShowEndTitle ") Let's take a look at
                           div
                             transition(name="fadeInFromRight")
-                              h1(v-if="isShowEndTitle ") you overall sleep
+                              h4(v-if="isShowEndTitle ") you overall sleep
                           div
                             transition(name="fadeInFromRight")
-                              h1(v-if="isShowEndTitle ") health
-
+                              h4(v-if="isShowEndTitle ") health
                         div.sub-title
-                          transition(name="fadeInFromRight")
-                            h5(v-if="isShowTitle4 && isShowSolution2") We help you build yuer travel plans solution, suited to your specific needs.
+                          div
+                            transition(name="fadeInFromRight")
+                              h5(v-if="isShowTitle4 && isShowSolution2") We help you build yuer travel plans solution, suited to your specific needs.
                         div.link-button
-                          transition(name="fadeInFromRight")
-                            button(v-if="isShowTitle5 && isShowSolution3").component--btn.create-button.your-solution
-                                //- nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
-                                span(@click="clinkQuestion('solution')") Your Solution
-                          transition(name="fadeInFromRight")
-                            button(v-if="isShowTitle5 && isShowSolution3").component--btn.create-button.solution-create
-                                //- nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
-                                span(@click="clinkQuestion('question')") Solution Create
+                          div
+                            transition(name="fadeInFromRight")
+                              button(v-if="isShowTitle5 && isShowSolution3").component--btn.create-button.your-solution
+                                  //- nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
+                                  span(@click="clinkQuestion('solution')") Your Solution
+                          div
+                            transition(name="fadeInFromRight")
+                              button(v-if="isShowTitle5 && isShowSolution3").component--btn.create-button.solution-create
+                                  //- nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
+                                  span(@click="clinkQuestion('question')") Solution Create
 </template>
 <script>
+import { mapState } from 'vuex'
 import buttonLinkCustomComponent from '~/components/button/buttonLinkCustomComponent.vue'
 export default {
   layout: 'layout2Parts',
@@ -99,6 +101,9 @@ export default {
       isShowEndTitle: false,
       isShowMoveStart: false
     }
+  },
+  computed: {
+    ...mapState(['user'])
   },
   mounted() {
     window.addEventListener('resize', this.handleResize)
@@ -160,11 +165,16 @@ export default {
       // - nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
       // this.isShowCanvasVer1 = this.isShowCanvasVer2 = this.isShowTitle1 = this.isShowTitle2 = this.isShowTitle3 = this.isShowTitle4 = this.isShowTitle5 = false
       setTimeout(() => {
-        if (param === 'solution') {
+        if (!this.user.email) {
           this.$router.push({
-            path: '/thisIsSleep/solution/solution'
+            path: '/account/login'
+          })
+        } else if (param === 'solution') {
+          this.$router.push({
+            path: '/thisIsSleep/solution/userSolution'
           })
         } else {
+          // store new solution create
           this.$router.push({
             path: `/thisIsSleep/solution/question/${this.question}`
           })
@@ -514,7 +524,12 @@ export default {
   z-index: 10;
   overflow: hidden;
 }
+
 .sol-content-wrape {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
   width: 100%;
   height: 60%;
   margin: 0 2.5rem;

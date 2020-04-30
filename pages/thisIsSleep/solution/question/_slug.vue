@@ -4,6 +4,11 @@
             div.row
                 canvas(id="canvas" ref="refsCanvas")
                 //- canvas(id="canvas2" ref="refsCanvas2")
+                //- div.doYouKnow-content(:class="{ doYouKnowOpen: isDoYouKnowOpen,oYouKnowClose: !isDoYouKnowOpen  }")
+                div.doYouKnow-content-wrape
+                  div.doYouKnow-content(:class="{ doYouKnowOpen: isDoYouKnowOpen,doYouKnowClose: !isDoYouKnowOpen  }")
+                    div(v-for="question in selectedPage()" :key="question.id")
+                      div.h7 {{question.doyouknow}}
                 div.ques-content(v-for="question in selectedPage()" :key="question.id")
                   div.container-question
                     div.row
@@ -18,25 +23,37 @@
 
                             h4.quesTitle
                                 transition(name="fadeInFromRight")
-                                  div(v-show="isShowTitle2 && isShowQuestion2") {{question.ques}}
+                                  //- div(v-show="isShowTitle2 && isShowQuestion2") {{question.ques}}
+                                  div(v-show="isShowTitle2 && isShowQuestion2")
+                                   p {{solutions}}
 
                             div.doYouKnow
                                 transition(name="fadeInFromRight")
                                   div(v-show="isShowTitle3 && isShowQuestion3")
-                                    div.doYouKnowWrap
+                                    div.doYouKnowWrap(@click="isDoYouKnowOpen=true" v-show="!isDoYouKnowOpen")
                                       div.doYouKnowCatchWrap
                                           div.doYouKnowCatch
-                                          div.doYouKnowMark.h6 ?
+                                          div.doYouKnowMark ?
                                       div.doYouKnowText Do you know?
+                                      //-   h5
+                                      //-i.fas.fa-question
+                                          i.fas.fa-question-circle Do you know?
+                                    div.doYouKnowWrap(@click="isDoYouKnowOpen=false" v-show="isDoYouKnowOpen")
+                                      div.doYouKnowCatchWrap
+                                          div.doYouKnowCatch
+                                          div.doYouKnowMark x
+                                      div.doYouKnowText close
+                                      //-  h5
+                                        //- i.fas.fa-times-circle close
+                                        //- i.fas.fa-times close
 
                       div.ques-wrape
                           div.anser
-
                               div.anser-element(v-for="ans in question.ansr" )
                                   //- div(@mouseenter="mouseEnter(ans)" @mouseleave="mouseLeaf(ans)")
                                   transition(name="fadeInFromRight")
                                     div(v-show="isShowTitle4 && isShowQuestion4").anser-title-wrap
-                                      div.anser-title-wrap(@click="nextPage()")
+                                      div.anser-title-wrap(@click="nextPage(ans,question.id)")
                                           div.anser-title-mark.h6 {{ans.mark}}
                                           div.anser-title
                                           div.canvas2-wrap
@@ -44,7 +61,7 @@
                                           //- canvas(id="canvas2" ref="refsCanvas2" )
 
                                   transition(name="fadeInFromRight")
-                                    div(v-if="isShowTitle5 && isShowQuestion5").anser-items(@click="nextPage()")
+                                    div.anser-items(v-if="isShowTitle5 && isShowQuestion5" @click="nextPage(ans,question.id)")
                                         div.h6 {{ans.ans}}
                                         div.h7 {{ans.ansText}}
 
@@ -61,7 +78,10 @@
                   //- div.create
                       //- button(@click="createQuestions()")
                       //-     h3  create questions
-
+        //- div.container-fluid
+        //-   div.row
+            div.doYouKnow-content
+              div do you know content
 </template>
 <script>
 import { mapState } from 'vuex'
@@ -179,14 +199,19 @@ export default {
       isShowTitle2: false,
       isShowTitle3: false,
       isShowTitle4: false,
-      isShowTitle5: false
+      isShowTitle5: false,
+
+      isDoYouKnowOpen: false
     }
   },
   computed: {
+    ...mapState(['user']),
+    ...mapState('solutions', ['solutions']),
     ...mapState({ questions: 'sleepQuestions' }) // products
     // ...mapState('questions', { questions: 'questionsTest' }) // develop
   },
   async mounted() {
+    console.log('mounted start------------')
     // firebase
     await this.$store.dispatch(GET_QUESTION_DATA)
     // window size
@@ -201,16 +226,26 @@ export default {
 
     // cordpen 波打つ円
     // https://codepen.io/sebavien/details/jAjKVE
+    console.log('check set context2')
+    console.log(this.questions)
+    console.log(Number(this.$route.params.slug))
+
     for (const i in this.questions) {
+      console.log('loop question')
       if (this.questions[i].id === Number(this.$route.params.slug)) {
-        for (const idx in this.questions[i].ansr) {
+        console.log('question no')
+        const ansrs = this.questions[i].ansr
+        for (const idx in ansrs) {
+          // for (const idx in this.questions[i].ansr) {
           this.canvas2[idx] = this.$refs.refsCanvas2[idx]
           this.context2[idx] = this.canvas2[idx].getContext('2d')
           this.canvas2[idx].width = 80
           this.canvas2[idx].height = 80
+          console.log('mounted context2[idx]')
         }
       }
     }
+    console.log(this.context2)
 
     // for (const i in this.pageQuestion.ansr) {
     //   console.log('for')
@@ -261,6 +296,7 @@ export default {
       this.isOnMarks[i].isOnMark = false
     },
     init() {
+      console.log('init')
       this.canvas.width = this.innerWidth
       this.canvas.height = this.innerHeight
 
@@ -292,6 +328,7 @@ export default {
       this.posY = 40
     },
     optionSet() {
+      console.log('optionset')
       // console.log('option set')
       // const options = [
       // { offset: 1, color: '#4dbaed' },
@@ -326,7 +363,8 @@ export default {
       })
     },
     animate() {
-      // console.log('animate')
+      console.log('animate----------------')
+      console.log(this.context2)
       this.amplitude += 1
       if (this.amplitude === 1) {
         setTimeout(() => {
@@ -345,11 +383,17 @@ export default {
           this.isShowTitle5 = true
         }, 1250)
         this.waveCircle()
-        this.waveCircleLoop()
+        // this.waveCircleLoop()
+        // this.timer = setInterval(() => {
+        //   this.context.clearRect(0, 0, 80, 80)
+        //   this.waveCircleLoop()
+        // }, 3000 / 40)
         this.timer = setInterval(() => {
-          this.context.clearRect(0, 0, 80, 80)
+          console.log('setInterval----------------')
+          console.log(this.context2)
+          // this.context.clearRect(0, 0, 80, 80)
           this.waveCircleLoop()
-        }, 3000 / 40)
+        }, 300000 / 40)
 
         this.buildFrame()
       }
@@ -389,53 +433,54 @@ export default {
       // this.context2[index].fill()
       // this.context2.restore()
       // })
-      for (const i in this.questions) {
-        if (this.questions[i].id === Number(this.$route.params.slug)) {
-          for (const idx in this.questions[i].ansr) {
-            // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
-            // this.context2[idx].beginPath()
-            // this.context2[idx].arc(40, 40, 40, 0, Math.PI * 2, true)
-            // this.context2[idx].closePath()
-            // this.context2.lineWidth = 2
-            // // this.context2[idx].fill()
-            // this.context2[idx].stroke()
+      // for (const i in this.questions) {
+      //   if (this.questions[i].id === Number(this.$route.params.slug)) {
+      //     for (const idx in this.questions[i].ansr) {
 
-            // cordpen 波打つ円----------------------------------------------
-            // https://codepen.io/sebavien/details/jAjKVE
-            this.context2[idx].clearRect(0, 0, this.width, this.height)
-            this.context2[idx].save()
-            const degree = 360 / this.numberPoint
-            for (let i = 0; i < this.numberPoint; i++) {
-              const radian = (Math.PI / 180) * degree * i
-              this.pXArr.push(this.radius * Math.cos(radian) + this.posX)
-              this.pYArr.push(this.radius * Math.sin(radian) + this.posY)
-              // this.pXUpArr.push(
-              //   (this.radius + this.rate) * Math.cos(radian) + this.posX
-              // )
-              // this.pYUpArr.push(
-              //   (this.radius + this.rate) * Math.sin(radian) + this.posY
-              // )
-              // this.pXDwArr.push(
-              //   (this.radius - this.rate) * Math.cos(radian) + this.posX
-              // )
-              // this.pYDwArr.push(
-              //   (this.radius - this.rate) * Math.sin(radian) + this.posY
-              // )
-            }
-            this.pArr = []
-            this.rand = this.radius / this.numberPoint
-            this.createPoint()
+      // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
+      // this.context2[idx].beginPath()
+      // this.context2[idx].arc(40, 40, 40, 0, Math.PI * 2, true)
+      // this.context2[idx].closePath()
+      // this.context2.lineWidth = 2
+      // // this.context2[idx].fill()
+      // this.context2[idx].stroke()
 
-            // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
-            // this.context2[idx].beginPath()
-            // this.context2[idx].arc(40, 40, 40, 0, Math.PI * 2, true)
-            // this.context2[idx].closePath()
-            // this.context2.lineWidth = 2
-            // // this.context2[idx].fill()
-            // this.context2[idx].stroke()
-          }
-        }
+      // cordpen 波打つ円----------------------------------------------
+      // https://codepen.io/sebavien/details/jAjKVE
+      // this.context2[idx].clearRect(0, 0, this.width, this.height)
+      // this.context2[idx].save()
+      const degree = 360 / this.numberPoint
+      for (let i = 0; i < this.numberPoint; i++) {
+        const radian = (Math.PI / 180) * degree * i
+        this.pXArr.push(this.radius * Math.cos(radian) + this.posX)
+        this.pYArr.push(this.radius * Math.sin(radian) + this.posY)
+        // this.pXUpArr.push(
+        //   (this.radius + this.rate) * Math.cos(radian) + this.posX
+        // )
+        // this.pYUpArr.push(
+        //   (this.radius + this.rate) * Math.sin(radian) + this.posY
+        // )
+        // this.pXDwArr.push(
+        //   (this.radius - this.rate) * Math.cos(radian) + this.posX
+        // )
+        // this.pYDwArr.push(
+        //   (this.radius - this.rate) * Math.sin(radian) + this.posY
+        // )
       }
+      this.pArr = []
+      this.rand = this.radius / this.numberPoint
+      this.createPoint()
+
+      // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
+      // this.context2[idx].beginPath()
+      // this.context2[idx].arc(40, 40, 40, 0, Math.PI * 2, true)
+      // this.context2[idx].closePath()
+      // this.context2.lineWidth = 2
+      // // this.context2[idx].fill()
+      // this.context2[idx].stroke()
+      //     }
+      //   }
+      // }
     },
     createPoint() {
       for (let i = 0; i < this.numberPoint; i++) {
@@ -467,51 +512,65 @@ export default {
       }
     },
     waveCircleLoop() {
-      for (const i in this.questions) {
-        if (this.questions[i].id === Number(this.$route.params.slug)) {
-          for (const idx in this.questions[i].ansr) {
-            this.context2[idx].clearRect(0, 0, 80, 80)
+      console.log('waveCircleLoop-----------')
+      for (const izz in this.questions) {
+        if (this.questions[izz].id === Number(this.$route.params.slug)) {
+          console.log('waveCircleLoop ansr array-----')
+          console.log(this.questions[izz].ansr)
+          console.log('context2 array')
+          console.log(this.context2)
+
+          for (const idx2 in this.questions[izz].ansr) {
+            console.log('waveCircleLoop context2')
+            console.log(idx2)
+            console.log(this.context2[idx2])
+            // this.canvas2[idx2] = this.$refs.refsCanvas2[idx2]
+            // this.context2[idx2] = this.canvas2[idx2].getContext('2d')
+            // this.canvas2[idx2].width = 80
+            // this.canvas2[idx2].height = 80
+
+            this.context2[idx2].clearRect(0, 0, 80, 80)
             // this.drawGraphics()-------------------
-            this.context2[idx].beginPath()
+            this.context2[idx2].beginPath()
             const xc1 = (this.pArr[0].x + this.pArr[this.numberPoint - 1].x) / 2
             const yc1 = (this.pArr[0].y + this.pArr[this.numberPoint - 1].y) / 2
-            this.context2[idx].moveTo(xc1, yc1)
-            for (let i = 0; i < this.pArr.length - 1; i++) {
-              const xc = (this.pArr[i].x + this.pArr[i + 1].x) / 2
-              const yc = (this.pArr[i].y + this.pArr[i + 1].y) / 2
-              this.context2[idx].quadraticCurveTo(
-                this.pArr[i].x,
-                this.pArr[i].y,
+            this.context2[idx2].moveTo(xc1, yc1)
+            for (let ix = 0; ix < this.pArr.length - 1; ix++) {
+              const xc = (this.pArr[ix].x + this.pArr[ix + 1].x) / 2
+              const yc = (this.pArr[ix].y + this.pArr[ix + 1].y) / 2
+              this.context2[idx2].quadraticCurveTo(
+                this.pArr[ix].x,
+                this.pArr[ix].y,
                 xc,
                 yc
               )
             }
-            this.context2[idx].quadraticCurveTo(
+            this.context2[idx2].quadraticCurveTo(
               this.pArr[this.pArr.length - 1].x,
               this.pArr[this.pArr.length - 1].y,
               xc1,
               yc1
             )
-            // this.context[idx].fillStyle = this.color
-            // this.context[idx].fill()
-            this.context2[idx].strokeStyle = 'hsl(0, 0%, 21%)'
-            this.context2[idx].lineWidth = 2
-            this.context2[idx].stroke()
+            // this.context[idx2].fillStyle = this.color
+            // this.context[idx2].fill()
+            this.context2[idx2].strokeStyle = 'hsl(0, 0%, 21%)'
+            this.context2[idx2].lineWidth = 2
+            this.context2[idx2].stroke()
             // this.movePoint()----------------------
-            for (let i = 0; i < this.pArr.length; i++) {
-              const dx = this.pArr[i].tx - this.pArr[i].x // 円状態からの差
-              const dy = this.pArr[i].ty - this.pArr[i].y // 円状態からの差
-              this.pArr[i].ax = dx * this.pArr[i].spring // 増減値
-              this.pArr[i].ay = dy * this.pArr[i].spring // 増減値
-              this.pArr[i].vx += this.pArr[i].ax // 増減値の合計
-              this.pArr[i].vy += this.pArr[i].ay // 増減値の合計
-              this.pArr[i].x += this.pArr[i].vx
-              this.pArr[i].y += this.pArr[i].vy
+            for (let ixx = 0; ixx < this.pArr.length; ixx++) {
+              const dx = this.pArr[ixx].tx - this.pArr[ixx].x // 円状態からの差
+              const dy = this.pArr[ixx].ty - this.pArr[ixx].y // 円状態からの差
+              this.pArr[ixx].ax = dx * this.pArr[ixx].spring // 増減値
+              this.pArr[ixx].ay = dy * this.pArr[ixx].spring // 増減値
+              this.pArr[ixx].vx += this.pArr[ixx].ax // 増減値の合計
+              this.pArr[ixx].vy += this.pArr[ixx].ay // 増減値の合計
+              this.pArr[ixx].x += this.pArr[ixx].vx
+              this.pArr[ixx].y += this.pArr[ixx].vy
             }
 
-            // this.context2[idx].fillStyle = 'hsl(0, 0%, 48%) '
-            // this.context2[idx].beginPath()
-            // this.context2[idx].arc(
+            // this.context2[idx2].fillStyle = 'hsl(0, 0%, 48%) '
+            // this.context2[idx2].beginPath()
+            // this.context2[idx2].arc(
             //   this.posX,
             //   this.posY,
             //   40,
@@ -519,9 +578,9 @@ export default {
             //   Math.PI * 2,
             //   true
             // )
-            // this.context2[idx].closePath()
+            // this.context2[idx2].closePath()
             // this.context2.lineWidth = 2
-            // this.context2[idx].stroke()
+            // this.context2[idx2].stroke()
           }
         }
       }
@@ -748,7 +807,37 @@ export default {
       this.pageQuestion = selectedQues
       return selectedQues
     },
-    nextPage() {
+    // -------------------------------------------set store-------------------------------------------------
+    collectAnswers(ans, id) {
+      console.log(this.solutions)
+      // alert(
+      //   'collectAnswers--user: ' +
+      //     this.user.email +
+      //     ' ques id: ' +
+      //     id +
+      //     ' ans mark: ' +
+      //     ans.mark
+      // )
+      // alert(this.solutions)
+
+      if (this.$route.params.slug === '1') {
+        this.$store.commit('solutions/clearAns')
+        const solutionUser = {
+          uid: this.user.uid,
+          user: this.user.email,
+          answers: []
+        }
+        this.$store.commit('solutions/setSolutions', solutionUser)
+      }
+
+      const answer = {
+        id: id,
+        mark: ans.mark
+      }
+      this.$store.commit('solutions/setAns', answer)
+    },
+
+    nextPage(ans, id) {
       const addPage = Number(this.$route.params.slug) + 1
       setTimeout(() => {
         this.isShowQuestion5 = false
@@ -766,9 +855,23 @@ export default {
         this.isShowQuestion1 = false
       }, 1250)
       setTimeout(() => {
+        this.collectAnswers(ans, id)
         if (addPage > this.totalQ) {
+          // data stre
+          // alert('email: ' + this.user.email)
+          // alert('ans id: ' + id + ' mark: ' + ans.mark)
+          //   const loginUser = {
+          //   uid: user.uid,
+          //   email: user.email,
+          //   displayName: user.displayName
+          // }
+          clearInterval(this.timer)
           this.$router.push('/thisIsSleep/solution/results')
         } else {
+          // data store
+          // alert('email: ' + this.user.email)
+          // alert('ans id: ' + id + ' mark: ' + ans.mark)
+          clearInterval(this.timer)
           this.$router.push(`/thisIsSleep/solution/question/${addPage}`)
         }
       }, 2000)
@@ -815,6 +918,7 @@ export default {
 .ques-content {
   // border: 5px solid purple;
   position: absolute;
+  overflow: hidden;
   top: 0;
   left: 0;
   width: 100%;
@@ -928,17 +1032,20 @@ export default {
   }
   .pageId {
     margin-bottom: 1rem;
-    height: 2rem;
+    height: 1.5rem;
     width: 100%;
   }
   .quesTitle {
     margin-bottom: 1rem;
-    height: 20rem;
+    height: 16rem;
     width: 100%;
+    @media (min-width: 992px) {
+      height: 22rem;
+    }
   }
   .doYouKnow {
     width: 100%;
-    height: 2rem;
+    height: 1.5rem;
     margin-bottom: 1rem;
   }
   .doYouKnowWrap {
@@ -965,13 +1072,44 @@ export default {
     display: block;
     top: 50%;
     left: 50%;
-    transform: translate(-100%, -55%);
+    transform: translate(-100%, -50%);
     color: $white;
+    font-weight: $weight-light;
+    font-size: $size-6;
+    margin: -0.1rem 0 0 -0.2rem;
   }
   .doYouKnowText {
     display: inline-block;
     width: 100%;
   }
+}
+
+.doYouKnow-content-wrape {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.doYouKnow-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8rem;
+  padding: 1rem;
+  background-color: $white;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+}
+.doYouKnowOpen {
+  transform: translate(0, 0);
+  transition: all 0.5s;
+}
+.doYouKnowClose {
+  transform: translate(0, 8rem);
+  transition: all 0.5s;
 }
 .anser-element {
   color: $white;
@@ -982,7 +1120,6 @@ export default {
   cursor: pointer;
   margin-bottom: 1rem;
   width: 100%;
-  // border: 1px solid green;
 
   .anser-title-wrap {
     position: relative;

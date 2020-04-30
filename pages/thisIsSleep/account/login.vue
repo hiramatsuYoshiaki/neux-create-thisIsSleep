@@ -78,7 +78,7 @@ export default {
       if (user) {
         // this.email = user.email
         // this.displayName = user.displayName
-        console.log('login now')
+        // console.log('login now')
 
         const loginUser = {
           uid: user.uid,
