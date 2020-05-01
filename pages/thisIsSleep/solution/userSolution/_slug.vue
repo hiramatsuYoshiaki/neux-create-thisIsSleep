@@ -8,88 +8,139 @@
                       div.prod-img-inner
                         div.bg-circle2
                         div.bg-circle1
-
                     //- div.prod-img
                     //-         div.prod-img-warpe
                     //-           img(:src="selectProduct.img" alt="selectProduct.title" )
                     div.prod-detail
-                      div.prod-menu
-                        div.icon-circle(@click="prev()")
-                          i.fas.fa-chevron-left
-                          div.icon-subscribe prev
-                        div.icon-circle(@click="back()")
-                          i.fas.fa-undo-alt
-                          div.icon-subscribe back
-                        div.icon-circle(@click="next()")
-                          i.fas.fa-chevron-right
-                          div.icon-subscribe next
-
-                        div.icon-circle
-                          i.fas.fa-plus
-                          div.icon-subscribe add
-                        div.icon-circle
-                          i.fas.fa-arrow-up
-                          div.icon-subscribe update
-                        div.icon-circle
-                          i.fas.fa-times
-                          div.icon-subscribe remove
-                          //- div solution/userSolution/_slug
-                          //- h1 {{this.$route.params.slug}}
-                          //- button
-                          //-     nuxt-link( to="/thisIsSleep/solution/userSolution") back
                       div.prod-buy
-                        div.prod-buy-title
-                          div.prod-buy-title-subtitle
-                            h5 {{ selectProduct.subTitle }}
-                          div.prod-buy-title-title
-                            h3 {{ selectProduct.title }}
-                        div.prou-buy-total
-                          div.p-subtitle
-                           h3 ¥{{ selectProduct.price }}
-                        div.prod-type
-                          div type sellect
-                          div discriptions
+                          div.prod-buy-title
+                            div.prod-buy-title-subtitle
+                              h5 {{ selectProduct.subTitle }}
+                            div.prod-buy-title-title
+                              h3 {{ selectProduct.title }}
+                          div.prou-buy-total
+                            div.p-subtitle
+                            h3 ¥{{ selectProduct.price }}
+                          div.prod-type
+                            div type sellect
+                            div discriptions
+                      div.prod-menu
+                        div.prod-menu-laptop
+                          div.prod-menu-laptop-inner
+                            div.icon-circle(@click="prev()")
+                              i.fas.fa-chevron-left
+                              div.icon-subscribe prev
+                            div.icon-circle(@click="back()")
+                              i.fas.fa-undo-alt
+                              div.icon-subscribe back
+                            div.icon-circle(@click="next()")
+                              i.fas.fa-chevron-right
+                              div.icon-subscribe next
+                            div.icon-circle
+                              i.fas.fa-plus
+                              div.icon-subscribe add
+                            div.icon-circle
+                              i.fas.fa-arrow-up
+                              div.icon-subscribe update
+                            div.icon-circle
+                              i.fas.fa-times
+                              div.icon-subscribe remove
+                        div.prod-menu-mobile
+                          div.icon-circle(@click="isOpenOption=!isOpenOption")
+                            i.fas.fa-sliders-h
+                            div.icon-subscribe option
+                          div.icon-circle(@click="back()")
+                            i.fas.fa-undo-alt
+                            div.icon-subscribe back
+                      div.prod-menu-option(v-show="isOpenOption")
+                        div.prod-menu-option-action(@click="isOpenOption=!isOpenOption")
+                            i.fas.fa-times
+                        div.prod-menu-option-content
+                          div.prod-menu-option-select
+                            //- select.component--select(v-model="selected" @change="onChange()")
+                            //- div.selectWrap
+                            //-   select.component--select
+                            //-     option Morning Tour
+                            //-     option Afternoon Tour
+                            //-     option Night Tour
+                            div.select-box-wrape
+                              div.option-select-box
+                                h6 {{ select1 }}
+                                div.select-box-arrow
+                                  i(v-show="!isOpenS1" @click="isOpenS1=true").fas.fa-chevron-up
+                                  i(v-show="isOpenS1" @click="isOpenS1=false").fas.fa-chevron-down
+                              div.option-select-items(v-show="isOpenS1")
+                                div(v-for="item in select1Items" :key="item.id")
+                                  h6(@click="selectItem(item)") {{item.option}}
+                            div.select-box-wrape
+                              div.option-quantity-box
+                                h6 Quantity
+                                div.option-quantity-count
+                                  i.fas.fa-minus(@click="quantityMinus()")
+                                  h6 {{ quantity }}
+                                  i.fas.fa-plus(@click="quantityAdd()")
 
-                              //- //- p product {{this.$route.params.slug}}
-                              //- //- div {{ solProducts}}
-                              //- //- div {{ selectProduct}}
+                          div.prod-menu-option-icons
+                            div.icon-circle
+                              i.fas.fa-plus
+                              div.icon-subscribe add
+                            div.icon-circle
+                              i.fas.fa-arrow-up
+                              div.icon-subscribe update
+                            div.icon-circle
+                              i.fas.fa-times
+                              div.icon-subscribe remove
 
-                              //- div.p-title {{ selectProduct.title }}
-                              //- div.p-subtitle {{ selectProduct.subTitle }}
-                              //- div.p-subtitle ¥{{ selectProduct.price }}
+                          div.prod-menu-option-discription
+                            div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
+                            div.h7 The Amicor® and microfibre filling, with 100% cotton cover, not only prevents dust mites but is luxuriously fluffy, too. It all adds up to you feeling more refreshed, rested and recuperated after every use.
+                            ul
+                                li Amicor® and microfibre active anti-allergy filling
+                                li Recycled materials used throughout
+                                li Made with ballfibre clusters for a loftier, comfier feel
+                                li 100% cotton cover
+                                li 106% pillow-fight superior
 
-                              //- div.prod-type
-                              //-     div.h7 type
-                              //-     div.prod-type-button
-                              //-         div.button-wrape
-                              //-             button.component--btn(autoFocus)  Load Bike
-                              //-         div.button-wrape
-                              //-             button.component--btn  Mountain Bike
-                              //-         div.button-wrape
-                              //-             button.component--btn  e-Bike
-                              //- div.prod-firmless
-                              //-     div.h7 firmless
-                              //-     //- select.component--select(v-model="selected" @change="onChange()")
-                              //-     //-     option Morning Tour
-                              //-     //-     option Afternoon Tour
-                              //-     //-     option Night Tour
-                              //- div.prod-quantity
-                              //-     div.h7 Number of people
-                              //-     //- input.component--input( v-model.number="quantity" type="number")
-                              //- //- div.prod-addcart(v-if="selectProduct.inventory > 0")
-                              //- //-     button.component--btn(@click="addProductToCart(selectProduct)")  add cart
-                              //- //- div.prod-addcart(v-else)
-                              //- //-     button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
+                                //- //- p product {{this.$route.params.slug}}
+                                //- //- div {{ solProducts}}
+                                //- //- div {{ selectProduct}}
 
-                              //- div.prud-subscrive
-                              //-     div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
-                              //-     div.h7 The Amicor® and microfibre filling, with 100% cotton cover, not only prevents dust mites but is luxuriously fluffy, too. It all adds up to you feeling more refreshed, rested and recuperated after every use.
-                              //-     ul
-                              //-         li Amicor® and microfibre active anti-allergy filling
-                              //-         li Recycled materials used throughout
-                              //-         li Made with ballfibre clusters for a loftier, comfier feel
-                              //-         li 100% cotton cover
-                              //-         li 106% pillow-fight superior
+                                //- div.p-title {{ selectProduct.title }}
+                                //- div.p-subtitle {{ selectProduct.subTitle }}
+                                //- div.p-subtitle ¥{{ selectProduct.price }}
+
+                                //- div.prod-type
+                                //-     div.h7 type
+                                //-     div.prod-type-button
+                                //-         div.button-wrape
+                                //-             button.component--btn(autoFocus)  Load Bike
+                                //-         div.button-wrape
+                                //-             button.component--btn  Mountain Bike
+                                //-         div.button-wrape
+                                //-             button.component--btn  e-Bike
+                                //- div.prod-firmless
+                                //-     div.h7 firmless
+                                //-     //- select.component--select(v-model="selected" @change="onChange()")
+                                //-     //-     option Morning Tour
+                                //-     //-     option Afternoon Tour
+                                //-     //-     option Night Tour
+                                //- div.prod-quantity
+                                //-     div.h7 Number of people
+                                //-     //- input.component--input( v-model.number="quantity" type="number")
+                                //- //- div.prod-addcart(v-if="selectProduct.inventory > 0")
+                                //- //-     button.component--btn(@click="addProductToCart(selectProduct)")  add cart
+                                //- //- div.prod-addcart(v-else)
+                                //- //-     button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
+
+                                //- div.prud-subscrive
+                                //-     div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
+                                //-     div.h7 The Amicor® and microfibre filling, with 100% cotton cover, not only prevents dust mites but is luxuriously fluffy, too. It all adds up to you feeling more refreshed, rested and recuperated after every use.
+                                //-     ul
+                                //-         li Amicor® and microfibre active anti-allergy filling
+                                //-         li Recycled materials used throughout
+                                //-         li Made with ballfibre clusters for a loftier, comfier feel
+                                //-         li 100% cotton cover
+                                //-         li 106% pillow-fight superior
 
                     div.prod-cart(:class="{positionTop: isOpenCart, positionBottom: !isOpenCart}")
                       div.prod-cart-header
@@ -144,7 +195,16 @@ export default {
   data() {
     return {
       paramId: this.$route.params.slug,
-      isOpenCart: false
+      isOpenCart: false,
+      isOpenOption: false,
+      // select1
+      isOpenS1: false,
+      select1: 'Daytime Tour',
+      select1Items: [
+        { id: 1, option: 'Night Tour' },
+        { id: 2, option: 'Daytime Tour' }
+      ],
+      quantity: 1
     }
   },
   computed: {
@@ -161,6 +221,20 @@ export default {
     await this.$store.commit('buy/setSelectedId', this.paramId)
   },
   methods: {
+    quantityAdd() {
+      this.quantity++
+    },
+    quantityMinus() {
+      if (this.quantity > 0) {
+        this.quantity--
+      } else {
+        this.quantity = 0
+      }
+    },
+    selectItem(item) {
+      this.select1 = item.option
+      this.isOpenS1 = false
+    },
     back() {
       this.$router.push('/thisIsSleep/solution/userSolution')
     },
@@ -191,6 +265,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+$section-color: #fff;
 * {
   border: 1px dotted grey;
 }
@@ -334,34 +409,235 @@ export default {
 .prod-menu {
   position: absolute;
   width: 100%;
-  height: 7rem;
   bottom: 0;
   right: 0;
-  // transform: translateX(-50%);
   padding: 0 1rem;
+  @media (min-width: 768px) {
+    // width: 380px;
+    width: calc(100vw - 380px - 10px);
+  }
+  border: 2px solid blue;
+}
+.prod-menu-option {
+  display: block;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  right: 0;
+  // padding: 1rem;
+  width: 100%;
+  height: calc(100vh - #{$header-height} - 6rem);
+  background-color: $white;
+  color: $black;
+  overflow-y: auto;
+  @media (min-width: 768px) {
+    display: none;
+  }
+  border: 2px solid green;
+}
+.prod-menu-option-action {
+  position: fixed;
+  width: 100%;
+  height: 2rem;
+  padding: 0 3rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: row;
+}
+.prod-menu-option-content {
+  position: relative;
+  width: 100%;
+  margin-top: 2rem;
+}
+.prod-menu-option-select {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.select-box-wrape,
+.quantity-box-wrape {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.option-select-box {
+  // position: relative;
+  width: 100%;
+  // max-width: 30rem;
+  height: 3rem;
+  border: 1px solid $black;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+.select-box-arrow {
+  margin-right: 1rem;
+  cursor: pointer;
+  i {
+    font-size: $size-5;
+    color: $grey;
+  }
+}
+.option-select-items {
+  // position: absolute;
+  width: 100%;
+  border: 1px solid $black;
+  padding: 0.5rem;
+  h6 {
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+  }
+}
+
+.option-quantity-box {
+  width: 100%;
+  // max-width: 30rem;
+  height: 3rem;
+  border: 1px solid $black;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  i {
+    margin-right: 0.8rem;
+    font-size: $size-5;
+    color: $grey;
+  }
+  h6 {
+    margin-right: 0.8rem;
+  }
+}
+.option-quantity-count {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: row;
+}
+// .option-select-item {
+//   width: 100%;
+//   height: 3rem;
+//   padding: 0.5rem;
+// }
+
+// .selectWrap {
+//   width: 12rem;
+//   position: relative;
+//   display: inline-block;
+//   &::after {
+//     content: '';
+//     width: 1rem;
+//     height: 1rem;
+//     border-bottom: solid 2px #b4b3b3;
+//     border-right: solid 2px #b4b3b3;
+//     transform: rotate(45deg) translateY(-50%);
+//     position: absolute;
+//     top: 50%;
+//     right: 0;
+//     margin-top: -0.6rem;
+//     margin-right: 1rem;
+//     pointer-events: none;
+//   }
+// }
+// .selectWrap {
+//   &::after {
+//     content: '';
+//     transform: rotate(-135deg) translateY(-50%);
+//   }
+// }
+// .selectWrap-down {
+//   &::after {
+//     content: '';
+//     transform: rotate(45deg) translateY(-50%);
+//   }
+// }
+
+// select {
+//   margin-bottom: 0.5rem;
+//   border: 1px solid $black;
+//   appearance: none;
+//   padding-right: 2rem;
+//   &:active,
+//   &:focus {
+//     border-color: $black;
+//     border-style: solid;
+//     border-color: $black;
+//     border-width: 1px;
+//     box-shadow: 1px $black;
+//     border-radius: 0;
+//   }
+// }
+.prod-menu-option-icons {
+  display: block;
+  width: 100%;
+  height: 7rem;
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+}
+.prod-menu-option-discription {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+}
+.prod-menu-laptop {
+  display: none;
+  width: 100%;
+  height: 7rem;
+  @media (min-width: 768px) {
+    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  }
+}
+.prod-menu-laptop-inner {
+  width: 380px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   flex-direction: row;
-  @media (min-width: 768px) {
-    width: 400px;
-  }
-  border: 2px solid blue;
 }
+.prod-menu-mobile {
+  display: block;
+  width: 100%;
+  height: 7rem;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
 .icon-circle {
   position: relative;
-  width: 3rem;
-  height: 3rem;
+  width: 2.6rem;
+  height: 2.6rem;
   border: 1px solid $white;
   border-radius: 100%;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
   i {
     display: block;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: $size-4;
+    font-size: $size-5;
     color: $white;
   }
   .icon-subscribe {
@@ -375,6 +651,30 @@ export default {
   }
 }
 
+.prod-menu-laptop,
+.prod-menu-mobile {
+  .icon-circle {
+    border: 1px solid $white;
+  }
+  i {
+    color: $white;
+  }
+  .icon-subscribe {
+    color: $white;
+  }
+}
+
+.prod-menu-option-icons {
+  .icon-circle {
+    border: 1px solid $black;
+  }
+  i {
+    color: $black;
+  }
+  .icon-subscribe {
+    color: $black;
+  }
+}
 .prod-cart {
   position: absolute;
   bottom: 0;

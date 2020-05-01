@@ -161,8 +161,6 @@ export default {
       this.$store.commit('solutions/setSolProducts', this.solProducts)
     },
     buyItem(itemIndex) {
-      console.log(itemIndex)
-      alert(itemIndex)
       this.$router.push(`/thisIsSleep/solution/userSolution/${itemIndex}`)
     }
   }
