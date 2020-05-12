@@ -111,6 +111,18 @@ export const mutations = {
   setSignInFinish(state, payload) {
     state.singInFinish = payload
   },
+  // decrementProductInventory(state, { id }) {
+  //   const product = state.sleepProducts.find((product) => {
+  //     return product.id === id
+  //   })
+  //   product.inventory--
+  // },
+  // addProductInventory(state, { id }) {
+  //   const product = state.sleepProducts.find((product) => {
+  //     return product.id === id
+  //   })
+  //   product.inventory++
+  // },
   // firebase
   ...vuexfireMutations
 }

@@ -565,10 +565,12 @@ export default {
   background-color: $black-ter;
   margin-bottom: 1rem;
   margin-right: 1rem;
+  border: none;
 }
 .your-solution {
   background-color: $your-solution;
   margin-bottom: 1rem;
   margin-right: 1rem;
+  border: none;
 }
 </style>

@@ -50,17 +50,11 @@ export const state = () => ({
       date: '2019-01-04',
       featured: 50,
       selling: 50,
-      inventory: 10
+      inventory: 100
     }
   ]
 })
-// export const actions = {
-//   getAllProducts({ commit }) {
-//     shop.getProducts((products) => {
-//       commit('setProducts', products)
-//     })
-//   }
-// }
+
 export const mutations = {
   setProducts(state, products) {
     state.all = products
@@ -70,5 +64,11 @@ export const mutations = {
       return product.id === id
     })
     product.inventory--
+  },
+  addProductInventory(state, { id }) {
+    const product = state.all.find((product) => {
+      return product.id === id
+    })
+    product.inventory++
   }
 }

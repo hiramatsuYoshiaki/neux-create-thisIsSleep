@@ -7,7 +7,8 @@
                         div.products-contents
                             div.prod-left
                                 div.prod-left-img-warpe
-                                    img(:src="selectProduct.img" alt="selectProduct.title" )
+                                    //- img(:src="selectProduct.img" alt="selectProduct.title" )
+                                    img(:src="getUrl(selectProduct.id)" alt="product image")
                                     //- h5 route.params.slug: {{ $route.params.slug }}
                                     //- h5 store is : {{ selectedId }}
                                     //- h5 select product : {{ selectProduct.img }}
@@ -18,31 +19,45 @@
                                     //- h5 select product : {{ selectProduct.price }}
                                     //- h5 select product : {{ selectProduct.date }}
                                     h6 inventory : {{ selectProduct.inventory }}
+                                    h6 inventory : {{getCartInventry(selectProduct)}}
                             div.prod-right
                                 div.prod-right-warpe
                                     div.p-title {{ selectProduct.title }}
                                     div.p-subtitle {{ selectProduct.subTitle }}
                                     div.p-subtitle ¥{{ selectProduct.price }}
                                     div.prod-type
-                                        div.h7 type
+                                        div.h7 Bike Type
                                         div.prod-type-button
                                             div.button-wrape
-                                                button.component--btn(autoFocus)  Load Bike
+                                                button.component--btn.btn-type  load-bike
                                             div.button-wrape
-                                                button.component--btn  Mountain Bike
+                                                button.component--btn.btn-type  cross-bike
                                             div.button-wrape
-                                                button.component--btn  e-Bike
+                                                button.component--btn.btn-type  city-bike
+                                            div.button-wrape
+                                                button.component--btn.btn-type  e-bike
+                                    div.prod-type
+                                        div.h7 Time Zone
+                                        div.prod-type-button
+                                            div.button-wrape
+                                                button.component--btn.btn-time(autoFocus)  Morning
+                                            div.button-wrape
+                                                button.component--btn.btn-time  Afternoon
+                                            div.button-wrape
+                                                button.component--btn.btn-time  Night
                                     div.prod-firmless
-                                        div.h7 firmless
+                                        div.h7 Date
                                         select.component--select(v-model="selected" @change="onChange()")
                                             //- option(disabled selected value="" placeholder="Please select one") Please select one
-                                            option Morning Tour
-                                            option Afternoon Tour
-                                            option Night Tour
+                                            option 2020-09-05(sat)
+                                            option 2020-09-12(sat)
+                                            option 2020-09-19(sat)
+                                            option 2020-09-26(sat)
+
                                     div.prod-quantity
                                         div.h7 Number of people
                                         input.component--input( v-model.number="quantity" type="number")
-                                    div.prod-addcart(v-if="selectProduct.inventory > 0")
+                                    div.prod-addcart(v-if="getCartInventry(selectProduct) > 0")
                                         button.component--btn(@click="addProductToCart(selectProduct)")  add cart
                                     div.prod-addcart(v-else)
                                         button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
@@ -178,7 +193,7 @@ export default {
     return {
       paramId: this.$route.params.slug,
       quantity: 1,
-      selected: 'Morning Tour',
+      selected: '2020-09-05(sat)',
       isWrite: false,
       name: null,
       email: null,
@@ -206,12 +221,17 @@ export default {
     }
   },
   computed: {
-    ...mapState({ items: 'sleepProducts' }),
+    // ...mapState({ items: 'sleepProducts' }),
 
     ...mapState('buy', ['selectedId']),
     ...mapState({ customerRreviews: 'sleepreviews' }),
     ...mapGetters('buy', {
       selectProduct: 'selectProduct'
+    }),
+    ...mapGetters({ getUrl: 'getProductsImgUrl' }),
+    ...mapGetters('cart', {
+      products: 'cartProducts', // cartItems
+      total: 'cartTotalPrice'
     }),
     ...mapState('buy', ['reviewErrors']),
     ...mapGetters('buy', {
@@ -240,6 +260,22 @@ export default {
 
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
+    getCartInventry(item) {
+      let quantity = 0
+      if (this.total && this.total > 0) {
+        const cartValue = this.products.find((product) => {
+          return item.id === product.id
+        })
+        if (cartValue) {
+          quantity = cartValue.quantity
+        } else {
+          quantity = 0
+        }
+      } else {
+        quantity = 0
+      }
+      return item.inventory - quantity
+    },
     selectProductId(reviews) {
       const selectedReview = []
       let cnt = 0
@@ -255,7 +291,9 @@ export default {
       this.reviewAveRait = rait / cnt
       return selectedReview
     },
-
+    // getImgUrl() {
+    //   alert('getImgUrl')
+    // },
     addProductToCart(item) {
       const product = {
         id: item.id,
@@ -412,8 +450,8 @@ export default {
       e.preventDefault()
     },
     onChange() {
-      console.log('onChenge')
-      alert('onChange')
+      // console.log('onChenge')
+      // alert('onChange')
     }
   }
 }
@@ -494,11 +532,25 @@ img {
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    button {
+    button.btn-type {
       display: inline-block;
       width: 95%;
       background-color: $buycolor;
       transition: all 0.4s;
+      color: $black;
+      &:hover,
+      &:active,
+      &:focus {
+        color: $white;
+        background-color: $black-ter;
+        width: 100%;
+        transition: all 0.4s;
+      }
+    }
+    button.btn-time {
+      display: inline-block;
+      width: 95%;
+      background-color: $buycolor;
       color: $black;
       &:hover,
       &:active,

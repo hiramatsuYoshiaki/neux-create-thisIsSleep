@@ -18,11 +18,15 @@ export const mutations = {
 export const getters = {
   selectProduct: (state, getters, rootState) => {
     // console.log('state.selectedId ' + state.selectedId)
-    const selectProduct = rootState.products.all.find((product) => {
-      //   console.log(product.id)
-      //   console.log(state.selectedId)
+    // const selectProduct = rootState.products.all.find((product) => {
+    //   console.log('all id ' + product.id)
+    //   console.log('all inventory ' + product.inventory)
+    //   return product.id === Number(state.selectedId)
+    // })
+    const selectProduct = rootState.sleepProducts.find((product) => {
       return product.id === Number(state.selectedId)
     })
+
     return {
       id: selectProduct.id,
       img: selectProduct.img,
@@ -34,7 +38,10 @@ export const getters = {
       date: selectProduct.date,
       featured: selectProduct.featured,
       selling: selectProduct.selling,
-      inventory: selectProduct.inventory
+      inventory: selectProduct.inventory,
+      bikeType: selectProduct.bikeType,
+      timeZone: selectProduct.timeZone,
+      tourDate: selectProduct.tourDate
     }
   },
   getErrorBgColorName: (state, getters, rootState) => {

@@ -24,12 +24,18 @@ export const mutations = {
       quantity: cartItem.quantity
     })
   },
-  incrementItemQuantity(state, { id }) {
+  removeProductToCart(state, key) {
+    // console.log(state.cartItems[key])
+    state.cartItems.splice(key, 1)
+    // state.cartItems.delete(key)
+    // state.cartItems.remove([key])
+  },
+  incrementItemQuantity(state, cartProduct) {
     // console.log('increment')
     const cartItem = state.cartItems.find((item) => {
-      return item.id === id
+      return item.id === cartProduct.id
     })
-    cartItem.quantity++
+    cartItem.quantity = cartItem.quantity + cartProduct.quantity
   },
 
   // setCartItems(state, { items }) {
@@ -60,7 +66,7 @@ export const getters = {
   cartProducts: (state, getters, rootState) => {
     // console.info('getters cart Products')
     return state.cartItems.map(({ id, quantity }) => {
-      const cartData = rootState.products.all.find((product) => {
+      const cartData = rootState.sleepProducts.find((product) => {
         return product.id === id
       })
       const productTotal = quantity * cartData.price
@@ -85,7 +91,7 @@ export const getters = {
 
 export const actions = {
   checkout({ commit, state }, products) {
-    console.info('action checkout start')
+    // console.info('action checkout start')
     // const savedCartItems = [...state.items]
     commit('setCheckoutStatus', null)
     // commit('setCartItems', { cartItems: [] }) // empty cart
@@ -102,20 +108,12 @@ export const actions = {
     commit('setCheckoutStatus', 'successfull')
   },
   addProductToCartAction({ state, commit }, product) {
-    // console.log('cartProductToCartAction product: ' + product.id)
-    // console.log('cartProductToCartAction cartItems: ' + state.cartItems)
-    // console.log(state.cartItems)
-
     commit('setCheckoutStatus', null)
-    // if (product.inventory > 0) {
     if (product.inventory >= product.quantity) {
       const cartItem = state.cartItems.find((item) => {
-        // console.log('find: ' + product.id)
         return item.id === product.id
       })
-
       if (!cartItem) {
-        // commit('pushProductToCart', { id: product.id })
         commit('pushProductToCart', {
           id: product.id,
           title: product.title,
@@ -126,14 +124,46 @@ export const actions = {
           quantity: product.quantity
         })
       } else {
-        commit('incrementItemQuantity', cartItem)
+        commit('incrementItemQuantity', product)
       }
       // 在庫減らす
-      commit(
-        'products/decrementProductInventory',
-        { id: product.id },
-        { root: true }
-      )
+      // commit(
+      //   'products/decrementProductInventory',
+      //   { id: product.id },
+      //   { root: true }
+      // )
+      // commit('decrementProductInventory', { id: product.id }, { root: true })
+    }
+  },
+  removeProductToAction({ state, commit }, removeId) {
+    console.log('removeId' + removeId.id)
+    console.log('removekey' + removeId.key)
+    const cartItem = state.cartItems.find((item) => {
+      // console.log('find: ' + product.id)
+      return item.id === removeId.id
+    })
+    if (cartItem) {
+      commit('removeProductToCart', removeId.key)
+    } else {
+      console.log('error nothing remove item')
+    }
+    // commit('addProductInventory', { id: removeId.id }, { root: true })
+  },
+  removeProductCart({ state, commit }, removeItem) {
+    console.log('removeProductCart')
+    console.log(removeItem.id)
+
+    // console.log('removeId' + removeId.id)
+    // console.log('removekey' + removeId.key)
+    const cartIndex = state.cartItems.findIndex((item) => {
+      // console.log('find: ' + product.id)
+      return item.id === removeItem.id
+    })
+    console.log(cartIndex)
+    if (cartIndex === -1) {
+      // console.log('error nothing remove item')
+    } else {
+      commit('removeProductToCart', cartIndex)
     }
   }
 }

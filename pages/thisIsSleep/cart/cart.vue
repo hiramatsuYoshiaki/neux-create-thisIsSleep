@@ -12,12 +12,15 @@
               div.cart-detail-product
                 div.cart-detail-product-img
                    nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
-                    img(:src="item.img" alt="product image" )
+                    //- img(:src="item.img" alt="product image" )
+                    img(:src="getUrl(item.id)" alt="product image")
                 div.cart-detail-product-name
-                  nuxt-link(to="/")
+                  nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
                    h6 {{item.title}}
                   div.h7 {{item.subTitle}}
-                  div.h7(@click="remove(item)") remove
+                  div.h7.remove(@click="remove(item, index)") remove
+                  div data---------------
+                    div {{item}}
 
               div.cart-detail-quantity
                 //- quantity
@@ -51,7 +54,7 @@
 
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   layout: 'layout3Parts',
 
@@ -62,17 +65,20 @@ export default {
     }
   },
   computed: {
-    ...mapState('products', {
-      items: 'all'
-    }),
     ...mapGetters('cart', {
       products: 'cartProducts', // cartItems
       total: 'cartTotalPrice'
-    })
+    }),
+    ...mapGetters({ getUrl: 'getProductsImgUrl' })
   },
   methods: {
-    remove(item) {
-      alert('remove' + item.title)
+    remove(item, index) {
+      // alert('remove' + item.title)
+      const removeId = {
+        id: item.id,
+        key: index
+      }
+      this.$store.dispatch('cart/removeProductToAction', removeId)
     },
     checkout() {
       alert('check out ')
@@ -240,6 +246,10 @@ export default {
   h6,
   div {
     margin-bottom: 0.5rem;
+  }
+  .remove {
+    color: $red;
+    cursor: pointer;
   }
 }
 .cart-detail-quantity-input {

@@ -60,7 +60,7 @@
                 div
                   //-forebase strage
                   img(:src="getUrl(item.id)" alt="product image")
-                div imgPass
+                //- div imgPass
                 //- div
                   //-静的ローカルファイルの場合
                   //- img(:src="require(`~/assets/img/img3614.jpg`)" alt="product image")
@@ -74,12 +74,27 @@
                 div {{item.subTitle}}
                 div {{yen}}{{item.price}}
                 //- div date:{{item.date}}
-                //- div featuerd:{{item.featured}}
-                //- div sellin:{{item.selling}}
+                div featuerd:{{item.featured}}
+                div sellin:{{item.selling}}
                 //- div inventory:{{item.inventory}}
+                div inventory:{{getCartInventry(item)}}
+                //- div bike type: {{item.bikeType}}
+                div  Bike Type:
+                  span(v-for="(bike, idx1 ) in item.bikeType" :key="bike.code")
+                    span {{idx1 + 1}}.{{bike.type}}
+                div Time Zone:
+                  span(v-for="(zone, idx2 ) in item.timeZone" :key="zone.code")
+                    span {{idx2 + 1}}.{{zone.zone}}
+                br
+                div Tour Date:
+                  span(v-for="(tDate, idx3 ) in item.tourDate" :key="tDate.code")
+                   h6 {{idx3 + 1}}.{{tDate.date}}
+                   hr
+
                 //- button(@click="addProductToCart(item)") addProductToCart
                 nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
                   p(style="color:black")   Tour Detail
+
     //- div.container
     //-   div.row
         //- button(@click="createTestData()" style="color: red" ) CreateTestData
@@ -193,6 +208,11 @@ export default {
     ...mapState({ items: 'sleepProducts' }),
     ...mapState({ productsImgUrl: 'sleepProductsImgUrl' }),
     ...mapGetters({ getUrl: 'getProductsImgUrl' }),
+    // cart----
+    ...mapGetters('cart', {
+      products: 'cartProducts', // cartItems
+      total: 'cartTotalPrice'
+    }),
     // sort
     sortedData() {
       if (this.sortType === 'Featured') {
@@ -284,9 +304,9 @@ export default {
   },
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
-    imgPass(imgName) {
-      return require('~/assets/img/' + imgName)
-    },
+    // imgPass(imgName) {
+    //   return require('~/assets/img/' + imgName)
+    // },
     // ~/assets/img/img3614.jpg
 
     // addProductToCart(item) {
@@ -302,6 +322,22 @@ export default {
     // alert('create test data')
     // this.$store.dispatch(SLEEP_DATA_CREATE, this.tests)
     // },
+    getCartInventry(item) {
+      let quantity = 0
+      if (this.total && this.total > 0) {
+        const cartValue = this.products.find((product) => {
+          return item.id === product.id
+        })
+        if (cartValue) {
+          quantity = cartValue.quantity
+        } else {
+          quantity = 0
+        }
+      } else {
+        quantity = 0
+      }
+      return item.inventory - quantity
+    },
 
     onChange() {
       this.sortType = this.selected

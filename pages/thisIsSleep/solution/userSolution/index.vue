@@ -3,16 +3,7 @@
         div.container-fluid
             div.row
                 div.solution-content
-                    //- div {{sleepSolutions}}
-                    //- div {{items}}
-                    //- div(v-for="(item, itemsIndex) in items" :key="item.id")
-                    //-     div
-                    //-         span  {{item.id}}
-                    //-         span  {{item.imgName}}
-                    //-         span  {{item.title}}
-                    //-     div.test
-                    //-         img(:src="getUrl(item.id)" alt="product image" )
-
+                    div {{sleepSolutions}}
                     div.solutionFigure
                         div.figureItem-base
                             div.base-title
@@ -25,10 +16,10 @@
                                     div.div.figureItem.deg0(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[0].id)})` }" @click="buyItem(images[0].id)")
                             div.figure-element.figure-element-deg120
                                 div.figure-inner
-                                    div.div.figureItem.deg240(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[1].id)})` }" @click="buyItem(images[0].id)")
+                                    div.div.figureItem.deg240(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[1].id)})` }" @click="buyItem(images[1].id)")
                             div.figure-element.figure-element-deg240
                                 div.figure-inner
-                                    div.div.figureItem.deg120(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[2].id)})` }" @click="buyItem(images[0].id)")
+                                    div.div.figureItem.deg120(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[2].id)})` }" @click="buyItem(images[2].id)")
                             //- div.figure-element.figure-element-deg240
                             //-     div.figure-inner
                             //-         div.div.figureItem.deg120(:style="{ background: `center / cover no-repeat  url(${images[2].bgimg})` }" @click="buyItem('3')")
@@ -123,6 +114,7 @@ export default {
         this.images[0].id = 1001
         this.solProducts.push({ pid: 1001 })
       }
+
       if (this.sleepSolutions.answers[1].mark === 'A') {
         // alert(this.sleepSolutions.answers[1].mark)
         this.images[1].id = 1003
@@ -132,6 +124,7 @@ export default {
         this.images[1].id = 1004
         this.solProducts.push({ pid: 1004 })
       }
+
       if (this.sleepSolutions.answers[1].mark === 'A') {
         // alert(this.sleepSolutions.answers[1].mark)
         this.images[2].id = 1004
