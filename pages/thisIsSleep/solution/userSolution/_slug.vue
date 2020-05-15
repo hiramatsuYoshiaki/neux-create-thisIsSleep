@@ -1,25 +1,25 @@
 <template lang="pug">
     div.solution-content
+      div.prod-img-wrape
+        div.bg-image(:style="{background: `center / contain no-repeat url(${getUrl(selectProduct.id)})`}")
+        div.black-filter
       div.main-wrape
           div.container-fluid
               div.row
                 div.products-contents
-                    div.prod-img-box
-                      div.prod-img-inner
-                        div.bg-circle2
-                        div.bg-circle1
-                    //- div.prod-img
-                    //-         div.prod-img-warpe
-                    //-           img(:src="selectProduct.img" alt="selectProduct.title" )
+                    //- div.prod-img-box
+                    //-   div.prod-img-inner
+                    //-     div.bg-circle2
+                    //-     div.bg-circle1
                     div.prod-detail
                       div.prod-buy
                           div.prod-buy-title
                             div.prod-buy-title-subtitle
-                              h5 {{ selectProduct.subTitle }}
+                              h6 {{ selectProduct.subTitle }}
                             div.prod-buy-title-title
                               h3 {{ selectProduct.title }}
                             div.prod-buy-title-title
-                              h6 inventory : {{ selectProduct.inventory }}
+                              //- h6 inventory : {{ selectProduct.inventory }}
                               h6 inventory : {{getCartInventry(selectProduct)}}
 
                           div.prou-buy-total
@@ -33,9 +33,12 @@
                                   div.select-box-arrow
                                     i(v-show="!isOpenBike" @click="isOpenBike=true").fas.fa-chevron-up
                                     i(v-show="isOpenBike" @click="isOpenBike=false").fas.fa-chevron-down
+                                //- div.option-select-items(v-show="isOpenBike")
+                                //-   div(v-for="itemBike in selectedBikeItems" :key="itemBike.id")
+                                //-     h6(@click="selectItemBike(itemBike)") {{itemBike.option}}
                                 div.option-select-items(v-show="isOpenBike")
-                                  div(v-for="itemBike in selectedBikeItems" :key="itemBike.id")
-                                    h6(@click="selectItemBike(itemBike)") {{itemBike.option}}
+                                  div(v-for="itemBike in selectProduct.bikeType" :key="itemBike.code")
+                                    h6(@click="selectItemBike(itemBike)") {{itemBike.type}}
                             div.prod-select-inner
                               div.select-box-wrape
                               div.option-select-box(:class="{radiusOn: !isOpenZone, radiusOff:isOpenZone}")
@@ -43,9 +46,12 @@
                                 div.select-box-arrow
                                   i(v-show="!isOpenZone" @click="isOpenZone=true").fas.fa-chevron-up
                                   i(v-show="isOpenZone" @click="isOpenZone=false").fas.fa-chevron-down
+                              //- div.option-select-items(v-show="isOpenZone")
+                              //-   div(v-for="itemZone in selectedZoneItems" :key="itemZone.id")
+                              //-     h6(@click="selectItemZone(itemZone)") {{itemZone.option}}
                               div.option-select-items(v-show="isOpenZone")
-                                div(v-for="itemZone in selectedZoneItems" :key="itemZone.id")
-                                  h6(@click="selectItemZone(itemZone)") {{itemZone.option}}
+                                div(v-for="itemZone in selectProduct.timeZone" :key="itemZone.code")
+                                  h6(@click="selectItemZone(itemZone)") {{itemZone.zone}}
                             div.prod-select-inner
                               div.select-box-wrape
                               div.option-select-box(:class="{radiusOn: !isOpenDate, radiusOff:isOpenDate}")
@@ -53,20 +59,22 @@
                                 div.select-box-arrow
                                   i(v-show="!isOpenDate" @click="isOpenDate=true").fas.fa-chevron-up
                                   i(v-show="isOpenDate" @click="isOpenDate=false").fas.fa-chevron-down
+                              //- div.option-select-items(v-show="isOpenDate")
+                              //-   div(v-for="itemDate in selectedDateItems" :key="itemDate.id")
+                              //-     h6(@click="selectItemDate(itemDate)") {{itemDate.option}}
                               div.option-select-items(v-show="isOpenDate")
-                                div(v-for="itemDate in selectedDateItems" :key="itemDate.id")
-                                  h6(@click="selectItemDate(itemDate)") {{itemDate.option}}
+                                div(v-for="itemDate in selectProduct.tourDate" :key="itemDate.code")
+                                  h6(@click="selectItemDate(itemDate)") {{itemDate.date}}
                             div.select-box-wrape
                               div.option-quantity-box
-                                h6 Quantity
+                                h6 Quantity laptop
                                 div.option-quantity-count
                                   i.fas.fa-minus(@click="quantityMinus(selectProduct)")
                                   h6 {{ quantity }}
                                   i.fas.fa-plus(@click="quantityAdd(selectProduct)")
                             //- div {{selectProduct.id}}
-                            div {{selectProduct}}
-                                  //- div {{selectProduct.date}}
-                                  //- div.h7 {{ selectProduct }}
+                            //- div {{selectProduct}}
+
                       div.prod-menu
                         div.prod-menu-laptop
                           div.prod-menu-laptop-inner
@@ -97,6 +105,8 @@
                           div.icon-circle(@click="back()")
                             i.fas.fa-undo-alt
                             div.icon-subscribe back
+
+                      //- mobile-----------------------
                       div.prod-menu-option(v-show="isOpenOption")
                         div.prod-menu-option-action(@click="isOpenOption=!isOpenOption")
                             i.fas.fa-times
@@ -114,27 +124,36 @@
                                 div.select-box-arrow
                                   i(v-show="!isOpenBike" @click="isOpenBike=true").fas.fa-chevron-up
                                   i(v-show="isOpenBike" @click="isOpenBike=false").fas.fa-chevron-down
+                              //- div.option-select-items(v-show="isOpenBike")
+                              //-   div(v-for="itemBike in selectedBikeItems" :key="itemBike.id")
+                              //-     h6(@click="selectItemBike(itemBike)") {{itemBike.option}}
                               div.option-select-items(v-show="isOpenBike")
-                                div(v-for="itemBike in selectedBikeItems" :key="itemBike.id")
-                                  h6(@click="selectItemBike(itemBike)") {{itemBike.option}}
+                                  div(v-for="itemBike in selectProduct.bikeType" :key="itemBike.code")
+                                    h6(@click="selectItemBike(itemBike)") {{itemBike.type}}
                             div.select-box-wrape
                               div.option-select-box
                                 h6 {{ selectedZone }}
                                 div.select-box-arrow
                                   i(v-show="!isOpenZone" @click="isOpenZone=true").fas.fa-chevron-up
                                   i(v-show="isOpenZone" @click="isOpenZone=false").fas.fa-chevron-down
+                              //- div.option-select-items(v-show="isOpenZone")
+                              //-   div(v-for="itemZone in selectedZoneItems" :key="itemZone.id")
+                              //-     h6(@click="selectItemZone(itemZone)") {{itemZone.option}}
                               div.option-select-items(v-show="isOpenZone")
-                                div(v-for="itemZone in selectedZoneItems" :key="itemZone.id")
-                                  h6(@click="selectItemZone(itemZone)") {{itemZone.option}}
+                                div(v-for="itemZone in selectProduct.timeZone" :key="itemZone.code")
+                                  h6(@click="selectItemZone(itemZone)") {{itemZone.zone}}
                             div.select-box-wrape
                               div.option-select-box
                                 h6 {{ selectedDate }}
                                 div.select-box-arrow
                                   i(v-show="!isOpenDate" @click="isOpenDate=true").fas.fa-chevron-up
                                   i(v-show="isOpenDate" @click="isOpenDate=false").fas.fa-chevron-down
+                              //- div.option-select-items(v-show="isOpenDate")
+                              //-   div(v-for="itemDate in selectedDateItems" :key="itemDate.id")
+                              //-     h6(@click="selectItemDate(itemDate)") {{itemDate.option}}
                               div.option-select-items(v-show="isOpenDate")
-                                div(v-for="itemDate in selectedDateItems" :key="itemDate.id")
-                                  h6(@click="selectItemDate(itemDate)") {{itemDate.option}}
+                                div(v-for="itemDate in selectProduct.tourDate" :key="itemDate.code")
+                                  h6(@click="selectItemDate(itemDate)") {{itemDate.date}}
 
                             div.select-box-wrape
                               div.option-quantity-box
@@ -186,10 +205,18 @@
                             i.fas.fa-chevron-up(@click="isOpenCart=!isOpenCart")
                         div.prod-cart-detail
                             h5.prod-cart-detail-title Your destinetion
-                            div.cart-detail(v-for="(item, index) in products" :key="item.id")
+                            div.cart-detail(v-for="(item, index) in products" :key="item.orderKey")
+                              //- h6 {{ item}}
                               div.cart-detail-items
                                 h6 {{item.title}}
                                 h6 {{item.productTotal}}
+
+                              div.cart-detail-items-date
+                                div.h7 {{item.id}}
+                                div.h7 {{item.tourDate.date}}
+                                div.h7 {{item.timeZone.zone}}
+                              div.cart-detail-items
+                                h6 {{item.bikeType.type}}
                               div.cart-detail-items
                                 h6 quantity
                                 h6 {{item.quantity}}
@@ -213,22 +240,25 @@ export default {
       selectedBike: '',
       selectedZone: '',
       selectedDate: '',
-      selectedBikeItems: [
-        { id: 1, option: 'e-baike' },
-        { id: 2, option: 'city-bike' },
-        { id: 3, option: 'load-bike' }
-      ],
-      selectedZoneItems: [
-        { id: 1, option: 'Morning Tour' },
-        { id: 2, option: 'Afternoon Tour' },
-        { id: 3, option: 'Night Tour' }
-      ],
-      selectedDateItems: [
-        { id: 1, option: '2020-09-05(sat)' },
-        { id: 2, option: '2020-09-12(sat)' },
-        { id: 3, option: '2020-09-19(sat)' },
-        { id: 4, option: '2020-09-26(sat)' }
-      ],
+      selectedBikeType: null,
+      selectedTimeZone: null,
+      selectedTourDate: null,
+      // selectedBikeItems: [
+      //   { id: 1, option: 'e-baike' },
+      //   { id: 2, option: 'city-bike' },
+      //   { id: 3, option: 'load-bike' }
+      // ],
+      // selectedZoneItems: [
+      //   { id: 1, option: 'Morning Tour' },
+      //   { id: 2, option: 'Afternoon Tour' },
+      //   { id: 3, option: 'Night Tour' }
+      // ],
+      // selectedDateItems: [
+      //   { id: 1, option: '2020-09-05(sat)' },
+      //   { id: 2, option: '2020-09-12(sat)' },
+      //   { id: 3, option: '2020-09-19(sat)' },
+      //   { id: 4, option: '2020-09-26(sat)' }
+      // ],
       // selectedBikeItems: [
       //   { id: 1, option: 'e-baike' },
       //   { id: 2, option: 'city-bike' },
@@ -246,7 +276,7 @@ export default {
       //   { id: 4, option: '2020-09-26(sat)' }
       // ],
 
-      quantity: 0
+      quantity: 1
     }
   },
   computed: {
@@ -257,15 +287,33 @@ export default {
     ...mapGetters('cart', {
       products: 'cartProducts', // cartItems
       total: 'cartTotalPrice'
-    })
+    }),
+    ...mapGetters({ getUrl: 'getProductsImgUrl' })
+    // quantityError() {
+    //   if (this.quantity === 0) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // }
   },
   async created() {
     await this.$store.commit('buy/setSelectedId', this.paramId)
-    this.selectedBike = this.selectedBikeItems[0].option
-    this.selectedZone = this.selectedZoneItems[0].option
-    this.selectedDate = this.selectedDateItems[0].option
+    // this.selectedBike = this.selectedBikeItems[0].option
+    // this.selectedZone = this.selectedZoneItems[0].option
+    // this.selectedDate = this.selectedDateItems[0].option
+
     // this.selectedZone=
     // this.selectedDate=
+  },
+  mounted() {
+    this.selectedBike = this.selectProduct.bikeType[0].type
+    this.selectedZone = this.selectProduct.timeZone[0].zone
+    this.selectedDate = this.selectProduct.tourDate[0].date
+    this.selectedBikeType = this.selectProduct.bikeType[0]
+    this.selectedTimeZone = this.selectProduct.timeZone[0]
+    this.selectedTourDate = this.selectProduct.tourDate[0]
+    this.quantity = 1
   },
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
@@ -302,33 +350,62 @@ export default {
       return quan
     },
     addProductToCart(item) {
-      if (this.quantity !== 0) {
-        const product = {
-          id: item.id,
-          title: item.title,
-          subTitle: item.subTitle,
-          price: item.price,
-          // inventory: item.inventory,
-          inventory: this.getCartInventry(item),
-          img: item.img,
-          quantity: this.quantity
-        }
-        this.addProductToCartAction(product)
-        this.quantity = 0
-      } else {
-        alert('quantity is Other than 0')
+      const product = {
+        id: item.id,
+        title: item.title,
+        subTitle: item.subTitle,
+        price: item.price,
+        inventory: this.getCartInventry(item),
+        img: item.img,
+        quantity: this.quantity,
+
+        bikeType: this.selectedBikeType,
+        tourDate: this.selectedTourDate,
+        timeZone: this.selectedTimeZone
       }
+
+      this.addProductToCartAction(product)
+      this.quantity = 1
     },
     updateProductToCart(item) {
       alert('updateProductToCart')
+      const product = {
+        id: item.id,
+        title: item.title,
+        subTitle: item.subTitle,
+        price: item.price,
+        inventory: this.getCartInventry(item),
+        img: item.img,
+        quantity: this.quantity,
+        bikeType: this.selectedBikeType,
+        tourDate: this.selectedTourDate,
+        timeZone: this.selectedTimeZone
+      }
+      this.$store.dispatch('cart/updateProductCart', product)
     },
     removeProductToCart(item) {
-      this.$store.dispatch('cart/removeProductCart', item)
+      const product = {
+        id: item.id,
+        title: item.title,
+        subTitle: item.subTitle,
+        price: item.price,
+        inventory: this.getCartInventry(item),
+        img: item.img,
+        quantity: this.quantity,
+
+        bikeType: this.selectedBikeType,
+        tourDate: this.selectedTourDate,
+        timeZone: this.selectedTimeZone
+      }
+      this.$store.dispatch('cart/removeProductCart', product)
     },
 
     quantityAdd(item) {
       if (this.getCartInventry(item) > 0) {
         this.quantity++
+        if (this.quantity === 0) {
+          this.quantity++
+        }
       } else {
         alert('no stock')
       }
@@ -339,18 +416,24 @@ export default {
         alert('low lomit')
       } else {
         this.quantity--
+        if (this.quantity === 0) {
+          this.quantity--
+        }
       }
     },
     selectItemBike(item) {
-      this.selectedBike = item.option
+      this.selectedBikeType = item
+      this.selectedBike = item.type
       this.isOpenBike = false
     },
     selectItemZone(item) {
-      this.selectedZone = item.option
+      this.selectedTimeZone = item
+      this.selectedZone = item.zone
       this.isOpenZone = false
     },
     selectItemDate(item) {
-      this.selectedDate = item.option
+      this.selectedTourDate = item
+      this.selectedDate = item.date
       this.isOpenDate = false
     },
     back() {
@@ -398,25 +481,57 @@ $menu-height: 6rem;
   overflow: hidden;
   background-color: $buycolor;
 }
+.prod-img-wrape {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bg-image {
+  width: 100%;
+  height: 100%;
+  max-width: 1280px;
+  max-height: 800px;
+}
+.black-filter {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: $black;
+  opacity: 0.3;
+}
 .products-contents {
   position: relative;
   width: 100%;
   height: calc(100vh - #{$header-height});
 }
+// .prod-img {
+//   position: absolute;
+//   width: 100%;
+//   height: calc(100vh - #{$header-height});
+// }
 .prod-img-box {
   position: absolute;
   width: 100%;
   height: calc(100vh - #{$header-height});
   // background-color: cadetblue;
-  border: 1px solid red;
   display: flex;
   justify-content: center;
   align-items: center;
+  // display: block;
+  // @media (min-width: 768px) {
+  //   display: none;
+  // }
 }
 .prod-img-inner {
   position: relative;
-  width: 100;
+  width: 100%;
 }
+
 .bg-circle1 {
   position: absolute;
   top: 50%;
@@ -426,7 +541,8 @@ $menu-height: 6rem;
   height: 16rem;
   border: 1px solid $white;
   border-radius: 100%;
-  background-color: $buycolor;
+  // background-color: $buycolor;
+  background-color: transparent;
   @media (min-width: 768px) {
     width: 20rem;
     height: 20rem;
@@ -451,7 +567,7 @@ $menu-height: 6rem;
   position: relative;
   width: 100%;
   height: calc(100vh - #{$header-height} - 5rem);
-  border: 5px solid black;
+  // border: 5px solid black;
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
@@ -464,7 +580,7 @@ $menu-height: 6rem;
 }
 .prod-buy {
   position: relative;
-  border: 1px solid white;
+  // border: 1px solid white;
   width: 100%;
   height: calc(100vh - #{$header-height} - #{$menu-height});
   padding: 0.5rem;
@@ -562,14 +678,14 @@ $menu-height: 6rem;
   right: 0;
   // padding: 1rem;
   width: 100%;
-  height: calc(100vh - #{$header-height} - #{$menu-height});
+  height: calc(100vh - #{$header-height} - #{$menu-height} + 1rem);
   background-color: $white;
-  color: $black;
+  // background-color: transparent;
+  color: $black-ter;
   overflow-y: auto;
   @media (min-width: 768px) {
     display: none;
   }
-  // border: 2px solid green;
 }
 .prod-menu-option-action {
   position: fixed;
@@ -619,7 +735,8 @@ $menu-height: 6rem;
   flex-direction: row;
   @media (min-width: 768px) {
     border: 1px solid $white;
-    background-color: $buycolor;
+    // background-color: $buycolor;
+    background-color: transparent;
   }
 }
 .radiusOn {
@@ -649,7 +766,8 @@ $menu-height: 6rem;
   }
   @media (min-width: 768px) {
     border: 1px solid $white;
-    background-color: $buycolor;
+    // background-color: $buycolor;
+    background-color: transparent;
   }
 }
 
@@ -674,6 +792,9 @@ $menu-height: 6rem;
     margin-right: 0.8rem;
   }
 }
+// .entoryErrorColor {
+//   color: $red;
+// }
 .option-quantity-count {
   display: flex;
   justify-content: flex-end;
@@ -834,7 +955,7 @@ $menu-height: 6rem;
   left: 0;
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid purple;
+  // border: 1px solid purple;
   background-color: $white-ter;
   @media (min-width: 768px) {
     max-width: 380px;
@@ -908,6 +1029,16 @@ $menu-height: 6rem;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
+}
+.cart-detail-items-date {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  div.h7 {
+    margin-right: 0.5rem;
+  }
 }
 .prod-cart-fotter {
   width: 100%;

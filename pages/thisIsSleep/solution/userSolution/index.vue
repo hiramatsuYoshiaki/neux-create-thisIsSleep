@@ -3,7 +3,7 @@
         div.container-fluid
             div.row
                 div.solution-content
-                    div {{sleepSolutions}}
+                    //- div {{sleepSolutions}}
                     div.solutionFigure
                         div.figureItem-base
                             div.base-title
@@ -23,6 +23,19 @@
                             //- div.figure-element.figure-element-deg240
                             //-     div.figure-inner
                             //-         div.div.figureItem.deg120(:style="{ background: `center / cover no-repeat  url(${images[2].bgimg})` }" @click="buyItem('3')")
+        div.container-fluid(v-show="isShowLoading")
+            div.row
+                div.solution-content
+                    //- div {{sleepSolutions}}
+                    div.solutionFigure
+                      //- div.figureItem-base
+                      div.figureItem-loading
+                          <div class="svg-wrapper">
+                            <svg height="84" width="84" xmlns="http://www.w3.org/2000/svg">
+                              <circle class="shape" cx="42" cy="42" r="40"/>
+                            </svg>
+                          </div>
+                          <h4>LOADING....</h4>
 
 </template>
 <script>
@@ -52,7 +65,8 @@ export default {
           id: 0
         }
       ],
-      solProducts: []
+      solProducts: [],
+      isShowLoading: true
     }
   },
   computed: {
@@ -70,6 +84,7 @@ export default {
     } else {
       this.$router.push('/thisIsSleep/account/logout')
     }
+    this.init()
   },
   //   async mounted() {
   //     // window size
@@ -103,6 +118,11 @@ export default {
   //   },
 
   methods: {
+    init() {
+      setTimeout(() => {
+        this.isShowLoading = false
+      }, 4000)
+    },
     setSolProducts() {
       this.solProducts = []
       if (this.sleepSolutions.answers[0].mark === 'A') {
@@ -315,6 +335,68 @@ $deg240: 240deg;
   img {
     width: 5rem;
     height: 3rem;
+  }
+}
+// loading animation
+.figureItem-loading {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  // border: 1px solid green;
+}
+
+.svg-wrapper {
+  animation: spin 2.5s linear infinite;
+  height: 84px;
+  width: 84px;
+}
+
+.shape {
+  animation: spinner 2.25s linear infinite;
+  fill: transparent;
+  // stroke: #4e52c3;
+  stroke: $grey;
+  stroke-dasharray: 100 260;
+  stroke-dashoffset: 0;
+  stroke-width: 3px;
+}
+
+h4 {
+  // color: #333;
+  color: $grey;
+  font-size: 1.5rem;
+  font-family: monospace;
+  margin-top: 2rem;
+  text-transform: uppercase;
+}
+
+@keyframes spinner {
+  0% {
+    stroke-dasharray: 0 260;
+  }
+
+  50% {
+    stroke-dasharray: 260 260;
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dasharray: 0 260;
+    stroke-dashoffset: -250;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(720deg);
   }
 }
 </style>

@@ -72,13 +72,14 @@
                 div {{item.id}}
                 div {{item.title}}
                 div {{item.subTitle}}
-                div {{yen}}{{item.price}}
+                h6 {{yen}}{{item.price}}
                 //- div date:{{item.date}}
-                div featuerd:{{item.featured}}
-                div sellin:{{item.selling}}
+                //- div featuerd:{{item.featured}}
+                //- div sellin:{{item.selling}}
                 //- div inventory:{{item.inventory}}
                 div inventory:{{getCartInventry(item)}}
                 //- div bike type: {{item.bikeType}}
+                br
                 div  Bike Type:
                   span(v-for="(bike, idx1 ) in item.bikeType" :key="bike.code")
                     span {{idx1 + 1}}.{{bike.type}}
@@ -88,12 +89,16 @@
                 br
                 div Tour Date:
                   span(v-for="(tDate, idx3 ) in item.tourDate" :key="tDate.code")
-                   h6 {{idx3 + 1}}.{{tDate.date}}
+                   h6
+                    span {{idx3 + 1}}.
+                    span {{tDate.date}}
                    hr
 
                 //- button(@click="addProductToCart(item)") addProductToCart
                 nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
-                  p(style="color:black")   Tour Detail
+                  p(style="color:black")
+                    i.fas.fa-chevron-right
+                    span Tour Detail
 
     //- div.container
     //-   div.row

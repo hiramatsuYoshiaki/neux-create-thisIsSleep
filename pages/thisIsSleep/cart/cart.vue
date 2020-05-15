@@ -8,7 +8,7 @@
                 h6.quantity-title Quantity
                 h5.center-title Shopping Cart
                 h6.total-title Total
-            div.cart-detail(v-for="(item, index) in this.products" :key="item.id")
+            div.cart-detail(v-for="(item, index) in this.products" :key="item.orderKey")
               div.cart-detail-product
                 div.cart-detail-product-img
                    nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
@@ -17,6 +17,10 @@
                 div.cart-detail-product-name
                   nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
                    h6 {{item.title}}
+                  div.h7
+                    span.tour-date {{item.id}}
+                    span.tour-date {{item.tourDate.date}}
+                    span.tour-date {{item.timeZone.zone}}
                   div.h7 {{item.subTitle}}
                   div.h7.remove(@click="remove(item, index)") remove
                   div data---------------
@@ -43,14 +47,6 @@
                 div.cart-footer-button
                   button.component--btn.cart-footer-button-width  update cart
                   button.component--btn.cart-footer-button-width(@click="checkout()") check out
-            //- div.cart-detail(v-for="(product, index) in this.products" :key="product.id")
-            //-   div id:{{product.id}}
-            //-   div title:{{product.title}}
-            //-   div subTitle:{{product.subTitle}}
-            //-   div price:{{product.price}}
-            //-   div inventory:{{product.inventory}}
-            //-   div img:{{product.img}}
-            //-   div quantity:{{product.quantity}}
 
 </template>
 <script>
@@ -250,6 +246,10 @@ export default {
   .remove {
     color: $red;
     cursor: pointer;
+  }
+  .tour-date {
+    margin-right: 0.5rem;
+    font-weight: $weight-medium;
   }
 }
 .cart-detail-quantity-input {

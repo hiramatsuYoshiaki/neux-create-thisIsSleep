@@ -20,47 +20,44 @@
                                     //- h5 select product : {{ selectProduct.date }}
                                     h6 inventory : {{ selectProduct.inventory }}
                                     h6 inventory : {{getCartInventry(selectProduct)}}
+                                    div {{selectProduct}}
                             div.prod-right
                                 div.prod-right-warpe
                                     div.p-title {{ selectProduct.title }}
                                     div.p-subtitle {{ selectProduct.subTitle }}
                                     div.p-subtitle ¥{{ selectProduct.price }}
                                     div.prod-type
-                                        div.h7 Bike Type
+                                        div.h7
+                                          span(:class="{entoryErrorColor:bikeTypeError}") Bike Type
+                                          span.h6.prod-type-element {{selectedBikeType.type}}
                                         div.prod-type-button
-                                            div.button-wrape
-                                                button.component--btn.btn-type  load-bike
-                                            div.button-wrape
-                                                button.component--btn.btn-type  cross-bike
-                                            div.button-wrape
-                                                button.component--btn.btn-type  city-bike
-                                            div.button-wrape
-                                                button.component--btn.btn-type  e-bike
-                                    div.prod-type
-                                        div.h7 Time Zone
-                                        div.prod-type-button
-                                            div.button-wrape
-                                                button.component--btn.btn-time(autoFocus)  Morning
-                                            div.button-wrape
-                                                button.component--btn.btn-time  Afternoon
-                                            div.button-wrape
-                                                button.component--btn.btn-time  Night
-                                    div.prod-firmless
-                                        div.h7 Date
-                                        select.component--select(v-model="selected" @change="onChange()")
-                                            //- option(disabled selected value="" placeholder="Please select one") Please select one
-                                            option 2020-09-05(sat)
-                                            option 2020-09-12(sat)
-                                            option 2020-09-19(sat)
-                                            option 2020-09-26(sat)
+                                            div.button-wrape(v-for="(bike, bIdx) in selectProduct.bikeType" :key="bike.code")
+                                                button.component--btn.btn-type(@click="selectBikeType(bike)") {{bike.type}}
 
+                                    div.prod-firmless
+                                        div.h7 Tour Date:
+                                        //- span.h6.prod-type-element {{selectedTourDate.code}}
+                                        //- span.h6.prod-type-element {{selectedTourDate.date}}
+                                        select.component--select(v-model="selectedTourDateOption" @change="onChangeTourDate(selectProduct.tourDate)")
+                                            option(v-for="(tourDate, tourIdx) in selectProduct.tourDate" selected) {{tourDate.date}}
+                                    div.prod-firmless
+                                        div.h7 Time Zone
+                                        //- span.h6.prod-type-element {{selectedTimeZone}}
+                                        //- span.h6.prod-type-element {{selectedTimeZone.zone}}
+                                        select.component--select(v-model="selectedTimeZoneOption" @change="onChangeTimeZone(selectProduct.timeZone)")
+                                            option(v-for="(timeZone, timeIdx) in selectProduct.timeZone") {{timeZone.zone}}
                                     div.prod-quantity
-                                        div.h7 Number of people
+                                        div.h7(:class="{entoryErrorColor:quantityError}")  Number of people
                                         input.component--input( v-model.number="quantity" type="number")
+
+                                    div.prod-error-msg
+                                        div.h7(v-show="bikeTypeError") Please bike Type select
+                                        div.h7(v-show="quantityError") Quantity is 1 or more
                                     div.prod-addcart(v-if="getCartInventry(selectProduct) > 0")
                                         button.component--btn(@click="addProductToCart(selectProduct)")  add cart
                                     div.prod-addcart(v-else)
-                                        button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
+                                        //- button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
+                                        button.component--btn.disabl-btn.disabled  out of stock
 
                                     div.prud-subscrive
                                         div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
@@ -127,8 +124,8 @@
                                       div.h7 submit review
                             div.appMessege
                                 ul
-                                    li(v-for="(msg, index) in message" :key="index")
-                                        p.guid-msg {{ msg }}
+                                  li(v-for="(msg, index) in message" :key="index")
+                                      p.guid-msg {{ msg }}
 
         div.container-fluid
             div.row
@@ -217,7 +214,14 @@ export default {
         { id: 5, isMark: false }
       ],
       reviewBase: 0,
-      reviewAveRait: 0
+      reviewAveRait: 0,
+      selectedBikeType: { code: 9999, type: 'Select Bike Type' },
+      selectedTimeZone: null,
+      selectedTourDate: null,
+      selectedTimeZoneOption: null,
+      selectedTourDateOption: null
+      // bikeTypeError: false
+      // quantityError: false
     }
   },
   computed: {
@@ -247,19 +251,46 @@ export default {
       bgColorRewiew: 'getErrorBgColorReview'
     }),
 
-    ...mapState(['message'])
+    ...mapState(['message']),
+    quantityError() {
+      if (this.quantity <= 0) {
+        return true
+      } else {
+        return false
+      }
+    },
+    bikeTypeError() {
+      if (this.selectedBikeType.code === 9999) {
+        // isValidation = false
+        return true
+      } else {
+        return false
+      }
+    }
+
+    // quantityError: function() {
+    //   if (this.quantity <= 0) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // }
   },
   async created() {
     await this.$store.commit('buy/setSelectedId', this.paramId)
     await this.$store.dispatch(SLEEP_GET_REVIEW)
   },
   mounted() {
+    this.selectedTimeZone = this.selectProduct.timeZone[0]
+    this.selectedTourDate = this.selectProduct.tourDate[0]
+    this.selectedTimeZoneOption = this.selectProduct.timeZone[0].zone
+    this.selectedTourDateOption = this.selectProduct.tourDate[0].date
     this.$store.commit('buy/clearRevueError')
     this.$store.commit('clearMessage')
   },
-
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
+
     getCartInventry(item) {
       let quantity = 0
       if (this.total && this.total > 0) {
@@ -291,10 +322,10 @@ export default {
       this.reviewAveRait = rait / cnt
       return selectedReview
     },
-    // getImgUrl() {
-    //   alert('getImgUrl')
-    // },
+
     addProductToCart(item) {
+      // set value
+
       const product = {
         id: item.id,
         title: item.title,
@@ -302,9 +333,20 @@ export default {
         price: item.price,
         inventory: item.inventory,
         img: item.img,
-        quantity: this.quantity
+        quantity: this.quantity,
+        bikeType: this.selectedBikeType,
+        tourDate: this.selectedTourDate,
+        timeZone: this.selectedTimeZone
       }
-      this.addProductToCartAction(product)
+
+      // store Actio cart/addProductToCartAction'
+      // カート（state cartItems）に新規追加、あれば数量加算する
+      if (this.bikeTypeError || this.quantityError) {
+        alert('validation error')
+      } else {
+        this.addProductToCartAction(product)
+        alert('add to cart')
+      }
     },
     starMark(starIndex) {
       this.rait = starIndex + 1
@@ -339,26 +381,7 @@ export default {
       month = String(month).padStart(2, '0')
       date = String(date).padStart(2, '0')
       const reviewDate = year + '-' + month + '-' + date
-      // alert(
-      //   'product-id: ' +
-      //     this.paramId +
-      //     'name: ' +
-      //     this.name +
-      //     ' email: ' +
-      //     this.title +
-      //     ' rait: ' +
-      //     this.email +
-      //     ' title: ' +
-      //     this.rait +
-      //     ' review: ' +
-      //     this.review +
-      //     ' today: ' +
-      //     year +
-      //     '-' +
-      //     month +
-      //     '-' +
-      //     date
-      // )
+
       const msg = {
         productId: this.paramId,
         name: this.name,
@@ -449,9 +472,29 @@ export default {
       }
       e.preventDefault()
     },
-    onChange() {
-      // console.log('onChenge')
-      // alert('onChange')
+    selectBikeType(bike) {
+      // { code: 9999, type: 'Select Bike Type' },
+      this.selectedBikeType = bike
+    },
+    onChangeTourDate(tourDate) {
+      const selectedTourDate = tourDate.find((value) => {
+        return value.date === this.selectedTourDateOption
+      })
+      if (selectedTourDate) {
+        this.selectedTourDate = selectedTourDate
+      } else {
+        console.log('option eror')
+      }
+    },
+    onChangeTimeZone(timeZone) {
+      const selectedTimeZone = timeZone.find((value) => {
+        return value.zone === this.selectedTimeZoneOption
+      })
+      if (selectedTimeZone) {
+        this.selectedTimeZone = selectedTimeZone
+      } else {
+        console.log('option eror')
+      }
     }
   }
 }
@@ -519,10 +562,22 @@ img {
   div {
     margin-bottom: 1rem;
   }
+  .prod-type-element {
+    margin-left: 0.5rem;
+    font-weight: 600;
+  }
+}
+.entoryErrorColor {
+  color: $red;
+}
+.prod-error-msg {
+  color: $red;
+  margin-bottom: 0.5rem;
 }
 .prod-type-button {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: row;
   .button-wrape {
