@@ -97,7 +97,8 @@ export default {
           this.$router.push({ path: '/' })
         })
         .catch((error) => {
-          alert('logout error: ' + error)
+          console.log('logout error: ' + error)
+          this.$router.push({ path: '/' })
         })
     },
     accountLogout() {

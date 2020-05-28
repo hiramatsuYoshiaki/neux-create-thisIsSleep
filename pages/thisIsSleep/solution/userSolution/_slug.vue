@@ -191,21 +191,30 @@
                                 //- div.p-title {{ selectProduct.title }}
                                 //- div.p-subtitle {{ selectProduct.subTitle }}
                                 //- div.p-subtitle ¥{{ selectProduct.price }}
+
+                    //- cart
                     div.prod-cart(:class="{positionTop: isOpenCart, positionBottom: !isOpenCart}")
                       div.prod-cart-header
                         div.prod-cart-total
                           div.total-price
+                            div.h7
+                              span {{loginUser}}
                             h6
                               span.total-price-title Your destinetion
                               span  subTotal
-                            h4
+                            h5
                               i.fas.fa-yen-sign
-                              span {{total}}
+                              //- span.h4 {{total}}
+                              span.h4 {{userTotal}}
                           div.action-icon
                             i.fas.fa-chevron-up(@click="isOpenCart=!isOpenCart")
                         div.prod-cart-detail
+
+                            div(v-for="(pro, index) in this.products" :key="index")
+                              div {{index + 1}}:{{pro.loginUid}}
                             h5.prod-cart-detail-title Your destinetion
-                            div.cart-detail(v-for="(item, index) in products" :key="item.orderKey")
+                            //- div.cart-detail(v-for="(item, index) in products" :key="item.orderKey")
+                            div.cart-detail(v-for="(item, index) in items" :key="item.orderKey")
                               //- h6 {{ item}}
                               div.cart-detail-items
                                 h6 {{item.title}}
@@ -222,10 +231,11 @@
                                 h6 {{item.quantity}}
                       div.prod-cart-fotter
                           button.component--btn.cart-footer-button-width.cart-footer-button-color  CHECK OUT
-                          button.component--btn.cart-footer-button-width SAVE SOLUTIONS
+                          button.component--btn.cart-footer-button-width.cart-footer-button-save SAVE SOLUTIONS
 
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   layout: 'layout2Parts',
@@ -276,7 +286,12 @@ export default {
       //   { id: 4, option: '2020-09-26(sat)' }
       // ],
 
-      quantity: 1
+      quantity: 1,
+      loginUid: null,
+      loginUser: null,
+      logoutUid: 'guestUid',
+      items: null,
+      userTotal: 0
     }
   },
   computed: {
@@ -285,28 +300,28 @@ export default {
       selectProduct: 'selectProduct'
     }),
     ...mapGetters('cart', {
-      products: 'cartProducts', // cartItems
-      total: 'cartTotalPrice'
+      products: 'cartProducts', // cartItems all user
+      total: 'cartTotalPrice',
+      userItems: 'getUserCart',
+      userCartTotal: 'getUserCartTotal'
     }),
     ...mapGetters({ getUrl: 'getProductsImgUrl' })
-    // quantityError() {
-    //   if (this.quantity === 0) {
-    //     return true
-    //   } else {
-    //     return false
-    //   }
-    // }
   },
   async created() {
     await this.$store.commit('buy/setSelectedId', this.paramId)
-    // this.selectedBike = this.selectedBikeItems[0].option
-    // this.selectedZone = this.selectedZoneItems[0].option
-    // this.selectedDate = this.selectedDateItems[0].option
-
-    // this.selectedZone=
-    // this.selectedDate=
   },
-  mounted() {
+  async mounted() {
+    await firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.loginUid = user.uid
+        this.loginUser = user.displayName
+      } else {
+        this.loginUid = this.logoutUid
+        this.loginUser = 'Guest User'
+      }
+    })
+    this.items = this.userItems(this.loginUid)
+    this.userTotal = this.userCartTotal(this.loginUid)
     this.selectedBike = this.selectProduct.bikeType[0].type
     this.selectedZone = this.selectProduct.timeZone[0].zone
     this.selectedDate = this.selectProduct.tourDate[0].date
@@ -350,54 +365,64 @@ export default {
       return quan
     },
     addProductToCart(item) {
+      alert('addProduct')
       const product = {
         id: item.id,
-        title: item.title,
-        subTitle: item.subTitle,
-        price: item.price,
+        // title: item.title,
+        // subTitle: item.subTitle,
+        // price: item.price,
         inventory: this.getCartInventry(item),
-        img: item.img,
+        // img: item.img,
         quantity: this.quantity,
 
         bikeType: this.selectedBikeType,
         tourDate: this.selectedTourDate,
-        timeZone: this.selectedTimeZone
+        timeZone: this.selectedTimeZone,
+        loginUid: this.loginUid
       }
 
       this.addProductToCartAction(product)
       this.quantity = 1
+      this.items = this.userItems(this.loginUid)
+      this.userTotal = this.userCartTotal(this.loginUid)
     },
     updateProductToCart(item) {
       alert('updateProductToCart')
       const product = {
         id: item.id,
-        title: item.title,
-        subTitle: item.subTitle,
-        price: item.price,
+        // title: item.title,
+        // subTitle: item.subTitle,
+        // price: item.price,
         inventory: this.getCartInventry(item),
-        img: item.img,
+        // img: item.img,
         quantity: this.quantity,
         bikeType: this.selectedBikeType,
         tourDate: this.selectedTourDate,
-        timeZone: this.selectedTimeZone
+        timeZone: this.selectedTimeZone,
+        loginUid: this.loginUid
       }
       this.$store.dispatch('cart/updateProductCart', product)
+      this.items = this.userItems(this.loginUid)
+      this.userTotal = this.userCartTotal(this.loginUid)
     },
     removeProductToCart(item) {
       const product = {
         id: item.id,
-        title: item.title,
-        subTitle: item.subTitle,
-        price: item.price,
+        // title: item.title,
+        // subTitle: item.subTitle,
+        // price: item.price,
         inventory: this.getCartInventry(item),
-        img: item.img,
+        // img: item.img,
         quantity: this.quantity,
 
         bikeType: this.selectedBikeType,
         tourDate: this.selectedTourDate,
-        timeZone: this.selectedTimeZone
+        timeZone: this.selectedTimeZone,
+        loginUid: this.loginUid
       }
       this.$store.dispatch('cart/removeProductCart', product)
+      this.items = this.userItems(this.loginUid)
+      this.userTotal = this.userCartTotal(this.loginUid)
     },
 
     quantityAdd(item) {
@@ -1055,6 +1080,9 @@ $menu-height: 6rem;
 }
 .cart-footer-button-color {
   background-color: $your-solution;
+  border: none;
+}
+.cart-footer-button-save {
   border: none;
 }
 // .prod-cart-sw {

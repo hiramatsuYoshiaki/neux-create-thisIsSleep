@@ -59,7 +59,7 @@
                 //- div {{ getUrl(item.id) }}
                 div
                   //-forebase strage
-                  img(:src="getUrl(item.id)" alt="product image")
+                  img(:src="getUrl(item.id)" alt="products image" )
                 //- div imgPass
                 //- div
                   //-静的ローカルファイルの場合
@@ -149,61 +149,6 @@ export default {
         { id: 1003, img: require('~/assets/img/img3668.jpg') },
         { id: 1004, img: require('~/assets/img/img3809.jpg') }
       ]
-
-      // items: [
-      //   {
-      //     id: 1001,
-      //     img: require('~/assets/img/img3614.jpg'),
-      //     title: 'Bay Cruse  ',
-      //     subTitle: 'Discover the most amazing spot around the japan',
-      //     price: 800,
-      //     link: 'explore Now',
-      //     to: '/account/registration',
-      //     date: '2019-01-01',
-      //     featured: 100,
-      //     selling: 100,
-      //     inventory: 10
-      //   },
-      //   {
-      //     id: 1002,
-      //     img: require('~/assets/img/img2731.jpg'),
-      //     title: 'safety simulator',
-      //     subTitle: 'Get inspired by the buzz of the Amusement ',
-      //     price: 0,
-      //     link: 'explore Now',
-      //     to: '/contact/countactUs',
-      //     date: '2019-01-02',
-      //     featured: 20,
-      //     selling: 70,
-      //     inventory: 10
-      //   },
-      //   {
-      //     id: 1003,
-      //     img: require('~/assets/img/img3668.jpg'),
-      //     title: 'hotalna',
-      //     subTitle: 'River cruise on a futuristic design ship',
-      //     price: 2000,
-      //     link: 'return to home ',
-      //     to: '/account/registration',
-      //     date: '2019-01-03',
-      //     featured: 90,
-      //     selling: 20,
-      //     inventory: 10
-      //   },
-      //   {
-      //     id: 1004,
-      //     img: require('~/assets/img/img3809.jpg'),
-      //     title: 'fuji tv',
-      //     subTitle: 'Amazing view from the observation deck',
-      //     price: 1200,
-      //     link: 'return to home ',
-      //     to: '/account/registration',
-      //     date: '2019-01-04',
-      //     featured: 50,
-      //     selling: 50,
-      //     inventory: 10
-      //   }
-      // ]
     }
   },
   computed: {
@@ -327,6 +272,7 @@ export default {
     // alert('create test data')
     // this.$store.dispatch(SLEEP_DATA_CREATE, this.tests)
     // },
+
     getCartInventry(item) {
       let quantity = 0
       if (this.total && this.total > 0) {

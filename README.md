@@ -2074,3 +2074,12 @@ export default {
 </script>
 
 ```
+
+# Nuxt.js の generate プロパティに動的なルーティングを追加する
+
+https://blog.cloud-acct.com/posts/blog-nuxtjs-generate-routes/
+ 
+
+# 【Nuxt.js × Contentful】カテゴリー記事一覧ページを作成する
+
+https://blog.cloud-acct.com/posts/blog-related-posts

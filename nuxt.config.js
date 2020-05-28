@@ -112,7 +112,14 @@ export default {
   //     "/contact"
   //   ]
   // },
-
+  generate: {
+    routes: [
+      'thisIsSleep/buy/puroducts/1001',
+      'thisIsSleep/buy/puroducts/1002',
+      'thisIsSleep/buy/puroducts/1003',
+      'thisIsSleep/buy/puroducts/1004'
+    ]
+  },
   markdownit: {
     preset: 'default',
     injected: true,

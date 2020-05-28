@@ -3,28 +3,41 @@
         div.container
           div.row
             div.cart-header
-              h5.left-title Shopping Cart
+              div.left-title
+                h6 Shopping Cart
+                div.h7
+                  span {{loginUser}} - {{loginUid}}
+                  //- span {{loginUser}}
+                //- div {{items}}
+                div all cart
+                div(v-for="(cartItem, index) in this.cartItems" :key="cartItem.orderKey")
+                  div {{index + 1}}:{{cartItem.loginUid}}
               div.right-title
                 h6.quantity-title Quantity
                 h5.center-title Shopping Cart
                 h6.total-title Total
-            div.cart-detail(v-for="(item, index) in this.products" :key="item.orderKey")
+            //- div.cart-detail(v-for="(item, index) in this.cartItems" :key="item.orderKey")
+            div.cart-detail(v-for="(item, index) in this.items" :key="item.orderKey")
               div.cart-detail-product
                 div.cart-detail-product-img
                    nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
                     //- img(:src="item.img" alt="product image" )
                     img(:src="getUrl(item.id)" alt="product image")
                 div.cart-detail-product-name
-                  nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
-                   h6 {{item.title}}
+
                   div.h7
                     span.tour-date {{item.id}}
                     span.tour-date {{item.tourDate.date}}
                     span.tour-date {{item.timeZone.zone}}
-                  div.h7 {{item.subTitle}}
+                  nuxt-link(:to="'/thisIsSleep/buy/puroducts/' + item.id")
+                    h6 {{item.title}}
+                    div.h7 {{item.subTitle}}
+                  div.h7 {{item.price}}
+                    span
                   div.h7.remove(@click="remove(item, index)") remove
+                  br
                   div data---------------
-                    div {{item}}
+                  div {{item}}
 
               div.cart-detail-quantity
                 //- quantity
@@ -43,42 +56,78 @@
                     h5
                       span Subtotal
                       //- subtotal
-                      span {{total}}
+                      //- span {{total}}
+                      span {{userTotal}}
                 div.cart-footer-button
-                  button.component--btn.cart-footer-button-width  update cart
+                  //- button.component--btn.cart-footer-button-width  update cart
                   button.component--btn.cart-footer-button-width(@click="checkout()") check out
 
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import firebase from '@/plugins/firebase'
+import { mapState, mapGetters } from 'vuex'
 export default {
   layout: 'layout3Parts',
 
   data() {
     return {
       quantity: [1, 2, 3, 4],
-      quan: []
+      quan: [],
+      loginUid: null,
+      loginUser: null,
+      logoutUid: 'guestUid',
+      items: null,
+      userTotal: 0
     }
   },
   computed: {
+    ...mapState(['user']),
     ...mapGetters('cart', {
-      products: 'cartProducts', // cartItems
-      total: 'cartTotalPrice'
+      cartItems: 'cartProducts', // cartItems
+      total: 'cartTotalPrice',
+      userItems: 'getUserCart',
+      userCartTotal: 'getUserCartTotal'
     }),
     ...mapGetters({ getUrl: 'getProductsImgUrl' })
+  },
+  async mounted() {
+    // console.log('mounted chek user----------------')
+    await firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.loginUid = user.uid
+        this.loginUser = user.displayName
+        // this.cartProductsUser(uesr.uid)
+      } else {
+        this.loginUid = this.logoutUid
+        this.loginUser = 'Guest User'
+      }
+    })
+    this.items = this.userItems(this.loginUid)
+    this.userTotal = this.userCartTotal(this.loginUid)
   },
   methods: {
     remove(item, index) {
       // alert('remove' + item.title)
-      const removeId = {
+      // const removeId = {
+      //   id: item.id,
+      //   key: index
+      // }
+      // this.$store.dispatch('cart/removeProductToAction', removeId)
+      const removeItem = {
+        loginUid: item.loginUid,
         id: item.id,
-        key: index
+        orderKey: item.orderKey
       }
-      this.$store.dispatch('cart/removeProductToAction', removeId)
+      console.log(removeItem)
+      this.$store.dispatch('cart/removeUserCart', removeItem)
+      this.items = this.userItems(this.loginUid)
+      this.userTotal = this.userCartTotal(this.loginUid)
     },
     checkout() {
-      alert('check out ')
-      this.$store.dispatch('cart/checkout', this.products)
+      // alert('check out ')
+      this.$store.dispatch('cart/checkout', this.cartItems)
+      this.items = this.userItems(this.loginUid)
+      this.userTotal = this.userCartTotal(this.loginUid)
     }
   }
 }
@@ -103,9 +152,11 @@ export default {
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  .left-title {
-    display: block;
+  .left-title h6 {
     font-weight: $weight-bold;
+  }
+  .left-title div.h7 {
+    margin-top: 0.5rem;
   }
   .right-title {
     display: none;
@@ -285,7 +336,8 @@ export default {
 }
 .cart-footer-button {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   flex-direction: row;
 }

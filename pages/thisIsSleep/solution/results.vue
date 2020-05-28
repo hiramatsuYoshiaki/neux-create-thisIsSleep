@@ -18,14 +18,14 @@
                       br
                       br
 
-                      p {{user}}
-                      p {{solutions}}
-                      p sleepSolutions firebase data
-                      p {{sleepSolutions}}
+                      //- p {{user}}
+                      //- p {{solutions}}
+                      //- p sleepSolutions firebase data
+                      //- p {{sleepSolutions}}
 </template>
 <script>
 import { mapState } from 'vuex'
-import { SLEEP_ADD_SOLUTION, SLEEP_GET_SOLUTION } from '~/store/actionTypes'
+import { SLEEP_ADD_SOLUTION } from '~/store/actionTypes'
 export default {
   layout: 'layout2Parts',
   data() {
@@ -79,16 +79,16 @@ export default {
     this.$store.commit('clearMessage')
     console.log('mount sleep add solution')
     console.log(this.user)
-    if (this.user && this.user.email === this.solutions.user) {
-      console.log('user.email: ' + this.user.email)
-      console.log('solution.user: ' + this.solutions.user)
-      await this.$store.dispatch(SLEEP_ADD_SOLUTION, this.solutions)
-      this.message = 'ソリューションを作成しています。'
-    } else {
-      this.message = 'ログインしてください。'
-      this.$router.push('/thisIsSleep/account/logout')
-    }
-    await this.$store.dispatch(SLEEP_GET_SOLUTION, this.user.uid)
+    // if (this.user && this.user.uid === this.solutions.uid) {
+    console.log('uid: ' + this.solutions.uid)
+    console.log('email: ' + this.solutions.user)
+    await this.$store.dispatch(SLEEP_ADD_SOLUTION, this.solutions)
+    this.message = 'ソリューションを作成しています。'
+    // } else {
+    //   this.message = 'ログインしてください。'
+    //   this.$router.push('/thisIsSleep/account/login')
+    // }
+    // await this.$store.dispatch(SLEEP_GET_SOLUTION, this.user.uid)
     // canvas
     // const img = new Image()
     // img.src = this.bgImg
@@ -115,7 +115,7 @@ export default {
       this.message = 'leaf mouse'
     },
     mySolution() {
-      this.$router.push('/thisIsSleep/solution/solution')
+      this.$router.push('/thisIsSleep/solution/userSolution')
     },
     handleResize() {
       this.canvas.width = this.width = this.innerWidth = window.innerWidth

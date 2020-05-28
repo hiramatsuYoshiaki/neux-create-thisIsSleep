@@ -3,32 +3,44 @@
         div.container-fluid
             div.row
                 div.solution-content
+                    //- div(@click="buyItem(images[0].id)") {{ this.images[0]}}
+                    //- img(:src="images[0].bgimg")
+                    //- div.img(:style="{ background: `center / cover no-repeat  url(${this.images[0].bgimg})` }" @click="buyItem(images[0].id)")
+                    //- div {{this.images[0].id}}
+                    //- div imageUrl {{getUrl(this.images[0].id)}}
+                    //- div {{sleepProductsImgUrl}}
+                    //- div.img(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[0].id)})` }" @click="buyItem(images[0].id)")
+
+                    //- br
                     //- div {{sleepSolutions}}
+                    //- br
+                    //- div user Solution
+                    //- div {{userSolution}}
+                    //- br
+                    //- div {{items}}
                     div.solutionFigure
                         div.figureItem-base
                             div.base-title
                                 h5.title Your Solution
                                 h5.title Destination
                                 div.h7.sub-title Recomend Tour
+                                div.h7.sub-title for {{ loginUser }}
+
                         div.solutionFigure-deg
                             div.figure-element.figure-element-deg0
                                 div.figure-inner
-                                    div.div.figureItem.deg0(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[0].id)})` }" @click="buyItem(images[0].id)")
+                                    div.div.figureItem.deg0(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[0].id)})` }" @click="buyItem(images[0].id)" )
                             div.figure-element.figure-element-deg120
                                 div.figure-inner
                                     div.div.figureItem.deg240(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[1].id)})` }" @click="buyItem(images[1].id)")
                             div.figure-element.figure-element-deg240
                                 div.figure-inner
                                     div.div.figureItem.deg120(:style="{ background: `center / cover no-repeat  url(${getUrl(this.images[2].id)})` }" @click="buyItem(images[2].id)")
-                            //- div.figure-element.figure-element-deg240
-                            //-     div.figure-inner
-                            //-         div.div.figureItem.deg120(:style="{ background: `center / cover no-repeat  url(${images[2].bgimg})` }" @click="buyItem('3')")
+
         div.container-fluid(v-show="isShowLoading")
             div.row
                 div.solution-content
-                    //- div {{sleepSolutions}}
                     div.solutionFigure
-                      //- div.figureItem-base
                       div.figureItem-loading
                           <div class="svg-wrapper">
                             <svg height="84" width="84" xmlns="http://www.w3.org/2000/svg">
@@ -39,8 +51,13 @@
 
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapState, mapGetters } from 'vuex'
-import { SLEEP_GET_SOLUTION, GET_SLEEP_DATA } from '~/store/actionTypes'
+import {
+  SLEEP_GET_SOLUTION,
+  GET_SLEEP_DATA,
+  SET_SLEEP_IMG_URL
+} from '~/store/actionTypes'
 // import figureSolutionComponent from '~/components/figure/figureSolutionComponent.vue'
 // import levelSolutionComponent from '~/components/level/levelSolutionComponent.vue'
 export default {
@@ -53,126 +70,157 @@ export default {
     return {
       images: [
         {
-          bgimg: require('~/assets/img/img1578.jpg'),
+          no: 1,
+          // bgimg: require('~/assets/img/img1578.jpg'),
           id: 0
         },
         {
-          bgimg: require('~/assets/img/img2722.jpg'),
+          no: 2,
+          // bgimg: require('~/assets/img/img2722.jpg'),
           id: 0
         },
         {
-          bgimg: require('~/assets/img/img3809.jpg'),
+          no: 3,
+          // bgimg: require('~/assets/img/img3809.jpg'),
           id: 0
         }
       ],
       solProducts: [],
-      isShowLoading: true
+      isShowLoading: true,
+      loginUid: null,
+      loginUser: null,
+      logoutUid: 'guestUid',
+      isAnser: false,
+      userSolution: null
     }
   },
   computed: {
-    ...mapState(['user']),
+    // ...mapState(['user']),
     ...mapState(['sleepSolutions']),
     ...mapState({ items: 'sleepProducts' }),
-    ...mapGetters({ getUrl: 'getProductsImgUrl' })
+    ...mapGetters({ getUrl: 'getProductsImgUrl' }),
+
     // ...mapState('solutions', ['solutions'])
+    ...mapState(['sleepProductsImgUrl'])
   },
   async mounted() {
-    if (this.user) {
-      await this.$store.dispatch(SLEEP_GET_SOLUTION, this.user.uid)
-      await this.$store.dispatch(GET_SLEEP_DATA)
-      this.setSolProducts()
+    // console.log('mounted chek user----------------')
+    await firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.loginUid = user.uid
+        this.loginUser = user.displayName
+      } else {
+        this.loginUid = this.logoutUid
+        this.loginUser = 'Guest User'
+      }
+    })
+    await this.$store.dispatch(SET_SLEEP_IMG_URL)
+    await this.$store.dispatch(SLEEP_GET_SOLUTION)
+    await this.$store.dispatch(GET_SLEEP_DATA)
+    // console.log('loginUid: ' + this.loginUid)
+    // if (this.loginUid === this.logoutUid) {
+    //   this.$router.push('/thisIsSleep/solution/question/1')
+
+    // } else {
+    this.isAnser = false
+    this.sleepSolutions.forEach((solution) => {
+      if (solution.uid === this.loginUid) {
+        this.isAnser = true
+        this.userSolution = solution
+        // console.log(solution)
+      }
+    })
+    if (this.isAnser) {
+      this.setAnser()
     } else {
-      this.$router.push('/thisIsSleep/account/logout')
+      this.$router.push('/thisIsSleep/solution/question/1')
     }
+    // }
     this.init()
   },
-  //   async mounted() {
-  //     // window size
-  //     window.addEventListener('resize', this.handleResize)
-  //     this.$store.commit('clearMessage')
-  //     console.log('mount sleep add solution')
-  //     console.log(this.user)
-  //     if (this.user && this.user.email === this.solutions.user) {
-  //       console.log('user.email: ' + this.user.email)
-  //       console.log('solution.user: ' + this.solutions.user)
-  //       await this.$store.dispatch(SLEEP_ADD_SOLUTION, this.solutions)
-  //       this.message = 'ソリューションを作成しています。'
-  //     } else {
-  //       this.message = 'ログインしてください。'
-  //       this.$router.push('/thisIsSleep/account/logout')
-  //     }
-  //     await this.$store.dispatch(SLEEP_GET_SOLUTION, this.user.uid)
-  //     // canvas
-  //     // const img = new Image()
-  //     // img.src = this.bgImg
-  //     // img.onload = () => {
-  //     // this.loadImg = img
-  //     this.canvas = this.$refs.refs_canvas
-  //     this.context = this.canvas.getContext('2d')
-  //     this.handleResize()
-  //     this.init()
-  //     this.waveCircle()
-  //     this.loop()
-
-  //     // }
-  //   },
-
   methods: {
     init() {
       setTimeout(() => {
         this.isShowLoading = false
-      }, 4000)
+      }, 3000)
     },
-    setSolProducts() {
-      this.solProducts = []
-      if (this.sleepSolutions.answers[0].mark === 'A') {
-        // alert(this.sleepSolutions.answers[0].mark)
+    setAnser() {
+      if (this.userSolution.answers[0].mark === 'A') {
         this.images[0].id = 1002
         this.solProducts.push({ pid: 1002 })
       } else {
-        // alert(this.sleepSolutions.answers[0].mark)
         this.images[0].id = 1001
         this.solProducts.push({ pid: 1001 })
       }
-
-      if (this.sleepSolutions.answers[1].mark === 'A') {
-        // alert(this.sleepSolutions.answers[1].mark)
+      if (this.userSolution.answers[1].mark === 'A') {
         this.images[1].id = 1003
         this.solProducts.push({ pid: 1003 })
       } else {
-        // alert(this.sleepSolutions.answers[1].mark)
         this.images[1].id = 1004
         this.solProducts.push({ pid: 1004 })
       }
-
-      if (this.sleepSolutions.answers[1].mark === 'A') {
-        // alert(this.sleepSolutions.answers[1].mark)
+      if (this.userSolution.answers[1].mark === 'A') {
         this.images[2].id = 1004
         this.solProducts.push({ pid: 1004 })
-      } else if (this.sleepSolutions.answers[1].mark === 'B') {
-        // alert(this.sleepSolutions.answers[1].mark)
+      } else if (this.userSolution.answers[1].mark === 'B') {
         this.images[2].id = 1004
         this.solProducts.push({ pid: 1004 })
       } else {
-        // alert(this.sleepSolutions.answers[1].mark)
         this.images[2].id = 1004
         this.solProducts.push({ pid: 1004 })
       }
-      //   if (this.sleepSolutions.answers[1].mark === 'A') {
-      //     // alert(this.sleepSolutions.answers[1].mark)
-      //     this.images[3].id = 1004
-      //   } else if (this.sleepSolutions.answers[1].mark === 'B') {
-      //     // alert(this.sleepSolutions.answers[1].mark)
-      //     this.images[3].id = 1004
-      //   } else if (this.sleepSolutions.answers[1].mark === 'C') {
-      //     // alert(this.sleepSolutions.answers[1].mark)
-      //     this.images[3].id = 1004
-      //   } else {
-      //     // alert(this.sleepSolutions.answers[1].mark)
-      //     this.images[3].id = 1004
-      //   }
       this.$store.commit('solutions/setSolProducts', this.solProducts)
     },
+    // setSolProducts() {
+    //   this.solProducts = []
+    //   if (this.sleepSolutions.answers[0].mark === 'A') {
+    //     // alert(this.sleepSolutions.answers[0].mark)
+    //     this.images[0].id = 1002
+    //     this.solProducts.push({ pid: 1002 })
+    //   } else {
+    //     // alert(this.sleepSolutions.answers[0].mark)
+    //     this.images[0].id = 1001
+    //     this.solProducts.push({ pid: 1001 })
+    //   }
+
+    //   if (this.sleepSolutions.answers[1].mark === 'A') {
+    //     // alert(this.sleepSolutions.answers[1].mark)
+    //     this.images[1].id = 1003
+    //     this.solProducts.push({ pid: 1003 })
+    //   } else {
+    //     // alert(this.sleepSolutions.answers[1].mark)
+    //     this.images[1].id = 1004
+    //     this.solProducts.push({ pid: 1004 })
+    //   }
+
+    //   if (this.sleepSolutions.answers[1].mark === 'A') {
+    //     // alert(this.sleepSolutions.answers[1].mark)
+    //     this.images[2].id = 1004
+    //     this.solProducts.push({ pid: 1004 })
+    //   } else if (this.sleepSolutions.answers[1].mark === 'B') {
+    //     // alert(this.sleepSolutions.answers[1].mark)
+    //     this.images[2].id = 1004
+    //     this.solProducts.push({ pid: 1004 })
+    //   } else {
+    //     // alert(this.sleepSolutions.answers[1].mark)
+    //     this.images[2].id = 1004
+    //     this.solProducts.push({ pid: 1004 })
+    //   }
+    //   //   if (this.sleepSolutions.answers[1].mark === 'A') {
+    //   //     // alert(this.sleepSolutions.answers[1].mark)
+    //   //     this.images[3].id = 1004
+    //   //   } else if (this.sleepSolutions.answers[1].mark === 'B') {
+    //   //     // alert(this.sleepSolutions.answers[1].mark)
+    //   //     this.images[3].id = 1004
+    //   //   } else if (this.sleepSolutions.answers[1].mark === 'C') {
+    //   //     // alert(this.sleepSolutions.answers[1].mark)
+    //   //     this.images[3].id = 1004
+    //   //   } else {
+    //   //     // alert(this.sleepSolutions.answers[1].mark)
+    //   //     this.images[3].id = 1004
+    //   //   }
+    //   this.$store.commit('solutions/setSolProducts', this.solProducts)
+    // },
     buyItem(itemIndex) {
       this.$router.push(`/thisIsSleep/solution/userSolution/${itemIndex}`)
     }
@@ -196,7 +244,10 @@ $deg240: 240deg;
 // * {
 //   border: 1px dotted grey;
 // }
-
+.img {
+  width: 640px;
+  height: 400px;
+}
 .solution-content {
   position: absolute;
   top: 0;

@@ -32,11 +32,6 @@ export const state = () => ({
   page: 'home',
   items: [],
   user: null,
-  // const loginUser = {
-  //   uid: user.uid,
-  //   email: user.email,
-  //   displayName: user.displayName
-  // }
   reloadkey: 0,
   regstar: [],
   authErrors: [],
@@ -52,9 +47,13 @@ export const state = () => ({
   sleepreviews: [], // sllep review
   sleepQuestions: [], // sllep Questions
   sleepSelectedQuestions: [], // sllep Questions of Page
-  sleepSolutions: [] // sllep Questions of Page
+  sleepSolutions: [], // sllep Questions of Page
+  msg: 'hellow strage'
 })
 export const mutations = {
+  setMsg(state, payload) {
+    state.msg = payload
+  },
   resetImgUrl(state) {
     state.sleepProductsImgUrl = []
   },
@@ -66,6 +65,7 @@ export const mutations = {
   },
   setUser(state, payload) {
     state.user = payload
+    console.log('userSet: ' + state.user.uid)
   },
   // no use
   setReloadkey(state, payload) {
@@ -208,7 +208,7 @@ export const actions = {
       .child(solutions.uid)
       .update(solutions)
       .then(() => {
-        console.log('ok')
+        // console.log('ok')
         context.commit('setMessage', 'ありがとうございます。')
         context.commit('setMessage', 'ソリューションを作成しました。')
       })
@@ -217,11 +217,14 @@ export const actions = {
         context.commit('setMessage', 'エラーが発生しました。')
       })
   }),
-  [SLEEP_GET_SOLUTION]: firebaseAction(async ({ bindFirebaseRef }, uid) => {
-    console.log('sleep get solution')
-    console.log(uid)
-
-    await bindFirebaseRef('sleepSolutions', db.ref('sleepSolutions/' + uid), {
+  // [SLEEP_GET_SOLUTION]: firebaseAction(async ({ bindFirebaseRef }, uid) => {
+  //   console.log('SLEEP_GET_SOLUTION: ' + uid)
+  //   await bindFirebaseRef('sleepSolutions', db.ref('sleepSolutions/' + uid), {
+  //     wait: true
+  //   })
+  // }),
+  [SLEEP_GET_SOLUTION]: firebaseAction(async ({ bindFirebaseRef }) => {
+    await bindFirebaseRef('sleepSolutions', db.ref('sleepSolutions/'), {
       wait: true
     })
   }),
@@ -394,6 +397,7 @@ export const getters = {
     const url = state.sleepProductsImgUrl.find((img) => {
       return img.id === id
     })
+    // console.log('getProductsImgUrl: ' + url)
     if (url) {
       return url.imgUrl
     } else {

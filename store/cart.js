@@ -1,6 +1,7 @@
 export const state = () => ({
   products: [],
   cartItems: [],
+  userCartItems: [],
   checkoutStatus: null,
   shoppingCart: false
 })
@@ -13,7 +14,7 @@ export const mutations = {
   //   })
   // },
   pushProductToCart(state, cartItem) {
-    console.log('pushProductToCart state ')
+    // console.log('pushProductToCart state ')
     state.cartItems.push(cartItem)
     // state.cartItems.push({
     //   id: cartItem.id,
@@ -35,13 +36,12 @@ export const mutations = {
     // state.cartItems.remove([key])
   },
   updateProductToCart(state, updateData) {
-    console.log('update product to cart----------')
-
-    console.log(updateData.item.id)
-    console.log(updateData.item.tourDate.date)
-    console.log(updateData.item.timeZone.zone)
-    console.log(updateData.item.bikeType.type)
-    console.log(updateData.key)
+    // console.log('update product to cart----------')
+    // console.log(updateData.item.id)
+    // console.log(updateData.item.tourDate.date)
+    // console.log(updateData.item.timeZone.zone)
+    // console.log(updateData.item.bikeType.type)
+    // console.log(updateData.key)
     state.cartItems.splice(updateData.key, 1, updateData.item)
   },
 
@@ -52,7 +52,20 @@ export const mutations = {
     })
     cartItem.quantity = cartItem.quantity + cartProduct.quantity
   },
-
+  incrementUserCartQuantity(state, userKey) {
+    // console.log('incrementUserCartQuantity')
+    // console.log(userKey)
+    const cartItem = state.cartItems.find((item) => {
+      // console.log(item)
+      return (
+        item.id === userKey.id &&
+        item.tourDate.code === userKey.tourDateCode &&
+        item.timeZone.code === userKey.timeZoneCode &&
+        item.loginUid === userKey.loginUid
+      )
+    })
+    cartItem.quantity = cartItem.quantity + userKey.quantity
+  },
   // setCartItems(state, { items }) {
   //   state.cartItems = items
   // },
@@ -78,16 +91,60 @@ export const mutations = {
 }
 
 export const getters = {
+  getUserCart: (state, getters, rootState) => (uid) => {
+    // console.log(uid)
+    const userCart = []
+    state.cartItems.map((item) => {
+      if (item.loginUid === uid) {
+        const cartData = rootState.sleepProducts.find((product) => {
+          return product.id === item.id
+        })
+        const productTotal = item.quantity * cartData.price
+        // console.log(productTotal)
+        const product = {
+          id: cartData.id,
+          title: cartData.title,
+          subTitle: cartData.subTitle,
+          price: cartData.price,
+          inventory: cartData.inventory,
+          quantity: item.quantity,
+          bikeType: item.bikeType,
+          tourDate: item.tourDate,
+          timeZone: item.timeZone,
+          orderKey: item.orderKey,
+          productTotal: productTotal,
+          loginUid: item.loginUid
+        }
+        userCart.push(product)
+      }
+    })
+    return userCart
+  },
+  getUserCartTotal: (state, getters, rootState) => (uid) => {
+    // console.log('userCartTotal')
+    // console.log(uid)
+    // return 0
+    return getters.getUserCart(uid).reduce((total, product) => {
+      // console.log(product.id)
+      // console.log(total)
+      // console.log(product.price)
+      // console.log(product.quantity)
+      return total + product.price * product.quantity
+    }, 0)
+  },
+  // getUsercartTotal: (state, getters) => {
+  //   return getters.cartProducts.reduce((total, product) => {
+  //     return total + product.price * product.quantity
+  //   }, 0)
+  // },
+
   cartProducts: (state, getters, rootState) => {
-    console.log('cartProducts')
     return state.cartItems.map(
       // ({ id, quantity, price, bikeType, tourDate, timeZone }) => {
       (item) => {
         const cartData = rootState.sleepProducts.find((product) => {
-          // return product.id === id
           return product.id === item.id
         })
-        // const productTotal = quantity * cartData.price
         const productTotal = item.quantity * cartData.price
         // console.log('id' + item.id)
         // console.log('quantity' + item.quantity)
@@ -100,13 +157,14 @@ export const getters = {
           subTitle: cartData.subTitle,
           price: cartData.price,
           inventory: cartData.inventory,
-          img: cartData.img,
+          // img: cartData.img,
           quantity: item.quantity,
           bikeType: item.bikeType,
           tourDate: item.tourDate,
           timeZone: item.timeZone,
           orderKey: item.orderKey,
-          productTotal: productTotal
+          productTotal: productTotal,
+          loginUid: item.loginUid
         }
       }
     )
@@ -119,8 +177,9 @@ export const getters = {
 }
 
 export const actions = {
-  checkout({ commit, state }, products) {
-    // console.info('action checkout start')
+  checkout({ commit, state }, cartItems) {
+    // console.info('action checkout start----------')
+    alert('checkout')
     // const savedCartItems = [...state.items]
     commit('setCheckoutStatus', null)
     // commit('setCartItems', { cartItems: [] }) // empty cart
@@ -137,40 +196,52 @@ export const actions = {
     commit('setCheckoutStatus', 'successfull')
   },
   addProductToCartAction({ state, commit }, product) {
-    console.log('addProductToCartAction')
-    console.log(product)
+    // console.log('addProductToCartAction')
+    // console.log(product)
     commit('setCheckoutStatus', null)
     if (product.inventory >= product.quantity) {
       const cartItem = state.cartItems.find((item) => {
         return (
           item.id === product.id &&
           item.tourDate.code === product.tourDate.code &&
-          item.timeZone.code === product.timeZone.code
+          item.timeZone.code === product.timeZone.code &&
+          item.loginUid === product.loginUid
         )
       })
       if (!cartItem) {
-        console.log('create cart item')
+        // console.log('create cart item')
         commit('pushProductToCart', {
           id: product.id,
           title: product.title,
           subTitle: product.subTitle,
           price: product.price,
           inventory: product.inventory,
-          img: product.img,
+          // img: product.img,
           quantity: product.quantity,
           bikeType: product.bikeType,
           tourDate: product.tourDate,
           timeZone: product.timeZone,
-          order: 1111,
+          loginUid: product.loginUid,
+          // order: 1111,
           orderKey:
             product.id +
             '-' +
             product.tourDate.date +
             '-' +
-            product.timeZone.zone
+            product.timeZone.zone +
+            '-' +
+            product.loginUid
         })
       } else {
-        commit('incrementItemQuantity', product)
+        // commit('incrementItemQuantity', product)
+        const userKey = {
+          id: product.id,
+          tourDateCode: product.tourDate.code,
+          timeZoneCode: product.timeZone.code,
+          loginUid: product.loginUid,
+          quantity: product.quantity
+        }
+        commit('incrementUserCartQuantity', userKey)
       }
       // 在庫減らす
       // commit(
@@ -186,16 +257,38 @@ export const actions = {
     // console.log('removekey' + removeId.key)
     commit('removeProductToCart', removeId.key)
   },
+  removeUserCart({ state, commit }, removeItem) {
+    const cartIndex = state.cartItems.findIndex((item) => {
+      // console.log(item.loginUid)
+      // console.log(item.id)
+      // console.log(item.orderKey)
+      // console.log(removeItem.loginUid)
+      // console.log(removeItem.id)
+      // console.log(removeItem.orderKey)
+      return (
+        item.loginUid === removeItem.loginUid &&
+        item.id === removeItem.id &&
+        item.orderKey === removeItem.orderKey
+      )
+    })
+    // console.log(cartIndex)
+    if (cartIndex === -1) {
+      console.log('nothing remove itrms')
+    } else {
+      commit('removeProductToCart', cartIndex)
+    }
+  },
   // solution
   removeProductCart({ state, commit }, removeItem) {
     const cartIndex = state.cartItems.findIndex((item) => {
       return (
+        item.loginUid === removeItem.loginUid &&
         item.id === removeItem.id &&
         item.tourDate.code === removeItem.tourDate.code &&
         item.timeZone.code === removeItem.timeZone.code
       )
     })
-    console.log(cartIndex)
+    // console.log(cartIndex)
     if (cartIndex === -1) {
       console.log('nothing remove item')
     } else {
@@ -203,16 +296,16 @@ export const actions = {
     }
   },
   updateProductCart({ state, commit }, updateItem) {
-    console.log('updateProductCart')
-    console.log(updateItem)
+    // console.log('updateProductCart')
+    // console.log(updateItem)
     const cartIndex = state.cartItems.findIndex((item) => {
       return (
+        item.loginUid === updateItem.loginUid &&
         item.id === updateItem.id &&
         item.tourDate.code === updateItem.tourDate.code &&
         item.timeZone.code === updateItem.timeZone.code
       )
     })
-    console.log(cartIndex)
     if (cartIndex === -1) {
       console.log('nothing update item')
     } else {
@@ -220,7 +313,6 @@ export const actions = {
         item: updateItem,
         key: cartIndex
       }
-      // commit('updateProductToCart', cartIndex)
       commit('updateProductToCart', updateData)
     }
   }

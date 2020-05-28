@@ -18,9 +18,11 @@
                                     //- h5 select product : {{ selectProduct.subTitle }}
                                     //- h5 select product : {{ selectProduct.price }}
                                     //- h5 select product : {{ selectProduct.date }}
-                                    h6 inventory : {{ selectProduct.inventory }}
+
+                                    //- h6 inventory : {{ selectProduct.inventory }}
                                     h6 inventory : {{getCartInventry(selectProduct)}}
-                                    div {{selectProduct}}
+                                    //- div {{selectProduct}}
+
                             div.prod-right
                                 div.prod-right-warpe
                                     div.p-title {{ selectProduct.title }}
@@ -58,6 +60,9 @@
                                     div.prod-addcart(v-else)
                                         //- button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
                                         button.component--btn.disabl-btn.disabled  out of stock
+                                    div.prud-subscrive
+                                      div.h7
+                                      span {{loginUser}} - {{loginUid}}
 
                                     div.prud-subscrive
                                         div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
@@ -177,6 +182,7 @@
 
 </template>
 <script>
+import firebase from '@/plugins/firebase'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import {
   SENDGRID,
@@ -219,9 +225,12 @@ export default {
       selectedTimeZone: null,
       selectedTourDate: null,
       selectedTimeZoneOption: null,
-      selectedTourDateOption: null
+      selectedTourDateOption: null,
       // bikeTypeError: false
-      // quantityError: false
+      // quantityError: false,
+      loginUid: null,
+      loginUser: null,
+      logoutUid: 'guestUid'
     }
   },
   computed: {
@@ -280,7 +289,16 @@ export default {
     await this.$store.commit('buy/setSelectedId', this.paramId)
     await this.$store.dispatch(SLEEP_GET_REVIEW)
   },
-  mounted() {
+  async mounted() {
+    await firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.loginUid = user.uid
+        this.loginUser = user.displayName
+      } else {
+        this.loginUid = this.logoutUid
+        this.loginUser = 'Guest User'
+      }
+    })
     this.selectedTimeZone = this.selectProduct.timeZone[0]
     this.selectedTourDate = this.selectProduct.tourDate[0]
     this.selectedTimeZoneOption = this.selectProduct.timeZone[0].zone
@@ -328,15 +346,16 @@ export default {
 
       const product = {
         id: item.id,
-        title: item.title,
-        subTitle: item.subTitle,
-        price: item.price,
+        // title: item.title,
+        // subTitle: item.subTitle,
+        // price: item.price,
         inventory: item.inventory,
-        img: item.img,
+        // img: item.img,
         quantity: this.quantity,
         bikeType: this.selectedBikeType,
         tourDate: this.selectedTourDate,
-        timeZone: this.selectedTimeZone
+        timeZone: this.selectedTimeZone,
+        loginUid: this.loginUid
       }
 
       // store Actio cart/addProductToCartAction'
@@ -345,7 +364,7 @@ export default {
         alert('validation error')
       } else {
         this.addProductToCartAction(product)
-        alert('add to cart')
+        // alert('add to cart')
       }
     },
     starMark(starIndex) {

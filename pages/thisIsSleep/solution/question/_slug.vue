@@ -23,9 +23,9 @@
 
                             h4.quesTitle
                                 transition(name="fadeInFromRight")
-                                  //- div(v-show="isShowTitle2 && isShowQuestion2") {{question.ques}}
-                                  div(v-show="isShowTitle2 && isShowQuestion2")
-                                   p {{solutions}}
+                                  div(v-show="isShowTitle2 && isShowQuestion2") {{question.ques}}
+                                  //- div(v-show="isShowTitle2 && isShowQuestion2")
+                                  //-  p {{solutions}}
 
                             div.doYouKnow
                                 transition(name="fadeInFromRight")
@@ -226,14 +226,14 @@ export default {
 
     // cordpen 波打つ円
     // https://codepen.io/sebavien/details/jAjKVE
-    console.log('check set context2')
-    console.log(this.questions)
-    console.log(Number(this.$route.params.slug))
+    // console.log('check set context2')
+    // console.log(this.questions)
+    // console.log(Number(this.$route.params.slug))
 
     for (const i in this.questions) {
-      console.log('loop question')
+      // console.log('loop question')
       if (this.questions[i].id === Number(this.$route.params.slug)) {
-        console.log('question no')
+        // console.log('question no')
         const ansrs = this.questions[i].ansr
         for (const idx in ansrs) {
           // for (const idx in this.questions[i].ansr) {
@@ -241,11 +241,11 @@ export default {
           this.context2[idx] = this.canvas2[idx].getContext('2d')
           this.canvas2[idx].width = 80
           this.canvas2[idx].height = 80
-          console.log('mounted context2[idx]')
+          // console.log('mounted context2[idx]')
         }
       }
     }
-    console.log(this.context2)
+    // console.log(this.context2)
 
     // for (const i in this.pageQuestion.ansr) {
     //   console.log('for')
@@ -296,7 +296,7 @@ export default {
       this.isOnMarks[i].isOnMark = false
     },
     init() {
-      console.log('init')
+      // console.log('init')
       this.canvas.width = this.innerWidth
       this.canvas.height = this.innerHeight
 
@@ -328,7 +328,7 @@ export default {
       this.posY = 40
     },
     optionSet() {
-      console.log('optionset')
+      // console.log('optionset')
       // console.log('option set')
       // const options = [
       // { offset: 1, color: '#4dbaed' },
@@ -363,8 +363,8 @@ export default {
       })
     },
     animate() {
-      console.log('animate----------------')
-      console.log(this.context2)
+      // console.log('animate----------------')
+      // console.log(this.context2)
       this.amplitude += 1
       if (this.amplitude === 1) {
         setTimeout(() => {
@@ -389,8 +389,8 @@ export default {
         //   this.waveCircleLoop()
         // }, 3000 / 40)
         this.timer = setInterval(() => {
-          console.log('setInterval----------------')
-          console.log(this.context2)
+          // console.log('setInterval----------------')
+          // console.log(this.context2)
           // this.context.clearRect(0, 0, 80, 80)
           this.waveCircleLoop()
         }, 300000 / 40)
@@ -512,18 +512,18 @@ export default {
       }
     },
     waveCircleLoop() {
-      console.log('waveCircleLoop-----------')
+      // console.log('waveCircleLoop-----------')
       for (const izz in this.questions) {
         if (this.questions[izz].id === Number(this.$route.params.slug)) {
-          console.log('waveCircleLoop ansr array-----')
-          console.log(this.questions[izz].ansr)
-          console.log('context2 array')
-          console.log(this.context2)
+          // console.log('waveCircleLoop ansr array-----')
+          // console.log(this.questions[izz].ansr)
+          // console.log('context2 array')
+          // console.log(this.context2)
 
           for (const idx2 in this.questions[izz].ansr) {
-            console.log('waveCircleLoop context2')
-            console.log(idx2)
-            console.log(this.context2[idx2])
+            // console.log('waveCircleLoop context2')
+            // console.log(idx2)
+            // console.log(this.context2[idx2])
             // this.canvas2[idx2] = this.$refs.refsCanvas2[idx2]
             // this.context2[idx2] = this.canvas2[idx2].getContext('2d')
             // this.canvas2[idx2].width = 80
@@ -809,7 +809,7 @@ export default {
     },
     // -------------------------------------------set store-------------------------------------------------
     collectAnswers(ans, id) {
-      console.log(this.solutions)
+      // console.log(this.solutions)
       // alert(
       //   'collectAnswers--user: ' +
       //     this.user.email +
@@ -822,11 +822,17 @@ export default {
 
       if (this.$route.params.slug === '1') {
         this.$store.commit('solutions/clearAns')
+
         const solutionUser = {
           uid: this.user.uid,
           user: this.user.email,
           answers: []
         }
+        if (this.user.uid === null) {
+          solutionUser.uid = 'guestUid'
+          solutionUser.user = 'guestUser'
+        }
+
         this.$store.commit('solutions/setSolutions', solutionUser)
       }
 

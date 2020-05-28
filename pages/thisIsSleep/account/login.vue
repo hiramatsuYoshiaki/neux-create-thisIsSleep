@@ -9,6 +9,10 @@
                             h5 Login
                             nuxt-link(to="/")
                                 div.h7 return to Home
+                            br
+                            div.h7 demo login
+                            h6 mail: hworksdemo@gmail.com
+                            h6 pass: hworksdemo1111
                 template(v-slot:leve2)
                     div.slot-wrape.level2-wrape
                           div.reset-meg(v-if="isResetPass")
@@ -76,9 +80,8 @@ export default {
     this.$store.commit('clearMessage')
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        // this.email = user.email
-        // this.displayName = user.displayName
-        // console.log('login now')
+        this.email = user.email
+        this.displayName = user.displayName
 
         const loginUser = {
           uid: user.uid,

@@ -40,9 +40,10 @@
                               button(v-if="isShowTitle5 && isShowSolution3").component--btn.create-button.solution-create
                                   //- nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
                                   span(@click="clinkQuestion('question')") Solution Create
+
 </template>
 <script>
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 import buttonLinkCustomComponent from '~/components/button/buttonLinkCustomComponent.vue'
 export default {
   layout: 'layout2Parts',
@@ -102,9 +103,9 @@ export default {
       isShowMoveStart: false
     }
   },
-  computed: {
-    ...mapState(['user'])
-  },
+  // computed: {
+  //   ...mapState(['user'])
+  // },
   mounted() {
     window.addEventListener('resize', this.handleResize)
     const img = new Image()
@@ -122,6 +123,10 @@ export default {
     window.addEventListener('resize', this.handleResize)
   },
   methods: {
+    changMessage() {
+      // console.log(this.user)
+      this.$store.commit('setMsg', this.inputMsg)
+    },
     clinkQuestion(param) {
       setTimeout(() => {
         this.isShowSolution5 = false
@@ -165,16 +170,11 @@ export default {
       // - nuxt-link(:to="'/thisIsSleep/solution/question/' + question")
       // this.isShowCanvasVer1 = this.isShowCanvasVer2 = this.isShowTitle1 = this.isShowTitle2 = this.isShowTitle3 = this.isShowTitle4 = this.isShowTitle5 = false
       setTimeout(() => {
-        if (!this.user.email) {
-          this.$router.push({
-            path: '/account/login'
-          })
-        } else if (param === 'solution') {
+        if (param === 'solution') {
           this.$router.push({
             path: '/thisIsSleep/solution/userSolution'
           })
         } else {
-          // store new solution create
           this.$router.push({
             path: `/thisIsSleep/solution/question/${this.question}`
           })
