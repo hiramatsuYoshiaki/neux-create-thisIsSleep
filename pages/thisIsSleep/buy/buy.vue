@@ -77,7 +77,9 @@
                 //- div featuerd:{{item.featured}}
                 //- div sellin:{{item.selling}}
                 //- div inventory:{{item.inventory}}
-                div inventory:{{getCartInventry(item)}}
+                //- inventory empty check---------------------------------------------
+                div acceptOrders: {{acceptOders(item)}}
+                //- div inventory:{{getCartInventry(item)}}
                 //- div bike type: {{item.bikeType}}
                 br
                 div  Bike Type:
@@ -99,6 +101,10 @@
                   p(style="color:black")
                     i.fas.fa-chevron-right
                     span Tour Detail
+                //- nuxt-link(:to="'/thisIsSleep/buy/' + item.id")
+                //-   p(style="color:black")
+                //-     i.fas.fa-chevron-right
+                //-     span Tour Detail test
 
     //- div.container
     //-   div.row
@@ -152,16 +158,14 @@ export default {
     }
   },
   computed: {
-    // ...mapState('products', {
-    //   items: 'all'
-    // }),
     ...mapState({ items: 'sleepProducts' }),
     ...mapState({ productsImgUrl: 'sleepProductsImgUrl' }),
     ...mapGetters({ getUrl: 'getProductsImgUrl' }),
     // cart----
     ...mapGetters('cart', {
       products: 'cartProducts', // cartItems
-      total: 'cartTotalPrice'
+      total: 'cartTotalPrice',
+      acceptOders: 'getAcceptOrders'
     }),
     // sort
     sortedData() {
@@ -254,42 +258,6 @@ export default {
   },
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
-    // imgPass(imgName) {
-    //   return require('~/assets/img/' + imgName)
-    // },
-    // ~/assets/img/img3614.jpg
-
-    // addProductToCart(item) {
-    //   const product = {
-    //     id: item.id,
-    //     title: item.title,
-    //     price: item.price,
-    //     inventory: item.inventory
-    //   }
-    //   this.addProductToCartAction(product)
-    // },
-    // createTestData() {
-    // alert('create test data')
-    // this.$store.dispatch(SLEEP_DATA_CREATE, this.tests)
-    // },
-
-    getCartInventry(item) {
-      let quantity = 0
-      if (this.total && this.total > 0) {
-        const cartValue = this.products.find((product) => {
-          return item.id === product.id
-        })
-        if (cartValue) {
-          quantity = cartValue.quantity
-        } else {
-          quantity = 0
-        }
-      } else {
-        quantity = 0
-      }
-      return item.inventory - quantity
-    },
-
     onChange() {
       this.sortType = this.selected
       if (this.selected === 'Featured') {

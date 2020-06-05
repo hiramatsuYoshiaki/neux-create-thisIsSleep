@@ -7,72 +7,62 @@
                         div.products-contents
                             div.prod-left
                                 div.prod-left-img-warpe
-                                    //- img(:src="selectProduct.img" alt="selectProduct.title" )
-                                    img(:src="getUrl(selectProduct.id)" alt="product image")
-                                    //- h5 route.params.slug: {{ $route.params.slug }}
-                                    //- h5 store is : {{ selectedId }}
-                                    //- h5 select product : {{ selectProduct.img }}
-                                    //- h5 select product : {{ selectProduct.img }}
-                                    //- h5 select product : {{ selectProduct.id }}
-                                    //- h5 select product : {{ selectProduct.title }}
-                                    //- h5 select product : {{ selectProduct.subTitle }}
-                                    //- h5 select product : {{ selectProduct.price }}
-                                    //- h5 select product : {{ selectProduct.date }}
-
-                                    //- h6 inventory : {{ selectProduct.inventory }}
-                                    h6 inventory : {{getCartInventry(selectProduct)}}
-                                    //- div {{selectProduct}}
+                                img(:src="getUrl(selectedId)" alt="product image")
+                                //- h6 inventory : {{getCartInventry(selectProduct)}}
+                                h6 inventory : {{getCartInventry(selectedId,selectedInventory)}}
+                                div test display -----------------------------------
+                                div store selectId:{{selectedId}}
+                                div $route.params.slug:{{ $route.params.slug}}
+                                div uid: {{ uid }}
+                                div paramId:{{paramId}} //selectId
+                                div selectedProductBuy:{{selectedProductBuy}}
+                                div selectedProductBuy:{{selectedProductBuy.title}}
 
                             div.prod-right
                                 div.prod-right-warpe
-                                    div.p-title {{ selectProduct.title }}
-                                    div.p-subtitle {{ selectProduct.subTitle }}
-                                    div.p-subtitle ¥{{ selectProduct.price }}
+                                    div.p-title {{ selectedProductBuy.title }}
+                                    div.p-subtitle {{ selectedProductBuy.subTitle }}
+                                    div.p-subtitle ¥{{ selectedProductBuy.price }}
                                     div.prod-type
                                         div.h7
                                           span(:class="{entoryErrorColor:bikeTypeError}") Bike Type
                                           span.h6.prod-type-element {{selectedBikeType.type}}
                                         div.prod-type-button
-                                            div.button-wrape(v-for="(bike, bIdx) in selectProduct.bikeType" :key="bike.code")
+                                            div.button-wrape(v-for="(bike, bIdx) in selectedProductBuy.bikeType" :key="bike.code")
                                                 button.component--btn.btn-type(@click="selectBikeType(bike)") {{bike.type}}
 
                                     div.prod-firmless
                                         div.h7 Tour Date:
-                                        //- span.h6.prod-type-element {{selectedTourDate.code}}
-                                        //- span.h6.prod-type-element {{selectedTourDate.date}}
-                                        select.component--select(v-model="selectedTourDateOption" @change="onChangeTourDate(selectProduct.tourDate)")
-                                            option(v-for="(tourDate, tourIdx) in selectProduct.tourDate" selected) {{tourDate.date}}
+                                        select.component--select(v-model="selectedTourDateOption" @change="onChangeTourDate(selectedProductBuy.tourDate)")
+                                            option(v-for="(tourDate, tourIdx) in selectedProductBuy.tourDate" selected) {{tourDate.date}}
                                     div.prod-firmless
                                         div.h7 Time Zone
-                                        //- span.h6.prod-type-element {{selectedTimeZone}}
-                                        //- span.h6.prod-type-element {{selectedTimeZone.zone}}
-                                        select.component--select(v-model="selectedTimeZoneOption" @change="onChangeTimeZone(selectProduct.timeZone)")
-                                            option(v-for="(timeZone, timeIdx) in selectProduct.timeZone") {{timeZone.zone}}
+                                        select.component--select(v-model="selectedTimeZoneOption" @change="onChangeTimeZone(selectedProductBuy.timeZone)")
+                                            option(v-for="(timeZone, timeIdx) in selectedProductBuy.timeZone") {{timeZone.zone}}
                                     div.prod-quantity
                                         div.h7(:class="{entoryErrorColor:quantityError}")  Number of people
                                         input.component--input( v-model.number="quantity" type="number")
-
+                                    message
                                     div.prod-error-msg
                                         div.h7(v-show="bikeTypeError") Please bike Type select
                                         div.h7(v-show="quantityError") Quantity is 1 or more
-                                    div.prod-addcart(v-if="getCartInventry(selectProduct) > 0")
-                                        button.component--btn(@click="addProductToCart(selectProduct)")  add cart
+                                    div.prod-addcart(v-if="getCartInventry(selectedId,selectedInventory) >= 0")
+                                        button.component--btn(@click="addProductToCart(selectedProductBuy)")  add cart
                                     div.prod-addcart(v-else)
-                                        //- button.component--btn.disabl-btn.disabled(@click="addProductToCart(selectProduct)")  out of stock
                                         button.component--btn.disabl-btn.disabled  out of stock
                                     div.prud-subscrive
                                       div.h7
                                       span {{loginUser}} - {{loginUid}}
 
-                                    div.prud-subscrive
-                                        div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
-                                        div.h7 The Amicor® and microfibre filling, with 100% cotton cover, not only prevents dust mites but is luxuriously fluffy, too. It all adds up to you feeling more refreshed, rested and recuperated after every use.
-                                        ul
-                                            li Amicor® and microfibre active anti-allergy filling
-                                            li Recycled materials used throughout
-                                            li Made with ballfibre clusters for a loftier, comfier feel
-                                            li 100% cotton cover
-                                            li 106% pillow-fight superior
+                                    //- div.prud-subscrive
+                                    //-     div.h7 Our AllergyFree Pillow is the perfect solution for allergy sufferers looking for a good night’s sleep.
+                                    //-     div.h7 The Amicor® and microfibre filling, with 100% cotton cover, not only prevents dust mites but is luxuriously fluffy, too. It all adds up to you feeling more refreshed, rested and recuperated after every use.
+                                    //-     ul
+                                    //-         li Amicor® and microfibre active anti-allergy filling
+                                    //-         li Recycled materials used throughout
+                                    //-         li Made with ballfibre clusters for a loftier, comfier feel
+                                    //-         li 100% cotton cover
+                                    //-         li 106% pillow-fight superior
         div.container-fluid
             div.row
                 div.customer-reviews-new
@@ -136,7 +126,6 @@
             div.row
                 div.customer-reviews
                     div.cus-rev-post(v-for="customerRreview in selectProductId(customerRreviews)" :key="customerRreview.id")
-                          //- div(v-if="customerRreview.productId === paramId")
                           div.cus-rev-lating
                               span(v-for="(star, starIndex ) in stars" :key="star.id")
                                 span(v-if="star.id > customerRreview.rait ")
@@ -152,33 +141,6 @@
                                   span {{customerRreview.date}}
                           div.cus-rev-body
                               div.h7 {{customerRreview.review}}
-                              //- h6 rait: {{customerRreview.rait}}
-                              //- div.h7 review: {{customerRreview}}
-
-                              //- p {{customerRreviewsSellected}}
-                              //- p {{items}}
-
-                              //- div.cus-rev-post-list(v-for="customerRreview in customerRreviews" :key="customerRreview.id")
-                              //-     h5 {{customerRreview.id}}
-                              //-     h5 {{customerRreview.product}}
-                              //-     h5 {{customerRreview.name}}
-                              //-     h5 {{customerRreview.title}}
-                              //-     h5 {{customerRreview.post}}
-                              //-     h5 {{customerRreview.date}}
-                              //-     h5 {{customerRreview.rait}}
-                              //- p {{selectProduct}}
-                              //- p {{revs}}
-                              //- p {{Object.keys(revs)}}
-                              //- p {{sleepreviews[productId]}}
-                              //- p {{sleepreviews.nama}}
-                              //- p {{sleepreviews.title}}
-                              //- p {{sleepreviews.email}}
-                              //- p {{sleepreviews.rait}}sleepReviews
-                              //- p {{sleepreviews.review}}
-                              //- p {{sleepreviews.reviewDate}}
-                              //- div(v-for="(sleepreview, revIndex ) in revs" :key="revIndex")
-                              //-   p {{sleepreview}}
-                              //-   p {{Object.keys(sleepreview)}}
 
 </template>
 <script>
@@ -235,15 +197,17 @@ export default {
   },
   computed: {
     // ...mapState({ items: 'sleepProducts' }),
-
+    ...mapState(['uid']),
     ...mapState('buy', ['selectedId']),
+    ...mapState('buy', ['selectedInventory']),
+    ...mapState('buy', ['selectedProductBuy']),
     ...mapState({ customerRreviews: 'sleepreviews' }),
     ...mapGetters('buy', {
       selectProduct: 'selectProduct'
     }),
     ...mapGetters({ getUrl: 'getProductsImgUrl' }),
     ...mapGetters('cart', {
-      products: 'cartProducts', // cartItems
+      cartItems: 'cartProducts', // cartItems
       total: 'cartTotalPrice'
     }),
     ...mapState('buy', ['reviewErrors']),
@@ -285,11 +249,24 @@ export default {
     //   }
     // }
   },
+  // async asyncData({ payload, store, params, error }) {
+  //   const category =
+  //     payload ||
+  //     (await store.state.categories.find(
+  //       (cat) => cat.fields.slug === params.slug
+  //     ))
+  //   if (category) {
+  //     return { category }
+  //   } else {
+  //     return error({ statusCode: 400 })
+  //   }
+  // },
+
   async created() {
-    await this.$store.commit('buy/setSelectedId', this.paramId)
     await this.$store.dispatch(SLEEP_GET_REVIEW)
   },
   async mounted() {
+    // console.log('mounted buy slug')
     await firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.loginUid = user.uid
@@ -298,7 +275,17 @@ export default {
         this.loginUid = this.logoutUid
         this.loginUser = 'Guest User'
       }
+      this.$store.commit('setLoginUid', this.loginUid)
     })
+    // console.log(this.$route.params.slug)
+    this.paramId = this.$route.params.slug
+    await this.$store.commit('buy/setSelectedId', this.$route.params.slug)
+    await this.$store.commit(
+      'buy/setSelectedInventory',
+      this.selectProduct.inventory
+    )
+    await this.$store.commit('buy/setSelectedProduct', this.selectProduct)
+
     this.selectedTimeZone = this.selectProduct.timeZone[0]
     this.selectedTourDate = this.selectProduct.tourDate[0]
     this.selectedTimeZoneOption = this.selectProduct.timeZone[0].zone
@@ -308,23 +295,52 @@ export default {
   },
   methods: {
     ...mapActions('cart', ['addProductToCartAction']),
+    // use item.id,item.inventory
+    getCartInventry(id, inventory) {
+      console.log('id: ' + id)
+      console.log('inventory: ' + inventory)
+      let cnt = 0
+      // if (this.total && this.total > 0) {
+      // const cartValue = this.cartItems.find((cartItem) => {
+      //   return Number(id) === cartItem.id
+      // })
+      // if (cartValue) {
+      //   quantity = cartValue.quantity
+      // } else {
+      //   quantity = 0
+      // }
 
-    getCartInventry(item) {
-      let quantity = 0
-      if (this.total && this.total > 0) {
-        const cartValue = this.products.find((product) => {
-          return item.id === product.id
-        })
-        if (cartValue) {
-          quantity = cartValue.quantity
-        } else {
-          quantity = 0
+      // } else {
+      //   quantity = 0
+      // }
+      // this.cartItems.forEach((cart => {
+      //   if(Number(id) === cart.id){
+      //     quantity = quantity + cart.quantity
+      //   }
+      // })
+      this.cartItems.forEach((cart) => {
+        if (Number(id) === cart.id) {
+          cnt = cnt + cart.quantity
         }
-      } else {
-        quantity = 0
-      }
-      return item.inventory - quantity
+      })
+      return inventory - cnt - this.quantity
     },
+    // getCartInventry(item) {
+    //   let quantity = 0
+    //   if (this.total && this.total > 0) {
+    //     const cartValue = this.products.find((product) => {
+    //       return item.id === product.id
+    //     })
+    //     if (cartValue) {
+    //       quantity = cartValue.quantity
+    //     } else {
+    //       quantity = 0
+    //     }
+    //   } else {
+    //     quantity = 0
+    //   }
+    //   return item.inventory - quantity
+    // },
     selectProductId(reviews) {
       const selectedReview = []
       let cnt = 0
@@ -546,7 +562,7 @@ export default {
   width: 100%;
   padding: 1rem 1rem;
   @media (min-width: 768px) {
-    padding: 1rem 0rem;
+    padding: 1rem 1.5rem;
     width: 50%;
   }
   .p-title {

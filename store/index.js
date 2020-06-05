@@ -30,6 +30,7 @@ const db = firebase.database()
 
 export const state = () => ({
   page: 'home',
+  uid: null,
   items: [],
   user: null,
   reloadkey: 0,
@@ -51,6 +52,9 @@ export const state = () => ({
   msg: 'hellow strage'
 })
 export const mutations = {
+  setLoginUid(state, payload) {
+    state.uid = payload
+  },
   setMsg(state, payload) {
     state.msg = payload
   },
@@ -395,9 +399,8 @@ export const getters = {
   },
   getProductsImgUrl: (state, getters, rootState) => (id) => {
     const url = state.sleepProductsImgUrl.find((img) => {
-      return img.id === id
+      return img.id === Number(id)
     })
-    // console.log('getProductsImgUrl: ' + url)
     if (url) {
       return url.imgUrl
     } else {

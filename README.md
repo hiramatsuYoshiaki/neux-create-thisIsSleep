@@ -2075,11 +2075,10 @@ export default {
 
 ```
 
-# Nuxt.js の generate プロパティに動的なルーティングを追加する
+# nuxt generate の動的なルーティングの書き出し
 
-https://blog.cloud-acct.com/posts/blog-nuxtjs-generate-routes/
- 
+https://www.dkrk-blog.net/vue-nuxt/nuxt-generate-routes
 
-# 【Nuxt.js × Contentful】カテゴリー記事一覧ページを作成する
+# Vue.js の v-model を正しく使う
 
-https://blog.cloud-acct.com/posts/blog-related-posts
+https://qiita.com/simezi9/items/c27d69f17d2d08722b3a

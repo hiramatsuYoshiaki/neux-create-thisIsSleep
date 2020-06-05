@@ -48,6 +48,9 @@ export default {
   computed: {
     ...mapState('headerBar', ['isOpenMobileMenu'])
   }
+  // mounted() {
+  //   console.log('mounted header layout 3level')
+  // }
 }
 </script>
 <style lang="scss" scoped>

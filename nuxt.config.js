@@ -1,4 +1,6 @@
 const bodyParser = require('body-parser')
+// const sleepProducts = require('./assets/json/sleepProducts.json')
+// const sleepQuestion = require('./assets/json/sleepQuestion.json')
 export default {
   mode: 'universal',
   /*
@@ -50,11 +52,11 @@ export default {
    */
 
   plugins: [
-    //firebaseを使う
+    //firebase
     '~/plugins/firebase',
     //proxy
     { src: '~/plugins/axios', ssr: false },
-    //localStorageでstoreを永続化する
+    //localStorage
     { src: '~/plugins/localStorage.js', ssr: false },
     //vue-carousel
     { src: '~/plugins/vue-carousel', ssr: false },
@@ -112,28 +114,60 @@ export default {
   //     "/contact"
   //   ]
   // },
+
   generate: {
     routes: [
-      'thisIsSleep/buy/puroducts/1001',
-      'thisIsSleep/buy/puroducts/1002',
-      'thisIsSleep/buy/puroducts/1003',
-      'thisIsSleep/buy/puroducts/1004'
+      // '/thisIsSleep/buy/puroducts/1001',
+      // '/thisIsSleep/buy/puroducts/1002',
+      // '/thisIsSleep/buy/puroducts/1003',
+      // '/thisIsSleep/buy/puroducts/1004',
+      // '/thisIsSleep/solution/userSolution/1001',
+      // '/thisIsSleep/solution/userSolution/1002',
+      // '/thisIsSleep/solution/userSolution/1003',
+      // '/thisIsSleep/solution/userSolution/1004',
+      '/thisIsSleep/solution/question/1',
+      '/thisIsSleep/solution/question/2',
+      '/thisIsSleep/solution/question/3',
+      '/thisIsSleep/solution/question/4',
+      '/thisIsSleep/buy/1001',
+      '/thisIsSleep/buy/1002',
+      '/thisIsSleep/buy/1003',
+      '/thisIsSleep/buy/1004'
     ]
   },
-  markdownit: {
-    preset: 'default',
-    injected: true,
-    breaks: true,
-    html: true,
-    linkify: true,
-    typography: true,
-    xhtmlOut: true,
-    langPrefix: 'language-',
-    quotes: '“”‘’',
-    highlight: function(/*str, lang*/) {
-      return ''
+  // generate: {
+  //   routes() {
+  //     // return sleepProducts.map((pro) => {
+  //     //   return `/thisIsSleep/buy/puroducts/${pro.id}`
+  //     // })
+  //     return sleepQuestion.map((question) => {
+  //       return `/thisIsSleep/solution/question/${question.pid}`
+  //     })
+  //   }
+  // },
+  router: {
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'custom',
+        path: '*',
+        component: resolve(__dirname, 'pages/errors/404.vue')
+      })
     }
   },
+  // markdownit: {
+  //   preset: 'default',
+  //   injected: true,
+  //   breaks: true,
+  //   html: true,
+  //   linkify: true,
+  //   typography: true,
+  //   xhtmlOut: true,
+  //   langPrefix: 'language-',
+  //   quotes: '“”‘’',
+  //   highlight: function(/*str, lang*/) {
+  //     return ''
+  //   }
+  // },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

@@ -1,12 +1,16 @@
 export const state = () => ({
   products: [],
   cartItems: [],
+  // userCarts: [],
   userCartItems: [],
   checkoutStatus: null,
   shoppingCart: false
 })
 
 export const mutations = {
+  // setUserCarts(state, cart) {
+  //   state.userCarts = cart
+  // },
   // pushProductToCart(state, { id }) {
   //   state.cartItems.push({
   //     id,
@@ -91,6 +95,24 @@ export const mutations = {
 }
 
 export const getters = {
+  getAcceptOrdersCheck: (state, getters, rootState) => (value) => {
+    let total = 0
+    state.cartItems.forEach((cart) => {
+      if (value.id === cart.id) {
+        total = total + cart.quantity
+      }
+    })
+    return value.inventory - total - value.quantity
+  },
+  getAcceptOrders: (state, getters, rootState) => (item) => {
+    let total = 0
+    state.cartItems.forEach((cart) => {
+      if (item.id === cart.id) {
+        total = total + cart.quantity
+      }
+    })
+    return item.inventory - total
+  },
   getUserCart: (state, getters, rootState) => (uid) => {
     // console.log(uid)
     const userCart = []
@@ -172,6 +194,11 @@ export const getters = {
   cartTotalPrice: (state, getters) => {
     return getters.cartProducts.reduce((total, product) => {
       return total + product.price * product.quantity
+    }, 0)
+  },
+  cartTotalQuantity: (state, getters) => {
+    return getters.cartProducts.reduce((total, product) => {
+      return total + product.quantity
     }, 0)
   }
 }

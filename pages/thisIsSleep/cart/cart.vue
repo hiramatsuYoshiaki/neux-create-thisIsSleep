@@ -4,18 +4,24 @@
           div.row
             div.cart-header
               div.left-title
+                //- div test display -------------------------------------
+                //- div {{uid}}
+                //- div {{selectedId}}
+                //- div {{items}}
                 h6 Shopping Cart
                 div.h7
-                  span {{loginUser}} - {{loginUid}}
-                  //- span {{loginUser}}
+                  span {{loginUser}}
+                  //- span {{loginUser}} - {{loginUid}}
                 //- div {{items}}
-                div all cart
-                div(v-for="(cartItem, index) in this.cartItems" :key="cartItem.orderKey")
-                  div {{index + 1}}:{{cartItem.loginUid}}
+                //- div all cart
+                //- div(v-for="(cartItem, index) in this.cartItems" :key="cartItem.orderKey")
+                //- div(v-for="(cartItem, index) in this.items" :key="cartItem.orderKey")
+                //-   div {{index + 1}}:{{cartItem.loginUid}}
               div.right-title
                 h6.quantity-title Quantity
                 h5.center-title Shopping Cart
                 h6.total-title Total
+
             //- div.cart-detail(v-for="(item, index) in this.cartItems" :key="item.orderKey")
             div.cart-detail(v-for="(item, index) in this.items" :key="item.orderKey")
               div.cart-detail-product
@@ -24,7 +30,6 @@
                     //- img(:src="item.img" alt="product image" )
                     img(:src="getUrl(item.id)" alt="product image")
                 div.cart-detail-product-name
-
                   div.h7
                     span.tour-date {{item.id}}
                     span.tour-date {{item.tourDate.date}}
@@ -35,9 +40,9 @@
                   div.h7 {{item.price}}
                     span
                   div.h7.remove(@click="remove(item, index)") remove
-                  br
-                  div data---------------
-                  div {{item}}
+                  //- br
+                  //- div data---------------
+                  //- div {{item}}
 
               div.cart-detail-quantity
                 //- quantity
@@ -81,7 +86,12 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user']),
+    // ...mapState(['user']),
+    ...mapState(['uid']),
+    // ...mapState('buy', ['selectedId']),
+    // ...mapState('buy', ['selectedInventory']),
+    // ...mapState('buy', ['selectedProductBuy']),
+    // ...mapState('cart', ['cartItems']),
     ...mapGetters('cart', {
       cartItems: 'cartProducts', // cartItems
       total: 'cartTotalPrice',
@@ -91,19 +101,19 @@ export default {
     ...mapGetters({ getUrl: 'getProductsImgUrl' })
   },
   async mounted() {
-    // console.log('mounted chek user----------------')
     await firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.loginUid = user.uid
         this.loginUser = user.displayName
-        // this.cartProductsUser(uesr.uid)
       } else {
         this.loginUid = this.logoutUid
         this.loginUser = 'Guest User'
       }
+      this.$store.commit('setLoginUid', this.loginUid)
+      this.items = this.userItems(this.loginUid) // 'cart/getUserCart'
+      // this.$store.commit('cart/setUserCarts', this.items)
+      this.userTotal = this.userCartTotal(this.loginUid)
     })
-    this.items = this.userItems(this.loginUid)
-    this.userTotal = this.userCartTotal(this.loginUid)
   },
   methods: {
     remove(item, index) {
@@ -125,7 +135,7 @@ export default {
     },
     checkout() {
       // alert('check out ')
-      this.$store.dispatch('cart/checkout', this.cartItems)
+      this.$store.dispatch('cart/checkout', this.items)
       this.items = this.userItems(this.loginUid)
       this.userTotal = this.userCartTotal(this.loginUid)
     }
